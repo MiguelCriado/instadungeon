@@ -41,20 +41,25 @@ public class MapHandler : MonoBehaviour {
         if (layoutGenerator && shapeGenerator)
         {
             Stopwatch sw = Stopwatch.StartNew();
+            long elapsedMs, lastElapsedMs;
             int[,] map = new int[layoutGenerator.width * shapeGenerator.width, layoutGenerator.height * shapeGenerator.height];
             
             LayoutGenerator.Connections[,] layout = layoutGenerator.Generate();
+            elapsedMs = sw.ElapsedMilliseconds;
+            UnityEngine.Debug.Log("Time to generate Layout: " + elapsedMs + "ms");
+            lastElapsedMs = elapsedMs;
             Restrictions[,] layoutRestrictions = new Restrictions[layoutGenerator.width, layoutGenerator.height];
+
             for (int i = 0; i < layoutGenerator.width; i++)
             {
                 for (int j = 0; j < layoutGenerator.height; j++)
                 {
-                    UnityEngine.Debug.Log("### Generating shape = (" + i + ", " + j + ") #################");
+                    // UnityEngine.Debug.Log("### Generating shape = (" + i + ", " + j + ") #################");
                     List<Vector2> currentRestrictions = new List<Vector2>();
                     layoutRestrictions[i, j] = new Restrictions();
                     if ((layout[i, j] & LayoutGenerator.Connections.East) == LayoutGenerator.Connections.East)
                     {
-                        UnityEngine.Debug.Log("Adding East restrictions");
+                        // UnityEngine.Debug.Log("Adding East restrictions");
                         Vector2 restriction = new Vector2(shapeGenerator.width - 1, Random.Range(1, shapeGenerator.height - 2));
                         layoutRestrictions[i, j].EastRestrictions.Add(restriction);
                         layoutRestrictions[i, j].EastRestrictions.Add(new Vector2(restriction.x, restriction.y + 1));
@@ -62,7 +67,7 @@ public class MapHandler : MonoBehaviour {
                     }
                     if ((layout[i, j] & LayoutGenerator.Connections.North) == LayoutGenerator.Connections.North)
                     {
-                        UnityEngine.Debug.Log("Adding North restrictions");
+                        // UnityEngine.Debug.Log("Adding North restrictions");
                         Vector2 restriction = new Vector2(Random.Range(1, shapeGenerator.width - 2), shapeGenerator.height -1);
                         layoutRestrictions[i, j].NorthRestrictions.Add(restriction);
                         layoutRestrictions[i, j].NorthRestrictions.Add(new Vector2(restriction.x + 1, restriction.y));
@@ -86,7 +91,7 @@ public class MapHandler : MonoBehaviour {
             Map = PopulateWorld(map);
             
             sw.Stop();
-            long elapsedMs = sw.ElapsedMilliseconds;
+            elapsedMs = sw.ElapsedMilliseconds;
             UnityEngine.Debug.Log("Time to generate: " + elapsedMs + "ms");
         }
     }
@@ -111,7 +116,7 @@ public class MapHandler : MonoBehaviour {
                     tileAux.GetComponent<Tile>().AddEntity(aux);
                     aux.transform.position = IDTools.CartesianToIso(i, j);
                     result[i, j] = tileAux.GetComponent<Tile>();
-                    PathFindingMap.floorTiles.Add(new Location(i, j));
+                    PathFindingMap.floorTiles.Add(new Vector2Int(i, j));
 				}
 			}
 		}

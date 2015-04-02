@@ -37,18 +37,18 @@ public class GameManager : Singleton<GameManager> {
         return result;
     }
 
-    public List<Location> FindPath(Vector2 start, Vector2 goal)
+    public List<Vector2Int> FindPath(Vector2 start, Vector2 goal)
     {
-        List<Location> result = new List<Location>();
-        Location startLocation = new Location((int)start.x, (int)start.y);
-        Location goalLocation = new Location((int)goal.x, (int)goal.y);
+        List<Vector2Int> result = new List<Vector2Int>();
+        Vector2Int startLocation = new Vector2Int((int)start.x, (int)start.y);
+        Vector2Int goalLocation = new Vector2Int((int)goal.x, (int)goal.y);
         AStarSearch astar = new AStarSearch(map.PathFindingMap, startLocation, goalLocation);
-        Location currentLocation = goalLocation;
+        Vector2Int currentLocation = goalLocation;
         bool noPath = false;
         result.Add(currentLocation);
         while (!noPath && !currentLocation.Equals(startLocation))
         {
-            Location previousLocation;
+            Vector2Int previousLocation;
             astar.cameFrom.TryGetValue(currentLocation, out previousLocation);
             if (previousLocation != null) {
                 result.Insert(0, previousLocation);

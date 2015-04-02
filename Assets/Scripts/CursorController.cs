@@ -13,7 +13,7 @@ public class CursorController : MonoBehaviour {
     GameObject yLinePath;
     [SerializeField] GameObject xSpot;
 
-    public Location[] path;
+    public Vector2Int[] path;
 
     [SerializeField] Vector2 mLastTile;
 
@@ -71,7 +71,7 @@ public class CursorController : MonoBehaviour {
         if (Input.GetMouseButtonDown(0))
         {
             Debug.Log("Clicked!!");
-            List<Location> pathFound = GameManager.Instance.FindPath(GameManager.Instance.characterPosition, cursorPosition);
+            List<Vector2Int> pathFound = GameManager.Instance.FindPath(GameManager.Instance.characterPosition, cursorPosition);
             if (pathFound != null)
             {
                 path = pathFound.ToArray();

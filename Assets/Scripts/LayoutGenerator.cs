@@ -1,6 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class LayoutGenerator : MonoBehaviour {
@@ -15,18 +15,13 @@ public class LayoutGenerator : MonoBehaviour {
         West = 8
     }
 
-    [Serializable]
-    private struct Vector2Int
-    {
-        public int x;
-        public int y;
-
-        public Vector2Int(int x, int y)
+    public static readonly Vector2Int[] DIRS = new[]
         {
-            this.x = x;
-            this.y = y;
-        }
-    }
+            new Vector2Int(0, 1),
+            new Vector2Int(1, 0),
+            new Vector2Int(0, -1),
+            new Vector2Int(-1, 0), 
+        };
 
     public int height = 4;
     public int width = 4;
@@ -52,15 +47,20 @@ public class LayoutGenerator : MonoBehaviour {
 
     public Connections[,] Generate()
     {
-        mLayout = new Connections[width, height];
-        InitializeConnections();
-        InitializeMembers();
-        mEntrance = FindEntrance();
+        Initialize();
         GenerateLayout();
         CleanUpLayout();
         Entrance = new Vector2(Hilbert2Layout(mEntrance).x, Hilbert2Layout(mEntrance).y);
         Exit = new Vector2(Hilbert2Layout(mExit).x, Hilbert2Layout(mExit).y);
         return mLayout;
+    }
+
+    private void Initialize()
+    {
+        mLayout = new Connections[width, height];
+        InitializeConnections();
+        InitializeMembers();
+        mEntrance = FindEntrance();
     }
 
     private void InitializeConnections()
@@ -82,25 +82,21 @@ public class LayoutGenerator : MonoBehaviour {
 
     private Vector2Int SetOffset()
     {
-        Vector2Int result = new Vector2Int();
-        result.x = Random.Range(0, mN - width+1);
-        result.y = Random.Range(0, mN - height+1);
+        Vector2Int result = new Vector2Int(Random.Range(0, mN - width+1), Random.Range(0, mN - height+1));
         return result;
     }
 
     private Vector2Int FindEntrance()
     {
-        Vector2Int result = new Vector2Int();
+        Vector2Int result = null;
         bool found = false;
         int i = 0;
-        int x = 0, y = 0;
         int max = mN * mN - 1;
         while (!found && i <= max)
         {
-            HilbertCurve.d2xy(mN, i, ref x, ref y);
-            if (IsInsideOffsetFrame(x, y)) {
-                result.x = x;
-                result.y = y;
+            Vector2Int candidate = HilbertCurve.d2xy(mN, i);
+            if (IsInsideOffsetFrame(candidate.x, candidate.y)) {
+                result = candidate;
                 found = true;
             }
             i++;
@@ -112,43 +108,70 @@ public class LayoutGenerator : MonoBehaviour {
     {
         int initialD = HilbertCurve.xy2d(mN, (int)mEntrance.x, (int)mEntrance.y);
         bool finished = false;
-        int i = initialD + 1, maxSteps = mN * mN - 1;
+        int i = initialD + 1; 
+        int maxSteps = mN * mN - 1;
+        int currentPath = 0;
+        Connections direction = Connections.None;
         Vector2Int currentTile = new Vector2Int(mEntrance.x, mEntrance.y);
-        Vector2Int nextTile = new Vector2Int();
+       
+        List<List<Vector2Int>> connectedPaths = new List<List<Vector2Int>>();
+        connectedPaths.Add(new List<Vector2Int>());
+        connectedPaths[currentPath].Add(new Vector2Int(Hilbert2Layout(currentTile).x, Hilbert2Layout(currentTile).y));
+
         while (!finished && i < maxSteps)
         {
-            HilbertCurve.d2xy(mN, i, ref nextTile.x, ref nextTile.y);
-            //Debug.Log("currentTile = (" + currentTile.x + ", " + currentTile.y + ") \nnextTile = (" + nextTile.x + ", " + nextTile.y + ")");
+            Vector2Int nextTile = HilbertCurve.d2xy(mN, i);
             if (IsInsideOffsetFrame(nextTile.x, nextTile.y))
             {
-                //Debug.Log("Está dentro de offset frame");
-                if (GetDirection(currentTile, nextTile) != Connections.None) // if we can connect these two tiles
+                direction = GetDirection(currentTile, nextTile);
+                if (direction != Connections.None)
                 {
-                    //Debug.Log("podemos conectarlos");
                     Vector2Int layoutTile = new Vector2Int(Hilbert2Layout(currentTile).x, Hilbert2Layout(currentTile).y);
-                    //Debug.Log("layoutTile = (" + layoutTile.x + ", " + layoutTile.y + ")");
-                    mLayout[layoutTile.x, layoutTile.y] |= GetDirection(currentTile, nextTile);
-                    /*if (ManhattanDistance(currentTile, nextTile) == 1)
-                    {
-                        Vector2Int layoutTile = new Vector2Int(Hilbert2Layout(currentTile).x, Hilbert2Layout(currentTile).y);
-                        mLayout[layoutTile.x, layoutTile.y] |= GetDirection(currentTile, nextTile);
-                    }
-                    else
-                    {
-                        // TODO hacer esto en condiciones, para cualquier distancia posible. 
-                    }*/
-                }
-                else
+                    mLayout[layoutTile.x, layoutTile.y] |= direction;
+                    connectedPaths[currentPath].Add(layoutTile);
+                } 
+                else 
                 {
-                    //Debug.Log("se acabó");
-                    finished = true;
+                    currentPath++;
+                    connectedPaths.Add(new List<Vector2Int>());
                 }
                 currentTile = nextTile;
             }
             i++;
         }
-        //Debug.Log("He hecho " + i + " pasos.");
+        ConnectUnconnectedPaths(connectedPaths);
         mExit = currentTile;
+    }
+
+    private void ConnectUnconnectedPaths(List<List<Vector2Int>> unconnectedPaths)
+    {
+        int numPaths = unconnectedPaths.Count;
+        Debug.Log("numPaths = " + numPaths);
+        for (int i = numPaths - 1; i > 0; i--)
+        {
+            Debug.Log("Connecting path " + i);
+            bool connected = false;
+            int j = 0;
+            while (!connected && j < unconnectedPaths[i].Count)
+            {
+                Debug.Log("Looking all " + unconnectedPaths[i][j] + "possible matches");
+                int k = unconnectedPaths[i - 1].Count - 1;
+                while (!connected && k >= 0)
+                {
+                    Connections direction = GetDirection(unconnectedPaths[i - 1][k], unconnectedPaths[i][j]);
+                    Debug.Log("Checking " + unconnectedPaths[i - 1][k] + " & " + unconnectedPaths[i][j]);
+                    if (direction != Connections.None)
+                    {
+                        Debug.Log("Connection found!!!");
+                        mLayout[unconnectedPaths[i - 1][k].x, unconnectedPaths[i - 1][k].y] |= direction;
+                        connected = true;
+                    }
+                    k--;
+                }
+                j++;
+            }
+
+        }
     }
 
     private void CleanUpLayout()
@@ -184,27 +207,20 @@ public class LayoutGenerator : MonoBehaviour {
     private Connections GetDirection(Vector2Int origin, Vector2Int destiny)
     {
         Connections result = Connections.None;
-        if (origin.x == destiny.x)
+        if (origin + DIRS[0] == destiny)
         {
-            if (origin.y < destiny.y)
-            {
-                result = Connections.North;
-            }
-            else if (origin.y > destiny.y)
-            {
-                result = Connections.South;
-            }
+            result = Connections.North;
+        } else if (origin + DIRS[1] == destiny) 
+        {
+            result = Connections.East;
         }
-        else if (origin.y == destiny.y)
+        else if (origin + DIRS[2] == destiny)
         {
-            if (origin.x < destiny.x)
-            {
-                result = Connections.East;
-            }
-            else if (origin.x > destiny.x)
-            {
-                result = Connections.West;
-            }
+            result = Connections.South;
+        }
+        else if (origin + DIRS[3] == destiny)
+        {
+            result = Connections.West;
         }
         return result;
     }

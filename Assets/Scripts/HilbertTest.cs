@@ -9,8 +9,8 @@ public class HilbertTest : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         int x = 0, y = 0;
-        HilbertCurve.d2xy(n, d, ref x, ref y);
-        Debug.Log("Hilbert distance of " + d + " = (" + x + ", " + y + ")");
+        Vector2Int vector = HilbertCurve.d2xy(n, d);
+        Debug.Log("Hilbert distance of " + d + " = (" + vector.x + ", " + vector.y + ")");
 	}
 	
 	// Update is called once per frame

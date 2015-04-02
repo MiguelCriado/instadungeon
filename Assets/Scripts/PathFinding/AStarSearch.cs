@@ -5,21 +5,21 @@ using System;
 
 public class AStarSearch
 {
-    public Dictionary<Location, Location> cameFrom
-        = new Dictionary<Location, Location>();
-    public Dictionary<Location, int> costSoFar
-        = new Dictionary<Location, int>();
+    public Dictionary<Vector2Int, Vector2Int> cameFrom
+        = new Dictionary<Vector2Int, Vector2Int>();
+    public Dictionary<Vector2Int, int> costSoFar
+        = new Dictionary<Vector2Int, int>();
 
     // Note: a generic version of A* would abstract over Location and
     // also Heuristic
-    static public int Heuristic(Location a, Location b)
+    static public int Heuristic(Vector2Int a, Vector2Int b)
     {
         return Math.Abs(a.x - b.x) + Math.Abs(a.y - b.y);
     }
 
-    public AStarSearch(WeightedGraph<Location> graph, Location start, Location goal)
+    public AStarSearch(WeightedGraph<Vector2Int> graph, Vector2Int start, Vector2Int goal)
     {
-        var frontier = new PriorityQueue<Location, int>();
+        var frontier = new PriorityQueue<Vector2Int, int>();
         frontier.Enqueue(start, 0);
 
         cameFrom.Add(start, start);
@@ -49,7 +49,7 @@ public class AStarSearch
         }
     }
 
-    public void AddOrUpdate(Dictionary<Location, int> dict, Location key, int value)
+    public void AddOrUpdate(Dictionary<Vector2Int, int> dict, Vector2Int key, int value)
     {
         if (dict.ContainsKey(key))
         {
@@ -61,7 +61,7 @@ public class AStarSearch
         }
     }
 
-    public void AddOrUpdate(Dictionary<Location, Location> dict, Location key, Location value)
+    public void AddOrUpdate(Dictionary<Vector2Int, Vector2Int> dict, Vector2Int key, Vector2Int value)
     {
         if (dict.ContainsKey(key))
         {

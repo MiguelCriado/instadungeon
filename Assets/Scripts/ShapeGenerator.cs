@@ -93,7 +93,7 @@ public class ShapeGenerator : MonoBehaviour {
         if (fixedFloor != null) {
             for (int i = 0; i < fixedFloor.Count; i++)
             {
-                Debug.Log("Placing FixedFloor in " + fixedFloor[i]);
+                // Debug.Log("Placing FixedFloor in " + fixedFloor[i]);
                 mShape[(int)fixedFloor[i].x, (int)fixedFloor[i].y] = FIXED_FLOOR;
             }
         }
@@ -194,7 +194,7 @@ public class ShapeGenerator : MonoBehaviour {
 			for (int j = 0; j < mShape.GetLength(1); j++) {
 				if (mShape[i,j] == FLOOR) {
 					if (FloodFillIsle(i, j, FLOOR, cont) < 2) {
-						Debug.Log ("Filling isle " + cont);
+                        // Debug.Log ("Filling isle " + cont);
 						FloodFillIsle(i, j, cont, WALL);
 					} else {
 						cont++;
@@ -203,7 +203,7 @@ public class ShapeGenerator : MonoBehaviour {
                 else if (mShape[i, j] == FIXED_FLOOR)
                 {
                     if (FloodFillIsle(i, j, FIXED_FLOOR, cont) < 2) {
-						Debug.Log ("Filling isle " + cont);
+                        // Debug.Log ("Filling isle " + cont);
 						FloodFillIsle(i, j, cont, WALL);
 					} else {
 						cont++;
@@ -274,7 +274,7 @@ public class ShapeGenerator : MonoBehaviour {
             Vector2[] nearest;
             for (int i = 0; i < cavernList.Count - 1; i++) {
                 nearest = FindNearestTile(tree, cavernList[i].cells);
-                Debug.Log("Gonna connect " + nearest[0] + " with " + nearest[1]);
+                // Debug.Log("Gonna connect " + nearest[0] + " with " + nearest[1]);
                 MakePath(nearest[0], nearest[1]);
             }
         }

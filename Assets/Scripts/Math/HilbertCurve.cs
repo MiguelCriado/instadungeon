@@ -18,10 +18,10 @@ public static class HilbertCurve {
     }
 
     //convert d to (x,y)
-    public static void d2xy(int n, int d, ref int x, ref int y)
+    public static Vector2Int d2xy(int n, int d)
     {
         int rx, ry, s, t = d;
-        x = y = 0;
+        int x = 0,  y = 0;
         for (s = 1; s < n; s *= 2)
         {
             rx = 1 & (t / 2);
@@ -31,6 +31,7 @@ public static class HilbertCurve {
             y += s * ry;
             t /= 4;
         }
+        return new Vector2Int(x, y);
     }
 
     //rotate/flip a quadrant appropriately

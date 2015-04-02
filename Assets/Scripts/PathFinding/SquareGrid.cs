@@ -2,18 +2,18 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class SquareGrid : WeightedGraph<Location>
+public class SquareGrid : WeightedGraph<Vector2Int>
 {
     // Implementation notes: I made the fields public for convenience,
     // but in a real project you'll probably want to follow standard
     // style and make them private.
 
-    public static readonly Location[] DIRS = new[]
+    public static readonly Vector2Int[] DIRS = new[]
         {
-            new Location(1, 0),
-            new Location(0, -1),
-            new Location(-1, 0),
-            new Location(0, 1), 
+            new Vector2Int(1, 0),
+            new Vector2Int(0, -1),
+            new Vector2Int(-1, 0),
+            new Vector2Int(0, 1), 
             /*new Location(1, 1),
             new Location(-1, 1),
             new Location(-1, -1),
@@ -22,7 +22,7 @@ public class SquareGrid : WeightedGraph<Location>
         };
 
     public int width, height;
-    public HashSet<Location> floorTiles = new HashSet<Location>();
+    public HashSet<Vector2Int> floorTiles = new HashSet<Vector2Int>();
 
     public SquareGrid(int width, int height)
     {
@@ -30,27 +30,27 @@ public class SquareGrid : WeightedGraph<Location>
         this.height = height;
     }
 
-    public bool InBounds(Location id)
+    public bool InBounds(Vector2Int id)
     {
         return 0 <= id.x && id.x < width
             && 0 <= id.y && id.y < height;
     }
 
-    public bool Passable(Location id)
+    public bool Passable(Vector2Int id)
     {
         return floorTiles.Contains(id);
     }
 
-    public int Cost(Location a, Location b)
+    public int Cost(Vector2Int a, Vector2Int b)
     {
         return GameManager.Instance.GetTile(b.x, b.y).Cost();
     }
 
-    public IEnumerable<Location> Neighbors(Location id)
+    public IEnumerable<Vector2Int> Neighbors(Vector2Int id)
     {
         foreach (var dir in DIRS)
         {
-            Location next = new Location(id.x + dir.x, id.y + dir.y);
+            Vector2Int next = new Vector2Int(id.x + dir.x, id.y + dir.y);
             if (InBounds(next) && Passable(next))
             {
                 yield return next;

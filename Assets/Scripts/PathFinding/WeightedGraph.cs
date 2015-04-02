@@ -2,6 +2,6 @@
 
 public interface WeightedGraph<L>
 {
-    int Cost(Location a, Location b);
-    IEnumerable<Location> Neighbors(Location id);
+    int Cost(Vector2Int a, Vector2Int b);
+    IEnumerable<Vector2Int> Neighbors(Vector2Int id);
 }

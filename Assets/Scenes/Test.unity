@@ -239,7 +239,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraHeight: 3
   screenHeight: 0
-  mX: 4
+  mX: 2
   pixelsPerUnit: 16
 --- !u!1 &1144452014
 GameObject:
@@ -310,8 +310,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7d5de942b0bd4449a7f2422f11cf279, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  height: 3
-  width: 3
+  height: 4
+  width: 4
   Entrance: {x: 0, y: 0}
   Exit: {x: 0, y: 0}
 --- !u!1 &1392497433
