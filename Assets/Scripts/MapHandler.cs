@@ -38,6 +38,7 @@ public class MapHandler : MonoBehaviour {
 
     public void Generate()
     {
+        RecycleMap();
         if (layoutGenerator && shapeGenerator)
         {
             Stopwatch sw = Stopwatch.StartNew();
@@ -93,6 +94,17 @@ public class MapHandler : MonoBehaviour {
             sw.Stop();
             elapsedMs = sw.ElapsedMilliseconds;
             UnityEngine.Debug.Log("Time to generate: " + elapsedMs + "ms");
+        }
+    }
+
+    private void RecycleMap()
+    {
+        if (Map != null)
+        {
+            foreach (Transform child in transform)
+            {
+                GameObject.Destroy(child.gameObject);
+            }
         }
     }
 
