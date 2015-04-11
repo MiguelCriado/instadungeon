@@ -297,8 +297,8 @@ MonoBehaviour:
   initialWallProb: .400000006
   iterations: 4
   refiningIterations: 3
-  height: 20
-  width: 20
+  height: 15
+  width: 15
 --- !u!114 &1144452018
 MonoBehaviour:
   m_ObjectHideFlags: 0

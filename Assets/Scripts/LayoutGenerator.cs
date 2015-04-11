@@ -107,62 +107,56 @@ public class LayoutGenerator : MonoBehaviour {
     private void GenerateLayout()
     {
         int initialD = HilbertCurve.xy2d(mN, (int)mEntrance.x, (int)mEntrance.y);
-        bool finished = false;
-        int i = initialD + 1; 
+        int i = initialD; 
         int maxSteps = mN * mN - 1;
-        int currentPath = 0;
         Connections direction = Connections.None;
+        List<List<Vector2Int>> unconnectedPaths = new List<List<Vector2Int>>();
+        List<Vector2Int> currentPath = new List<Vector2Int>();
         Vector2Int currentTile = new Vector2Int(mEntrance.x, mEntrance.y);
-       
-        List<List<Vector2Int>> connectedPaths = new List<List<Vector2Int>>();
-        connectedPaths.Add(new List<Vector2Int>());
-        connectedPaths[currentPath].Add(new Vector2Int(Hilbert2Layout(currentTile).x, Hilbert2Layout(currentTile).y));
+        currentPath.Add(Hilbert2Layout(currentTile));
 
-        while (!finished && i < maxSteps)
+        while (i < maxSteps)
         {
-            Vector2Int nextTile = HilbertCurve.d2xy(mN, i);
+            Vector2Int nextTile = HilbertCurve.d2xy(mN, i + 1);
             if (IsInsideOffsetFrame(nextTile.x, nextTile.y))
             {
                 direction = GetDirection(currentTile, nextTile);
                 if (direction != Connections.None)
                 {
-                    Vector2Int layoutTile = new Vector2Int(Hilbert2Layout(currentTile).x, Hilbert2Layout(currentTile).y);
-                    mLayout[layoutTile.x, layoutTile.y] |= direction;
-                    connectedPaths[currentPath].Add(layoutTile);
-                } 
-                else 
-                {
-                    currentPath++;
-                    connectedPaths.Add(new List<Vector2Int>());
+                    Vector2Int layoutTile = Hilbert2Layout(currentTile);
+                    mLayout[layoutTile.x, layoutTile.y] |= direction; 
                 }
+                else
+                {
+                    unconnectedPaths.Add(currentPath);
+                    currentPath = new List<Vector2Int>();
+                }
+                currentPath.Add(Hilbert2Layout(nextTile));
                 currentTile = nextTile;
             }
+            
             i++;
         }
-        ConnectUnconnectedPaths(connectedPaths);
+        unconnectedPaths.Add(currentPath);
+        ConnectUnconnectedPaths(unconnectedPaths);
         mExit = currentTile;
     }
 
     private void ConnectUnconnectedPaths(List<List<Vector2Int>> unconnectedPaths)
     {
         int numPaths = unconnectedPaths.Count;
-        Debug.Log("numPaths = " + numPaths);
         for (int i = numPaths - 1; i > 0; i--)
         {
-            Debug.Log("Connecting path " + i);
             bool connected = false;
             int j = 0;
             while (!connected && j < unconnectedPaths[i].Count)
             {
-                Debug.Log("Looking all " + unconnectedPaths[i][j] + "possible matches");
                 int k = unconnectedPaths[i - 1].Count - 1;
                 while (!connected && k >= 0)
                 {
                     Connections direction = GetDirection(unconnectedPaths[i - 1][k], unconnectedPaths[i][j]);
-                    Debug.Log("Checking " + unconnectedPaths[i - 1][k] + " & " + unconnectedPaths[i][j]);
                     if (direction != Connections.None)
                     {
-                        Debug.Log("Connection found!!!");
                         mLayout[unconnectedPaths[i - 1][k].x, unconnectedPaths[i - 1][k].y] |= direction;
                         connected = true;
                     }
