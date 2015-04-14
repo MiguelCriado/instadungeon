@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class LayoutGenerator : MonoBehaviour {
+public class HilbertLayoutGenerator : MonoBehaviour {
 
     [Flags]
     public enum Connections

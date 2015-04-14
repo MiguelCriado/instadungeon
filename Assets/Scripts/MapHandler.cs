@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Random = UnityEngine.Random;
 using System.Text;
 
-[RequireComponent(typeof(LayoutGenerator), typeof(ShapeGenerator))]
+[RequireComponent(typeof(HilbertLayoutGenerator), typeof(CavernousShapeGenerator))]
 public class MapHandler : MonoBehaviour {
 
 	[SerializeField] GameObject floorPrefab;
@@ -14,8 +14,8 @@ public class MapHandler : MonoBehaviour {
 
     public SquareGrid PathFindingMap;
 
-	private ShapeGenerator shapeGenerator;
-    private LayoutGenerator layoutGenerator;
+	private CavernousShapeGenerator shapeGenerator;
+    private HilbertLayoutGenerator layoutGenerator;
 
     private class Restrictions
     {
@@ -31,8 +31,8 @@ public class MapHandler : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		shapeGenerator = GetComponent<ShapeGenerator>();
-        layoutGenerator = GetComponent<LayoutGenerator>();
+		shapeGenerator = GetComponent<CavernousShapeGenerator>();
+        layoutGenerator = GetComponent<HilbertLayoutGenerator>();
         Generate();
 	}
 
@@ -45,7 +45,7 @@ public class MapHandler : MonoBehaviour {
             long elapsedMs, lastElapsedMs;
             int[,] map = new int[layoutGenerator.width * shapeGenerator.width, layoutGenerator.height * shapeGenerator.height];
             
-            LayoutGenerator.Connections[,] layout = layoutGenerator.Generate();
+            HilbertLayoutGenerator.Connections[,] layout = layoutGenerator.Generate();
             elapsedMs = sw.ElapsedMilliseconds;
             UnityEngine.Debug.Log("Time to generate Layout: " + elapsedMs + "ms");
             lastElapsedMs = elapsedMs;
@@ -58,7 +58,7 @@ public class MapHandler : MonoBehaviour {
                     // UnityEngine.Debug.Log("### Generating shape = (" + i + ", " + j + ") #################");
                     List<Vector2> currentRestrictions = new List<Vector2>();
                     layoutRestrictions[i, j] = new Restrictions();
-                    if ((layout[i, j] & LayoutGenerator.Connections.East) == LayoutGenerator.Connections.East)
+                    if ((layout[i, j] & HilbertLayoutGenerator.Connections.East) == HilbertLayoutGenerator.Connections.East)
                     {
                         // UnityEngine.Debug.Log("Adding East restrictions");
                         Vector2 restriction = new Vector2(shapeGenerator.width - 1, Random.Range(1, shapeGenerator.height - 2));
@@ -66,7 +66,7 @@ public class MapHandler : MonoBehaviour {
                         layoutRestrictions[i, j].EastRestrictions.Add(new Vector2(restriction.x, restriction.y + 1));
                         AddAll(layoutRestrictions[i, j].EastRestrictions, currentRestrictions);
                     }
-                    if ((layout[i, j] & LayoutGenerator.Connections.North) == LayoutGenerator.Connections.North)
+                    if ((layout[i, j] & HilbertLayoutGenerator.Connections.North) == HilbertLayoutGenerator.Connections.North)
                     {
                         // UnityEngine.Debug.Log("Adding North restrictions");
                         Vector2 restriction = new Vector2(Random.Range(1, shapeGenerator.width - 2), shapeGenerator.height -1);
@@ -76,12 +76,12 @@ public class MapHandler : MonoBehaviour {
                     }
                     if (i > 0)
                     {
-                        List<Vector2> leftRestrictions = GetCorrespondantRestrictions(layoutRestrictions[i-1, j].EastRestrictions, LayoutGenerator.Connections.West);
+                        List<Vector2> leftRestrictions = GetCorrespondantRestrictions(layoutRestrictions[i-1, j].EastRestrictions, HilbertLayoutGenerator.Connections.West);
                         AddAll(leftRestrictions, currentRestrictions);
                     }
                     if (j > 0)
                     {
-                        List<Vector2> bottomRestrictions = GetCorrespondantRestrictions(layoutRestrictions[i, j - 1].NorthRestrictions, LayoutGenerator.Connections.South);
+                        List<Vector2> bottomRestrictions = GetCorrespondantRestrictions(layoutRestrictions[i, j - 1].NorthRestrictions, HilbertLayoutGenerator.Connections.South);
                         AddAll(bottomRestrictions, currentRestrictions);
                     }
                     shapeGenerator.Init(shapeGenerator.initialWallProb, shapeGenerator.iterations, shapeGenerator.height, shapeGenerator.width, currentRestrictions);
@@ -115,7 +115,7 @@ public class MapHandler : MonoBehaviour {
         GameObject tileAux;
 		for (int i = 0; i < map.GetLength(0); i++) {
 			for (int j = 0; j < map.GetLength(1); j++) {
-				if (map[i,j] >= ShapeGenerator.FIXED_FLOOR) {
+				if (map[i,j] >= CavernousShapeGenerator.FIXED_FLOOR) {
                     StringBuilder namer = new StringBuilder("tile (");
                     namer.Append(i).Append(", ").Append(j).Append(")");
                     tileAux = new GameObject(namer.ToString());
@@ -149,17 +149,17 @@ public class MapHandler : MonoBehaviour {
         }
     }
 
-    private List<Vector2> GetCorrespondantRestrictions(List<Vector2> origin, LayoutGenerator.Connections relativePosition)
+    private List<Vector2> GetCorrespondantRestrictions(List<Vector2> origin, HilbertLayoutGenerator.Connections relativePosition)
     {
         List<Vector2> result = new List<Vector2>();
-        if ((relativePosition & LayoutGenerator.Connections.West) == LayoutGenerator.Connections.West)
+        if ((relativePosition & HilbertLayoutGenerator.Connections.West) == HilbertLayoutGenerator.Connections.West)
         {
             for (int i = 0; i < origin.Count; i++)
             {
                 result.Add(new Vector2(0, origin[i].y));
             }
         }
-        if ((relativePosition & LayoutGenerator.Connections.South) == LayoutGenerator.Connections.South)
+        if ((relativePosition & HilbertLayoutGenerator.Connections.South) == HilbertLayoutGenerator.Connections.South)
         {
             for (int i = 0; i < origin.Count; i++)
             {

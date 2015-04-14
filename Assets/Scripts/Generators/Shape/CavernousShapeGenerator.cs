@@ -4,7 +4,7 @@ using System.Text;
 using System.Collections.Generic;
 using KDTree;
 
-public class ShapeGenerator : MonoBehaviour {
+public class CavernousShapeGenerator : MonoBehaviour {
 	public delegate char PlaceWallRule(int x, int y);
 
 	public const char WALL_CHAR = '\u25A0';
