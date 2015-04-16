@@ -22,6 +22,11 @@ public class Vector2Int
         return new Vector2Int(a.x + b.x, a.y + b.y);
     }
 
+    public static Vector2Int operator -(Vector2Int a, Vector2Int b)
+    {
+        return new Vector2Int(a.x - b.x, a.y - b.y);
+    }
+
     public static bool operator ==(Vector2Int a, Vector2Int b)
     {
         // If both are null, or both are same instance, return true.
