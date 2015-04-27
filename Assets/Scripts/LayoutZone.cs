@@ -10,6 +10,7 @@ public class LayoutZone {
     private Dictionary<Vector2Int, Tile> tiles;
 
     public Vector2Int ContactPoint(Vector2Int layoutZonePoint) {
+        // TODO make this right. 
         return new Vector2Int(0,0);
     }
 

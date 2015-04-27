@@ -4,5 +4,13 @@ using System.Collections;
 [System.Serializable]
 public class Layout 
 {
-    private Graph<LayoutZone> zones = new Graph<LayoutZone>();
+    public LayoutZone InitialZone;
+    public LayoutZone FinalZone;
+
+    private Graph<LayoutZone> zones;
+
+    public Layout()
+    {
+        zones = new Graph<LayoutZone>();
+    }
 }
