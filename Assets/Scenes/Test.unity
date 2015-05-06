@@ -310,8 +310,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7d5de942b0bd4449a7f2422f11cf279, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  height: 4
-  width: 4
+  height: 3
+  width: 3
   Entrance: {x: 0, y: 0}
   Exit: {x: 0, y: 0}
 --- !u!1 &1392497433

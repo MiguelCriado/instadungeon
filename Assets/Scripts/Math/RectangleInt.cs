@@ -57,6 +57,11 @@ public class RectangleInt {
             || ((x + width == other.x || x == other.x + other.width) && (y < other.y + other.height || y + height > other.y));
     }
 
+    /// <summary>
+    /// Returns the tiles inside this rectangle that are touched by other rectangle. 
+    /// </summary>
+    /// <param name="other">A rectangle potentially adjacent to this rectangle.</param>
+    /// <returns>A list of points from this rectangle that are touched by other. The list will be empty if both rectangles are not adjacent.</returns>
     public List<Vector2Int> ContactArea(RectangleInt other)
     {
         List<Vector2Int> result = new List<Vector2Int>();
@@ -96,6 +101,42 @@ public class RectangleInt {
             }
         }
         
+        return result;
+    }
+
+    /// <summary>
+    /// Finds the point inside this rectangle that is adjacent to the provided point. 
+    /// </summary>
+    /// <param name="point">A point potentially adjacent to this rectangle.</param>
+    /// <returns>An adjacent point to the point provided. null if none found.</returns>
+    public Vector2Int ContactPoint(Vector2Int point)
+    {
+        Vector2Int result = null;
+        if (point.y >= this.y && 
+            point.y < this.y + this.height)
+        {
+
+            if (point.x == this.x - 1)
+            {
+                result = new Vector2Int(x, point.y);
+            } 
+            else if (point.x == this.x + this.width)
+            {
+                result = new Vector2Int(point.x - 1, point.y);
+            }
+        } 
+        if (point.x >= this.x &&
+            point.x < this.x + this.width)
+        {
+            if (point.y == this.y - 1)
+            {
+                result = new Vector2Int(point.x, y);
+            }
+            else if (point.y == this.y + this.height)
+            {
+                result = new Vector2Int(point.x, point.y - 1);
+            }
+        }
         return result;
     }
 }

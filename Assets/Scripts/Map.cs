@@ -24,6 +24,11 @@ public class Map : WeightedGraph<Vector2Int> {
         tiles = new Dictionary<Vector2Int, Tile>();
     }
 
+    public void Add(Vector2Int position, Tile tile)
+    {
+        tiles.Add(position, tile);
+    }
+
     public Tile GetTile(int x, int y)
     {
         Tile result;
