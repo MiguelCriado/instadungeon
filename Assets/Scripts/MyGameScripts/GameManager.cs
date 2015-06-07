@@ -29,11 +29,7 @@ public class GameManager : Singleton<GameManager> {
     public Tile GetTile(int x, int y)
     {
         Tile result = null;
-        if (0 <= x && x < map.Map.GetLength(0)
-            && 0 <= y && y < map.Map.GetLength(1))
-        {
-            result = map.Map[x, y];
-        }
+        map.Map.GetTile(x, y);
         return result;
     }
 

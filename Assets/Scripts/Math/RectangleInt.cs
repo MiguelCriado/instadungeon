@@ -38,9 +38,9 @@ public class RectangleInt {
     public bool Contains(Vector2Int point)
     {
         return point.x >= x 
-            && point.x < point.x + width
+            && point.x < x + width
             && point.y >= y 
-            && point.y < point.y + height;
+            && point.y < y + height;
     }
 
     public bool Overlaps(RectangleInt other)
@@ -61,36 +61,68 @@ public class RectangleInt {
     /// Returns the tiles inside this rectangle that are touched by other rectangle. 
     /// </summary>
     /// <param name="other">A rectangle potentially adjacent to this rectangle.</param>
+    /// <param name="discardEdges">Set true to discard tiles on any edges of this Rectangle or the other.</param>
     /// <returns>A list of points from this rectangle that are touched by other. The list will be empty if both rectangles are not adjacent.</returns>
-    public List<Vector2Int> ContactArea(RectangleInt other)
+    public List<Vector2Int> ContactArea(RectangleInt other, bool discardEdges = false)
     {
         List<Vector2Int> result = new List<Vector2Int>();
-        int xMin = 0, xMax = 0, yMin = 0, yMax = 0;
+        
         if (IsAdjacent(other))
         {
-            if (other.y >= y + height)
+            int xMin = 0, xMax = 0, yMin = 0, yMax = 0;
+            int xThis = x, yThis = y, widthThis = width, heightThis = height;
+            int xOther = other.x, yOther = other.y, widthOther = other.width, heightOther = other.height;
+            if (yOther >= yThis + heightThis)
             { // other is on top 
-                yMin = yMax = y + height - 1;
-                xMin = Mathf.Max(x, other.x);
-                xMax = Mathf.Min(x + width - 1, other.x + other.width - 1);
+                if (discardEdges) 
+                {
+                    xThis++;
+                    xOther++;
+                    widthThis -= 2;
+                    widthOther -= 2;
+                }
+                yMin = yMax = yThis + heightThis - 1;
+                xMin = Mathf.Max(xThis, xOther);
+                xMax = Mathf.Min(xThis + widthThis - 1, xOther + widthOther - 1);
             }
-            else if (other.x >= x + width)
+            else if (xOther >= xThis + widthThis)
             { // other is right
-                xMin = xMax = x + width - 1;
-                yMin = Mathf.Max(y, other.y);
-                yMax = Mathf.Min(y + height - 1, other.y + other.height - 1);
+                if (discardEdges)
+                {
+                    yThis++;
+                    yOther++;
+                    heightThis -= 2;
+                    heightOther -= 2;
+                }
+                xMin = xMax = xThis + widthThis - 1;
+                yMin = Mathf.Max(y, yOther);
+                yMax = Mathf.Min(yThis + heightThis - 1, yOther + heightOther - 1);
             }
-            else if (other.y + other.height <= y)
+            else if (yOther + heightOther <= y)
             { // other is down
-                yMin = yMax = y;
-                xMin = Mathf.Max(x, other.x);
-                xMax = Mathf.Min(x + width - 1, other.x + other.width - 1);
+                if (discardEdges)
+                {
+                    xThis++;
+                    xOther++;
+                    widthThis -= 2;
+                    widthOther -= 2;
+                }
+                yMin = yMax = yThis;
+                xMin = Mathf.Max(x, xOther);
+                xMax = Mathf.Min(xThis + widthThis - 1, xOther + widthOther - 1);
             }
-            else if (other.x + other.width <= x)
+            else if (xOther + widthOther <= x)
             { // other is left
-                xMin = xMax = x;
-                yMin = Mathf.Max(y, other.y);
-                yMax = Mathf.Min(y + height - 1, other.y + other.height - 1);
+                if (discardEdges)
+                {
+                    yThis++;
+                    yOther++;
+                    heightThis -= 2;
+                    heightOther -= 2;
+                }
+                xMin = xMax = xThis;
+                yMin = Mathf.Max(yThis, yOther);
+                yMax = Mathf.Min(yThis + height - 1, yOther + heightOther - 1);
             }
             for (int i = xMin; i <= xMax; i++)
             {

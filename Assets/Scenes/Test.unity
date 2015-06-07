@@ -271,6 +271,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   floorPrefab: {fileID: 111926, guid: 07979e0c41425da4198a18aefff123e0, type: 2}
+  wallPrefab: {fileID: 111926, guid: 846e37a9db712104fbdc92afce549d06, type: 2}
 --- !u!4 &1144452016
 Transform:
   m_ObjectHideFlags: 0
@@ -310,8 +311,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7d5de942b0bd4449a7f2422f11cf279, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  height: 3
-  width: 3
+  height: 4
+  width: 4
+  zoneWidth: 15
+  zoneHeight: 15
   Entrance: {x: 0, y: 0}
   Exit: {x: 0, y: 0}
 --- !u!1 &1392497433

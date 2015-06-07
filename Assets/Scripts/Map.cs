@@ -2,40 +2,44 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Map : WeightedGraph<Vector2Int> {
+public class Map<T> {
 
-    public static readonly Vector2Int[] DIRS = new[]
-        {
-            new Vector2Int(1, 0),
-            new Vector2Int(0, -1),
-            new Vector2Int(-1, 0),
-            new Vector2Int(0, 1), 
-            /*new Location(1, 1),
-            new Location(-1, 1),
-            new Location(-1, -1),
-            new Location(1, -1)*/
- 
-        };
-
-    private Dictionary<Vector2Int, Tile> tiles;
+    private Dictionary<Vector2Int, T> tiles;
+    private Layout layout;
 
     public Map()
     {
-        tiles = new Dictionary<Vector2Int, Tile>();
+        tiles = new Dictionary<Vector2Int, T>();
+        layout = new Layout();
     }
 
-    public void Add(Vector2Int position, Tile tile)
+    public void SetLayout(Layout layout)
+    {
+        this.layout = layout;
+    }
+
+    public Layout GetLayout()
+    {
+        return this.layout;
+    }
+
+    public void Add(Vector2Int position, T tile)
     {
         tiles.Add(position, tile);
     }
 
-    public Tile GetTile(int x, int y)
+    public T GetTile(int x, int y)
     {
-        Tile result;
+        T result;
         tiles.TryGetValue(new Vector2Int(x, y), out result);
         return result;
     }
 
+    public Dictionary<Vector2Int, T>.Enumerator GetEnumerator()
+    {
+        return tiles.GetEnumerator();
+    }
+    /*
     public bool Passable(Vector2Int id)
     {
         return tiles.ContainsKey(id);
@@ -44,7 +48,7 @@ public class Map : WeightedGraph<Vector2Int> {
     public int Cost(Vector2Int a, Vector2Int b)
     {
         int result;
-        Tile bTile;
+        T bTile;
         if (tiles.TryGetValue(b, out bTile))
         {
             result = bTile.Cost();
@@ -66,5 +70,5 @@ public class Map : WeightedGraph<Vector2Int> {
                 yield return next;
             }
         }
-    }
+    }*/
 }

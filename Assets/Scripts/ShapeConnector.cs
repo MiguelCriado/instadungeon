@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using Random = UnityEngine.Random;
+using UnityEngine;
 
 public static class ShapeConnector {
 
-    public static Map BuildMap(LayoutGenerator layoutG, ShapeGenerator shapeG)
+    public static Map<BlueprintAsset> BuildMap(LayoutGenerator layoutG, ShapeGenerator shapeG)
     {
-        Map result = new Map();
+        Map<BlueprintAsset> result = new Map<BlueprintAsset>();
         Layout layout = layoutG.Generate();
+        result.SetLayout(layout);
 
         if (shapeG.GetConnectionTime() == Shape.ConnectionTime.PreConnection)
         {
@@ -18,43 +20,39 @@ public static class ShapeConnector {
                 {
                     LayoutZone zone = zonesToConnect[0];
                     zonesToConnect.Remove(zone);
-                    foreach (Node<LayoutZone> neighbour in layout.GetAdjacentZones(zone))
+                    foreach (LayoutZone neighbour in layout.GetAdjacentZones(zone))
                     {
-                        Vector2Int connectionPoint;
-                        List<Vector2Int> connectionCandidates = zone.bounds.ContactArea(neighbour.Value.bounds);
-                        connectionCandidates.RemoveAll(point => 
-                                point.x == zone.bounds.x ||
-                                point.x == (zone.bounds.x + zone.bounds.width - 1) ||
-                                point.y == zone.bounds.y ||
-                                point.y == (zone.bounds.y + zone.bounds.height - 1)
-                            );
-                        connectionPoint = connectionCandidates[Random.Range(0, connectionCandidates.Count)];
-                        zone.AddConnectionPoint(connectionPoint);
-                        neighbour.Value.AddConnectionPoint(neighbour.Value.ContactPoint(connectionPoint));
-                        zonesToConnect.Add(neighbour.Value);
+                        if (!zone.connections.ContainsValue(neighbour))
+                        {
+                            Vector2Int connectionPoint;
+                            List<Vector2Int> connectionCandidates = zone.bounds.ContactArea(neighbour.bounds, true);
+                            connectionPoint = connectionCandidates[Random.Range(0, connectionCandidates.Count - 1)];
+                            zone.AddConnectionPoint(connectionPoint, neighbour);
+                            neighbour.AddConnectionPoint(neighbour.ContactPoint(connectionPoint), zone);
+                            zonesToConnect.Add(neighbour);
+                        }
                     }
                 }
             }
 
             // Generating shapes
 
-            for (int i = 0; i < layout.Zones.Count; i++)
+            ICollection<LayoutZone> zones = layout.Zones;
+            foreach (LayoutZone currentZone in zones)
             {
-                Dictionary<Vector2Int, Tile> shape;
-                LayoutZone zone = layout.Zones[i].Value;
+                Dictionary<Vector2Int, BlueprintAsset> shape;
                 shapeG.WipeEntrances();
-                for (int j = 0; j < zone.Exits.Count; j++)
-                {
-                    shapeG.SetEntrance(zone.Exits[j]);
+                foreach (KeyValuePair<Vector2Int, LayoutZone> connection in currentZone.connections) {
+                    shapeG.SetEntrance(connection.Key - currentZone.bounds.position);
                 }
-                shape = shapeG.Generate(zone.bounds.width, zone.bounds.height, zone.bounds.position);
-                foreach (KeyValuePair<Vector2Int, Tile> tile in shape)
+                shape = shapeG.Generate(currentZone.bounds.width, currentZone.bounds.height, currentZone.bounds.position);
+                foreach (KeyValuePair<Vector2Int, BlueprintAsset> tile in shape)
                 {
-                    zone.tiles.Add(tile.Key, tile.Value);
+                    // zone.tiles.Add(tile.Key, tile.Value);
                     result.Add(tile.Key, tile.Value);
                 }
             }
-            
+                       
         }
         else
         {

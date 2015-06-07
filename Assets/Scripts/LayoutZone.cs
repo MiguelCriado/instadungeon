@@ -4,29 +4,38 @@ using System.Collections.Generic;
 [System.Serializable]
 public class LayoutZone {
 
-    public readonly short id;
+    private static int id_counter = 0;
+
+    public readonly int id;
     public RectangleInt bounds;
-    public List<Vector2Int> Exits
-    {
-        get
-        {
-            return connections;
-        }
-    }
+   
     public Dictionary<Vector2Int, Tile> tiles;
 
-    private List<Vector2Int> connections;
+    public Dictionary<Vector2Int, LayoutZone> connections;
     
 
     public LayoutZone()
     {
-        connections = new List<Vector2Int>();
-        tiles = new Dictionary<Vector2Int, Tile>();
+        this.id = id_counter++;
+        Init(0, 0, 0, 0);
     }
 
-    public void AddConnectionPoint(Vector2Int point)
+    public LayoutZone(int x, int y, int width, int height)
     {
-        connections.Add(point);
+        this.id = id_counter++;
+        Init(x, y, width, height);
+    }
+
+    private void Init(int x, int y, int width, int height)
+    {
+        connections = new Dictionary<Vector2Int, LayoutZone>();
+        tiles = new Dictionary<Vector2Int, Tile>();
+        bounds = new RectangleInt(x, y, width, height);
+    }
+
+    public void AddConnectionPoint(Vector2Int point, LayoutZone layoutZone)
+    {
+        connections.Add(point, layoutZone);
     }
 
     /// <summary>
@@ -46,5 +55,10 @@ public class LayoutZone {
     public Vector2Int Zone2Map(Vector2Int zonePosition)
     {
         return bounds.position + zonePosition;
+    }
+
+    public override string ToString()
+    {
+        return id.ToString();
     }
 }

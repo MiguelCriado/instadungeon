@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class HilbertLayoutGenerator : MonoBehaviour {
+public class HilbertLayoutGenerator : MonoBehaviour, LayoutGenerator {
 
     [Flags]
     public enum Connections
@@ -26,6 +26,9 @@ public class HilbertLayoutGenerator : MonoBehaviour {
     public int height = 4;
     public int width = 4;
 
+    public int zoneWidth = 15;
+    public int zoneHeight = 15;
+
     public Vector2 Entrance;
     public Vector2 Exit;
 
@@ -45,7 +48,62 @@ public class HilbertLayoutGenerator : MonoBehaviour {
         PaintLayout();
     }
 
-    public Connections[,] Generate()
+    public Layout Generate()
+    {
+        Layout result = new Layout();
+        Connections[,] layoutArray = GenerateLayoutArray();
+        AddZones(result, layoutArray);
+        ConnectZones(result, layoutArray);
+        result.InitialZone = result.FindZoneByPosition(new Vector2Int((int)Entrance.x, (int)Entrance.y));
+        result.FinalZone = result.FindZoneByPosition(new Vector2Int((int)Exit.x, (int)Exit.y));
+        return result;
+    }
+
+    private void AddZones(Layout layout, Connections[,] layoutArray)
+    {
+        for (int i = 0; i < layoutArray.GetLength(0); i++)
+        {
+            for (int j = 0; j < layoutArray.GetLength(1); j++)
+            {
+                LayoutZone zone = new LayoutZone();
+                zone.bounds = new RectangleInt(i * zoneWidth, j * zoneHeight, zoneWidth, zoneHeight);
+                layout.Add(zone);
+            }
+        }
+    }
+
+    private void ConnectZones(Layout result, Connections[,] layoutArray)
+    {
+        for (int i = 0; i < layoutArray.GetLength(0); i++)
+        {
+            for (int j = 0; j < layoutArray.GetLength(1); j++)
+            {
+                LayoutZone currentZone = result.FindZoneByPosition(new Vector2Int(i * zoneWidth, j * zoneHeight));
+                if (i > 0
+                    && (layoutArray[i, j] & Connections.East) == Connections.East)
+                {
+                    result.ConnectZones(currentZone, result.FindZoneByPosition(new Vector2Int((i + 1) * zoneWidth, j * zoneHeight)));
+                }
+                if (i < width - 1
+                    && (layoutArray[i, j] & Connections.West) == Connections.West)
+                {
+                    result.ConnectZones(currentZone, result.FindZoneByPosition(new Vector2Int((i - 1) * zoneWidth, j * zoneHeight)));
+                }
+                if (j > 0
+                    && (layoutArray[i, j] & Connections.North) == Connections.North)
+                {
+                    result.ConnectZones(currentZone, result.FindZoneByPosition(new Vector2Int(i * zoneWidth, (j + 1) * zoneHeight)));
+                }
+                if (j < height - 1
+                    && (layoutArray[i, j] & Connections.South) == Connections.South)
+                {
+                    result.ConnectZones(currentZone, result.FindZoneByPosition(new Vector2Int(i * zoneWidth, (j - 1) * zoneHeight)));
+                }
+            }
+        }
+    }
+
+    public Connections[,] GenerateLayoutArray()
     {
         Initialize();
         GenerateLayout();
@@ -216,13 +274,6 @@ public class HilbertLayoutGenerator : MonoBehaviour {
         {
             result = Connections.West;
         }
-        return result;
-    }
-
-    private Connections GetSpeculativeDirection(Vector2Int origin, Vector2Int destiny)
-    {
-        Connections result = Connections.None;
-        
         return result;
     }
 
