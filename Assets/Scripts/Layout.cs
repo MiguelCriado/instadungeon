@@ -45,6 +45,7 @@ public class Layout
         if (!zones.ContainsKey(zone))
         {
             zones.Add(zone, new HashSet<LayoutZone>());
+            zone.SetParentLayout(this);
         }
     }
 

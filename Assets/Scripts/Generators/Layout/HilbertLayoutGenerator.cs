@@ -54,7 +54,7 @@ public class HilbertLayoutGenerator : MonoBehaviour, LayoutGenerator {
         Connections[,] layoutArray = GenerateLayoutArray();
         AddZones(result, layoutArray);
         ConnectZones(result, layoutArray);
-        result.InitialZone = result.FindZoneByPosition(new Vector2Int((int)Entrance.x, (int)Entrance.y));
+        result.InitialZone = result.FindZoneByPosition(new Vector2Int((int)Entrance.x * zoneWidth, (int)Entrance.y * zoneHeight));
         result.FinalZone = result.FindZoneByPosition(new Vector2Int((int)Exit.x, (int)Exit.y));
         return result;
     }

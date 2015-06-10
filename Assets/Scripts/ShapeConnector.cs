@@ -43,12 +43,12 @@ public static class ShapeConnector {
                 Dictionary<Vector2Int, BlueprintAsset> shape;
                 shapeG.WipeEntrances();
                 foreach (KeyValuePair<Vector2Int, LayoutZone> connection in currentZone.connections) {
-                    shapeG.SetEntrance(connection.Key - currentZone.bounds.position);
+                    shapeG.SetEntrance(currentZone.Map2Zone(connection.Key));
                 }
                 shape = shapeG.Generate(currentZone.bounds.width, currentZone.bounds.height, currentZone.bounds.position);
                 foreach (KeyValuePair<Vector2Int, BlueprintAsset> tile in shape)
                 {
-                    // zone.tiles.Add(tile.Key, tile.Value);
+                    currentZone.tiles.Add(tile.Key);
                     result.Add(tile.Key, tile.Value);
                 }
             }

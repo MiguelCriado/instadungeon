@@ -1,17 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 [System.Serializable]
-public class LayoutZone {
+public class LayoutZone : IEnumerable{
 
     private static int id_counter = 0;
 
     public readonly int id;
     public RectangleInt bounds;
    
-    public Dictionary<Vector2Int, Tile> tiles;
+    public HashSet<Vector2Int> tiles;
 
     public Dictionary<Vector2Int, LayoutZone> connections;
+
+    private Layout parentLayout;
     
 
     public LayoutZone()
@@ -29,14 +32,29 @@ public class LayoutZone {
     private void Init(int x, int y, int width, int height)
     {
         connections = new Dictionary<Vector2Int, LayoutZone>();
-        tiles = new Dictionary<Vector2Int, Tile>();
+        tiles = new HashSet<Vector2Int>();
         bounds = new RectangleInt(x, y, width, height);
+    }
+
+    public void SetParentLayout(Layout layout)
+    {
+        this.parentLayout = layout;
     }
 
     public void AddConnectionPoint(Vector2Int point, LayoutZone layoutZone)
     {
         connections.Add(point, layoutZone);
     }
+
+    public IEnumerator<Vector2Int> GetEnumerator()
+    {
+        return tiles.GetEnumerator();
+    }
+
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    } 
 
     /// <summary>
     /// Finds the tile inside this LayoutZone that is adjacent to the provided point.  
@@ -49,7 +67,7 @@ public class LayoutZone {
 
     public Vector2Int Map2Zone(Vector2Int mapPosition)
     {
-        return bounds.position - mapPosition;
+        return mapPosition - bounds.position;
     }
 
     public Vector2Int Zone2Map(Vector2Int zonePosition)

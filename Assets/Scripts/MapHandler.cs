@@ -12,6 +12,12 @@ public class MapHandler : MonoBehaviour {
     GameObject floorPrefab;
     [SerializeField]
     GameObject wallPrefab;
+    [SerializeField]
+    GameObject entranceStairs;
+    [SerializeField]
+    GameObject exitStairs;
+
+    public GameObject player; // TODO REMOVE THIS SHIT OUT OF HERE!!!!
 
     public Map<Tile> Map;
 
@@ -39,12 +45,16 @@ public class MapHandler : MonoBehaviour {
 
             Map<BlueprintAsset> blueprintMap = ShapeConnector.BuildMap(layoutGenerator, shapeGenerator);
 
-
+            lastElapsedMs = sw.ElapsedMilliseconds;
+            UnityEngine.Debug.Log("Time to generate blueprint Map: " + lastElapsedMs + "ms");
             Map = PopulateWorld(blueprintMap);
             
             sw.Stop();
-            elapsedMs = sw.ElapsedMilliseconds;
-            UnityEngine.Debug.Log("Time to generate: " + elapsedMs + "ms");
+            elapsedMs = sw.ElapsedMilliseconds - lastElapsedMs;
+            UnityEngine.Debug.Log("Time to populate world: " + elapsedMs + "ms");
+            UnityEngine.Debug.Log("Total time to generate: " + sw.ElapsedMilliseconds + "ms");
+
+            PlaceEntrance(Map);
         }
     }
 
@@ -85,13 +95,30 @@ public class MapHandler : MonoBehaviour {
             tileAux.GetComponent<Tile>().AddEntity(aux);
             result.Add(position, tileAux.GetComponent<Tile>());
             aux.transform.position = IDTools.CartesianToIso(position.x, position.y);
+            CalculateSortingOrder(aux);
             // PathFindingMap.floorTiles.Add(new Vector2Int(position.x, position.y));
         }
+        result.GetLayout().InitialZone = map.GetLayout().InitialZone;
+        result.GetLayout().FinalZone = map.GetLayout().FinalZone;
 		return result;
 	}
 
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    private void PlaceEntrance(Map<Tile> map)
+    {
+        foreach (Vector2Int tile in map.GetLayout().InitialZone)
+        {
+            if (map.GetTile(tile.x, tile.y).Cost() > 0)
+            {
+                UnityEngine.Debug.Log("Moving player to: \n\t cartesian: " + tile.ToString() + "\n\t isometric: " + IDTools.CartesianToIso(tile.x, tile.y));
+                player.transform.position = IDTools.CartesianToIso(tile.x, tile.y);
+                break;
+            }
+        }
+    }
+
+    private void CalculateSortingOrder(GameObject obj)
+    {
+        SpriteRenderer renderer = (SpriteRenderer)obj.gameObject.GetComponent("SpriteRenderer");
+        renderer.sortingOrder = Mathf.FloorToInt((obj.transform.position.y - obj.transform.position.z) * -100);
+    }
 }
