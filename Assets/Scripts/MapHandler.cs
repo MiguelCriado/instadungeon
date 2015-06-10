@@ -8,26 +8,25 @@ using System.Text;
 [RequireComponent(typeof(HilbertLayoutGenerator), typeof(CavernousShapeGenerator))]
 public class MapHandler : MonoBehaviour {
 
-	[SerializeField] GameObject floorPrefab;
+	[SerializeField] 
+    GameObject floorPrefab;
+    [SerializeField]
+    GameObject wallPrefab;
+    [SerializeField]
+    GameObject entranceStairs;
+    [SerializeField]
+    GameObject exitStairs;
 
-    public Tile[,] Map;
+    public GameObject player; // TODO REMOVE THIS SHIT OUT OF HERE!!!!
+
+    public Map<Tile> Map;
 
     public SquareGrid PathFindingMap;
 
 	private CavernousShapeGenerator shapeGenerator;
     private HilbertLayoutGenerator layoutGenerator;
 
-    private class Restrictions
-    {
-        public List<Vector2> EastRestrictions;
-        public List<Vector2> NorthRestrictions;
-
-        public Restrictions()
-        {
-            EastRestrictions = new List<Vector2>();
-            NorthRestrictions = new List<Vector2>();
-        }
-    }
+    
 
 	// Use this for initialization
 	void Start () {
@@ -43,57 +42,19 @@ public class MapHandler : MonoBehaviour {
         {
             Stopwatch sw = Stopwatch.StartNew();
             long elapsedMs, lastElapsedMs;
-            int[,] map = new int[layoutGenerator.width * shapeGenerator.width, layoutGenerator.height * shapeGenerator.height];
-            
-            HilbertLayoutGenerator.Connections[,] layout = layoutGenerator.Generate();
-            elapsedMs = sw.ElapsedMilliseconds;
-            UnityEngine.Debug.Log("Time to generate Layout: " + elapsedMs + "ms");
-            lastElapsedMs = elapsedMs;
-            Restrictions[,] layoutRestrictions = new Restrictions[layoutGenerator.width, layoutGenerator.height];
 
-            for (int i = 0; i < layoutGenerator.width; i++)
-            {
-                for (int j = 0; j < layoutGenerator.height; j++)
-                {
-                    // UnityEngine.Debug.Log("### Generating shape = (" + i + ", " + j + ") #################");
-                    List<Vector2> currentRestrictions = new List<Vector2>();
-                    layoutRestrictions[i, j] = new Restrictions();
-                    if ((layout[i, j] & HilbertLayoutGenerator.Connections.East) == HilbertLayoutGenerator.Connections.East)
-                    {
-                        // UnityEngine.Debug.Log("Adding East restrictions");
-                        Vector2 restriction = new Vector2(shapeGenerator.width - 1, Random.Range(1, shapeGenerator.height - 2));
-                        layoutRestrictions[i, j].EastRestrictions.Add(restriction);
-                        layoutRestrictions[i, j].EastRestrictions.Add(new Vector2(restriction.x, restriction.y + 1));
-                        AddAll(layoutRestrictions[i, j].EastRestrictions, currentRestrictions);
-                    }
-                    if ((layout[i, j] & HilbertLayoutGenerator.Connections.North) == HilbertLayoutGenerator.Connections.North)
-                    {
-                        // UnityEngine.Debug.Log("Adding North restrictions");
-                        Vector2 restriction = new Vector2(Random.Range(1, shapeGenerator.width - 2), shapeGenerator.height -1);
-                        layoutRestrictions[i, j].NorthRestrictions.Add(restriction);
-                        layoutRestrictions[i, j].NorthRestrictions.Add(new Vector2(restriction.x + 1, restriction.y));
-                        AddAll(layoutRestrictions[i, j].NorthRestrictions, currentRestrictions);
-                    }
-                    if (i > 0)
-                    {
-                        List<Vector2> leftRestrictions = GetCorrespondantRestrictions(layoutRestrictions[i-1, j].EastRestrictions, HilbertLayoutGenerator.Connections.West);
-                        AddAll(leftRestrictions, currentRestrictions);
-                    }
-                    if (j > 0)
-                    {
-                        List<Vector2> bottomRestrictions = GetCorrespondantRestrictions(layoutRestrictions[i, j - 1].NorthRestrictions, HilbertLayoutGenerator.Connections.South);
-                        AddAll(bottomRestrictions, currentRestrictions);
-                    }
-                    shapeGenerator.Init(shapeGenerator.initialWallProb, shapeGenerator.iterations, shapeGenerator.height, shapeGenerator.width, currentRestrictions);
-                    CopyShape(ref map, shapeGenerator.Generate(), new Vector2(i * shapeGenerator.width, j * shapeGenerator.height));
-                }
-            }
+            Map<BlueprintAsset> blueprintMap = ShapeConnector.BuildMap(layoutGenerator, shapeGenerator);
 
-            Map = PopulateWorld(map);
+            lastElapsedMs = sw.ElapsedMilliseconds;
+            UnityEngine.Debug.Log("Time to generate blueprint Map: " + lastElapsedMs + "ms");
+            Map = PopulateWorld(blueprintMap);
             
             sw.Stop();
-            elapsedMs = sw.ElapsedMilliseconds;
-            UnityEngine.Debug.Log("Time to generate: " + elapsedMs + "ms");
+            elapsedMs = sw.ElapsedMilliseconds - lastElapsedMs;
+            UnityEngine.Debug.Log("Time to populate world: " + elapsedMs + "ms");
+            UnityEngine.Debug.Log("Total time to generate: " + sw.ElapsedMilliseconds + "ms");
+
+            PlaceEntrance(Map);
         }
     }
 
@@ -108,75 +69,56 @@ public class MapHandler : MonoBehaviour {
         }
     }
 
-	private Tile[,] PopulateWorld(int[,] map) {
-        Tile[,] result = new Tile[map.GetLength(0), map.GetLength(1)];
-        PathFindingMap = new SquareGrid(layoutGenerator.width * shapeGenerator.width, layoutGenerator.height * shapeGenerator.height);
-		GameObject aux;
-        GameObject tileAux;
-		for (int i = 0; i < map.GetLength(0); i++) {
-			for (int j = 0; j < map.GetLength(1); j++) {
-				if (map[i,j] >= CavernousShapeGenerator.FIXED_FLOOR) {
-                    StringBuilder namer = new StringBuilder("tile (");
-                    namer.Append(i).Append(", ").Append(j).Append(")");
-                    tileAux = new GameObject(namer.ToString());
-                    tileAux.AddComponent<Tile>();
-                    tileAux.transform.SetParent(this.transform);
-                    tileAux.transform.position = IDTools.CartesianToIso(i, j);
-					aux = (GameObject)Instantiate(floorPrefab);
-					// aux.transform.SetParent(this.transform);
-					// aux.transform.position = IDTools.CartesianToIso(i, j);
-                    tileAux.GetComponent<Tile>().AddEntity(aux);
-                    aux.transform.position = IDTools.CartesianToIso(i, j);
-                    result[i, j] = tileAux.GetComponent<Tile>();
-                    PathFindingMap.floorTiles.Add(new Vector2Int(i, j));
-				}
-			}
-		}
-       
-        return result;
-	}
+	private Map<Tile> PopulateWorld(Map<BlueprintAsset> map) {
+        Map<Tile> result = new Map<Tile>();
+		GameObject aux = null;
+        GameObject tileAux = null;
 
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
-    private void AddAll(List<Vector2> origin, List<Vector2> destiny)
-    {
-        for (int i = 0; i < origin.Count; i++)
+        foreach (KeyValuePair<Vector2Int, BlueprintAsset> tile in map)
         {
-            destiny.Add(origin[i]);
+            BlueprintAsset asset = tile.Value;
+            Vector2Int position = tile.Key;
+            StringBuilder namer = new StringBuilder("tile (");
+            namer.Append(position.x).Append(", ").Append(position.y).Append(")");
+            tileAux = new GameObject(namer.ToString());
+            tileAux.AddComponent<Tile>();
+            tileAux.transform.SetParent(this.transform);
+            tileAux.transform.position = IDTools.CartesianToIso(position.x, position.y);
+            switch (asset) {
+                case BlueprintAsset.Floor:
+                    aux = (GameObject)Instantiate(floorPrefab);
+                    break;
+                case BlueprintAsset.Wall:
+                    aux = (GameObject)Instantiate(wallPrefab);
+                    break;
+            }
+            tileAux.GetComponent<Tile>().AddEntity(aux);
+            result.Add(position, tileAux.GetComponent<Tile>());
+            aux.transform.position = IDTools.CartesianToIso(position.x, position.y);
+            CalculateSortingOrder(aux);
+            // PathFindingMap.floorTiles.Add(new Vector2Int(position.x, position.y));
+        }
+        result.GetLayout().InitialZone = map.GetLayout().InitialZone;
+        result.GetLayout().FinalZone = map.GetLayout().FinalZone;
+		return result;
+	}
+
+    private void PlaceEntrance(Map<Tile> map)
+    {
+        foreach (Vector2Int tile in map.GetLayout().InitialZone)
+        {
+            if (map.GetTile(tile.x, tile.y).Cost() > 0)
+            {
+                UnityEngine.Debug.Log("Moving player to: \n\t cartesian: " + tile.ToString() + "\n\t isometric: " + IDTools.CartesianToIso(tile.x, tile.y));
+                player.transform.position = IDTools.CartesianToIso(tile.x, tile.y);
+                break;
+            }
         }
     }
 
-    private List<Vector2> GetCorrespondantRestrictions(List<Vector2> origin, HilbertLayoutGenerator.Connections relativePosition)
+    private void CalculateSortingOrder(GameObject obj)
     {
-        List<Vector2> result = new List<Vector2>();
-        if ((relativePosition & HilbertLayoutGenerator.Connections.West) == HilbertLayoutGenerator.Connections.West)
-        {
-            for (int i = 0; i < origin.Count; i++)
-            {
-                result.Add(new Vector2(0, origin[i].y));
-            }
-        }
-        if ((relativePosition & HilbertLayoutGenerator.Connections.South) == HilbertLayoutGenerator.Connections.South)
-        {
-            for (int i = 0; i < origin.Count; i++)
-            {
-                result.Add(new Vector2(origin[i].x, 0));
-            }
-        }
-        return result;
-    }
-
-    private void CopyShape(ref int[,] map, int[,] shape, Vector2 offset)
-    {
-        for (int i = 0; i < shapeGenerator.width; i++)
-        {
-            for (int j = 0; j < shapeGenerator.height; j++)
-            {
-                map[(int)offset.x + i, (int)offset.y + j] = shape[i, j];
-            }
-        }
+        SpriteRenderer renderer = (SpriteRenderer)obj.gameObject.GetComponent("SpriteRenderer");
+        renderer.sortingOrder = Mathf.FloorToInt((obj.transform.position.y - obj.transform.position.z) * -100);
     }
 }

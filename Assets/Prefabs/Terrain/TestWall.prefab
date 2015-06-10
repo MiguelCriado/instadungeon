@@ -10,8 +10,10 @@ GameObject:
   - 4: {fileID: 411926}
   - 212: {fileID: 21211926}
   - 114: {fileID: 11489790}
-  m_Layer: 0
-  m_Name: TestFloor
+  - 60: {fileID: 6021638}
+  - 50: {fileID: 5053502}
+  m_Layer: 8
+  m_Name: TestWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29,6 +31,38 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!50 &5053502
+Rigidbody2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 111926}
+  m_Mass: 1e+06
+  m_LinearDrag: 1e+06
+  m_AngularDrag: .0500000007
+  m_GravityScale: 0
+  m_FixedAngle: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+--- !u!60 &6021638
+PolygonCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 111926}
+  m_Enabled: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0}
+  m_Points:
+    m_Paths:
+    - - {x: .000194486231, y: .499527305}
+      - {x: -1.00045729, y: -.000306025147}
+      - {x: -.00218117237, y: -.5}
+      - {x: .999549747, y: .0014411062}
 --- !u!114 &11489790
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -40,7 +74,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dfbdc15cb35eed46a76dc102ede10d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Cost: 1
+  Cost: 0
 --- !u!212 &21211926
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -63,9 +97,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -1269583585
+  m_SortingLayerID: 535093101
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 8e06277d9627b8a478faf8d4f3068bbf, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a4e2eb47fb36f9c4280a0c0de29506de, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &100100000
 Prefab:

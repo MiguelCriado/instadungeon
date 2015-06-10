@@ -29,7 +29,7 @@ public class CursorController : MonoBehaviour {
             UpdateCursorPrefabState();
         }
         xSpot.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        ProcessClick();
+        // ProcessClick();
         mLastTile = cursorPosition;
         DrawPath();
 	}

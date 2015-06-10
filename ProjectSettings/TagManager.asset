@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - StaticObject
   layers:
   - Default
   - TransparentFX
@@ -13,7 +14,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - Walls
   - 
   - 
   - 
@@ -40,4 +41,13 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Bottom
+    uniqueID: 3025383711
+    locked: 0
+  - name: Middle
+    uniqueID: 535093101
+    locked: 0
+  - name: Top
+    uniqueID: 3029401597
     locked: 0

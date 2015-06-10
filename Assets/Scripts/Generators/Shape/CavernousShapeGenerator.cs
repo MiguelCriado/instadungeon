@@ -4,7 +4,7 @@ using System.Text;
 using System.Collections.Generic;
 using KDTree;
 
-public class CavernousShapeGenerator : MonoBehaviour {
+public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator {
 	public delegate char PlaceWallRule(int x, int y);
 
 	public const char WALL_CHAR = '\u25A0';
@@ -24,6 +24,9 @@ public class CavernousShapeGenerator : MonoBehaviour {
 	public int[,] mShape;
 
     private List<Vector2> fixedFloor;
+
+    private List<Vector2Int> entrances = new List<Vector2Int>();
+    private Vector2Int offset;
 	
 
     /// <summary>
@@ -202,12 +205,14 @@ public class CavernousShapeGenerator : MonoBehaviour {
                 }
                 else if (mShape[i, j] == FIXED_FLOOR)
                 {
-                    if (FloodFillIsle(i, j, FIXED_FLOOR, cont) < 2) {
+                    FloodFillIsle(i, j, FIXED_FLOOR, cont);
+                    cont++;
+                    /*if (FloodFillIsle(i, j, FIXED_FLOOR, cont) < 2) {
                         // Debug.Log ("Filling isle " + cont);
 						FloodFillIsle(i, j, cont, WALL);
 					} else {
 						cont++;
-					}
+					}*/
                 }
 			}
 		}
@@ -289,23 +294,23 @@ public class CavernousShapeGenerator : MonoBehaviour {
     private bool PlacePathPoint(int x, int y)
     {
         bool result = true;
-        if (!IsOutOfBounds(x, y))
+        if (!IsOutOfBounds(x, y) && !IsBound(x, y))
         {
             mShape[x, y] = FLOOR;
-        } 
-        if (!IsOutOfBounds(x-1, y))
+        }
+        if (!IsOutOfBounds(x - 1, y) && !IsBound(x - 1, y))
         {
             mShape[x-1, y] = FLOOR;
         }
-        if (!IsOutOfBounds(x+1, y))
+        if (!IsOutOfBounds(x + 1, y) && !IsBound(x + 1, y))
         {
             mShape[x+1, y] = FLOOR;
         }
-        if (!IsOutOfBounds(x, y-1))
+        if (!IsOutOfBounds(x, y - 1) && !IsBound(x, y - 1))
         {
             mShape[x, y-1] = FLOOR;
         }
-        if (!IsOutOfBounds(x, y+1))
+        if (!IsOutOfBounds(x, y + 1) && !IsBound(x, y + 1))
         {
             mShape[x, y+1] = FLOOR;
         } 
@@ -406,4 +411,45 @@ public class CavernousShapeGenerator : MonoBehaviour {
 		return result.ToString();
 	}
 
+
+    public Dictionary<Vector2Int, BlueprintAsset> Generate(int width, int height, Vector2Int offset)
+    {
+        Dictionary<Vector2Int, BlueprintAsset> result = new Dictionary<Vector2Int, BlueprintAsset>();
+        this.width = width;
+        this.height = height;
+        this.offset = offset;
+        int[,] map = Generate();
+        for (int i = 0; i < map.GetLength(0); i++)
+        {
+            for (int j = 0; j < map.GetLength(1); j++)
+            {
+                if (map[i, j] == WALL)
+                {
+                    result.Add(new Vector2Int(i + offset.x, j + offset.y), BlueprintAsset.Wall);
+                }
+                else if (map[i, j] >= FIXED_FLOOR)
+                {
+                    result.Add(new Vector2Int(i + offset.x, j + offset.y), BlueprintAsset.Floor);
+                }
+                
+            }
+        }
+        return result;
+
+    }
+
+    public Shape.ConnectionTime GetConnectionTime()
+    {
+        return Shape.ConnectionTime.PreConnection;
+    }
+
+    public void WipeEntrances()
+    {
+        this.fixedFloor = new List<Vector2>();
+    }
+
+    public void SetEntrance(Vector2Int point)
+    {
+        this.fixedFloor.Add(new Vector2(point.x, point.y));
+    }
 }

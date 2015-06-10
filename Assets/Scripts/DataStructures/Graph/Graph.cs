@@ -31,6 +31,11 @@ public class Graph<T>
         from.Costs.Add(cost);
     }
 
+    public void AddDirectedEdge(GraphNode<T> from, GraphNode<T> to)
+    {
+        AddDirectedEdge(from, to, 0);
+    }
+
     public void AddUndirectedEdge(GraphNode<T> from, GraphNode<T> to, int cost)
     {
         from.Neighbors.Add(to);
@@ -38,6 +43,25 @@ public class Graph<T>
 
         to.Neighbors.Add(from);
         to.Costs.Add(cost);
+    }
+
+    public void AddUndirectedEdge(GraphNode<T> from, GraphNode<T> to) 
+    {
+        AddUndirectedEdge(from, to, 0);
+    }
+
+    public bool AddUndirectedEdge(T from, T to)
+    {
+        bool result = false;
+        GraphNode<T> fromNode = nodeSet.FindByValue(from) as GraphNode<T>;
+        GraphNode<T> toNode = nodeSet.FindByValue(to) as GraphNode<T>;
+        if (fromNode != null && toNode != null)
+        {
+            result = true;
+            AddUndirectedEdge(fromNode, toNode);
+        }
+        return result;
+
     }
 
     public bool Contains(T value)
