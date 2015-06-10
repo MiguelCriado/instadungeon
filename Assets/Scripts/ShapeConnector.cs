@@ -6,6 +6,12 @@ public static class ShapeConnector {
 
     public static Map<BlueprintAsset> BuildMap(LayoutGenerator layoutG, ShapeGenerator shapeG)
     {
+        return BuildMap(layoutG, shapeG, Random.seed);
+    }
+
+    public static Map<BlueprintAsset> BuildMap(LayoutGenerator layoutG, ShapeGenerator shapeG, int levelSeed)
+    {
+        Random.seed = levelSeed;
         Map<BlueprintAsset> result = new Map<BlueprintAsset>();
         Layout layout = layoutG.Generate();
         result.SetLayout(layout);

@@ -13,7 +13,7 @@ GameObject:
   - 60: {fileID: 6021638}
   - 50: {fileID: 5053502}
   m_Layer: 8
-  m_Name: TestWall
+  m_Name: TestUpStairs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -8,7 +8,9 @@ using System.Text;
 [RequireComponent(typeof(HilbertLayoutGenerator), typeof(CavernousShapeGenerator))]
 public class MapHandler : MonoBehaviour {
 
-	[SerializeField] 
+    public bool customSeed = false;
+    public int levelSeed;
+    [SerializeField] 
     GameObject floorPrefab;
     [SerializeField]
     GameObject wallPrefab;
@@ -43,7 +45,12 @@ public class MapHandler : MonoBehaviour {
             Stopwatch sw = Stopwatch.StartNew();
             long elapsedMs, lastElapsedMs;
 
-            Map<BlueprintAsset> blueprintMap = ShapeConnector.BuildMap(layoutGenerator, shapeGenerator);
+            if (!customSeed)
+            {
+                levelSeed = Random.seed;
+            }
+
+            Map<BlueprintAsset> blueprintMap = ShapeConnector.BuildMap(layoutGenerator, shapeGenerator, levelSeed);
 
             lastElapsedMs = sw.ElapsedMilliseconds;
             UnityEngine.Debug.Log("Time to generate blueprint Map: " + lastElapsedMs + "ms");

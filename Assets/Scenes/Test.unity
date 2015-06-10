@@ -362,6 +362,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8827bcd037833344aab136481c900dbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  customSeed: 0
+  levelSeed: 0
   floorPrefab: {fileID: 111926, guid: 07979e0c41425da4198a18aefff123e0, type: 2}
   wallPrefab: {fileID: 111926, guid: 846e37a9db712104fbdc92afce549d06, type: 2}
   entranceStairs: {fileID: 111926, guid: cdf9c173d8bb43d4cb21d13ae9bbfa80, type: 2}
