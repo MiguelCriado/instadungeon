@@ -342,8 +342,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 1144452016}
   - 114: {fileID: 1144452015}
+  - 114: {fileID: 1144452019}
   - 114: {fileID: 1144452018}
-  - 114: {fileID: 1144452017}
   m_Layer: 0
   m_Name: Map Handler
   m_TagString: Untagged
@@ -364,6 +364,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   customSeed: 0
   levelSeed: 0
+  shapeGeneratorType: 0
   floorPrefab: {fileID: 111926, guid: 07979e0c41425da4198a18aefff123e0, type: 2}
   wallPrefab: {fileID: 111926, guid: 846e37a9db712104fbdc92afce549d06, type: 2}
   entranceStairs: {fileID: 111926, guid: cdf9c173d8bb43d4cb21d13ae9bbfa80, type: 2}
@@ -381,7 +382,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
---- !u!114 &1144452017
+--- !u!114 &1144452018
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -395,9 +396,7 @@ MonoBehaviour:
   initialWallProb: .400000006
   iterations: 4
   refiningIterations: 3
-  height: 15
-  width: 15
---- !u!114 &1144452018
+--- !u!114 &1144452019
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -762,7 +761,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
+  m_SortingLayerID: -1269583585
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 226643f0798b70d4bb287e577fe67887, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

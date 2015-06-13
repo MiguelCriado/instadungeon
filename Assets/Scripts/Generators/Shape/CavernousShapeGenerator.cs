@@ -4,6 +4,7 @@ using System.Text;
 using System.Collections.Generic;
 using KDTree;
 
+[System.Serializable]
 public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator {
 	public delegate char PlaceWallRule(int x, int y);
 
@@ -18,13 +19,11 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator {
 	public float initialWallProb = 0.4f;
 	public int iterations = 4;
 	public int refiningIterations = 3;
-	public int height = 30;
-	public int width = 30;
-
-	public int[,] mShape;
-
+	
+    private int height = 30;
+    private int width = 30;
+    private int[,] mShape;
     private List<Vector2> fixedFloor;
-
     private List<Vector2Int> entrances = new List<Vector2Int>();
     private Vector2Int offset;
 	
@@ -55,11 +54,52 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator {
         this.fixedFloor = fixedFloor;
 	}
 
+    public Dictionary<Vector2Int, BlueprintAsset> Generate(int width, int height, Vector2Int offset)
+    {
+        Dictionary<Vector2Int, BlueprintAsset> result = new Dictionary<Vector2Int, BlueprintAsset>();
+        this.width = width;
+        this.height = height;
+        this.offset = offset;
+        int[,] map = Generate();
+        for (int i = 0; i < map.GetLength(0); i++)
+        {
+            for (int j = 0; j < map.GetLength(1); j++)
+            {
+                if (map[i, j] == WALL)
+                {
+                    result.Add(new Vector2Int(i + offset.x, j + offset.y), BlueprintAsset.Wall);
+                }
+                else if (map[i, j] >= FIXED_FLOOR)
+                {
+                    result.Add(new Vector2Int(i + offset.x, j + offset.y), BlueprintAsset.Floor);
+                }
+
+            }
+        }
+        return result;
+
+    }
+
+    public Shape.ConnectionTime GetConnectionTime()
+    {
+        return Shape.ConnectionTime.PreConnection;
+    }
+
+    public void WipeEntrances()
+    {
+        this.fixedFloor = new List<Vector2>();
+    }
+
+    public void SetEntrance(Vector2Int point)
+    {
+        this.fixedFloor.Add(new Vector2(point.x, point.y));
+    }
+
     /// <summary>
     /// Generates a new Shape;
     /// </summary>
     /// <returns>The Shape generated</returns>
-    public int[,] Generate()
+    private int[,] Generate()
     {
         InitializeShape();
         for (int i = 0; i < iterations; i++)
@@ -112,7 +152,7 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator {
     /// <param name="scopeY2"></param>
     /// <param name="lowerThreshold"></param>
     /// <returns></returns>
-	public int[,] Step(int scopeX1, int scopeY1, int upperThreshold, int scopeX2, int scopeY2, int lowerThreshold) {
+	private int[,] Step(int scopeX1, int scopeY1, int upperThreshold, int scopeX2, int scopeY2, int lowerThreshold) {
 		int[,] result = new int[width, height];
 		for (int i = 0; i < mShape.GetLength(0); i++) {
 			for (int j = 0; j < mShape.GetLength(1); j++) {
@@ -155,7 +195,8 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator {
 	}
 
     /// <summary>
-    ///  Counts how many walls are there around the tile described by [x, y] on the current Shape. It scopes [scopeX, scopeY] tiles away from the tile 
+    ///  Counts how many walls are there around the tile described by [x, y] on the current Shape. 
+    ///  It scopes [scopeX, scopeY] tiles away from the tile we are checking.
     /// </summary>
     /// <param name="x"></param> x component of the tile we are checking. 
     /// <param name="y"></param> y component of the tile we are checking. 
@@ -410,46 +451,4 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator {
 		}
 		return result.ToString();
 	}
-
-
-    public Dictionary<Vector2Int, BlueprintAsset> Generate(int width, int height, Vector2Int offset)
-    {
-        Dictionary<Vector2Int, BlueprintAsset> result = new Dictionary<Vector2Int, BlueprintAsset>();
-        this.width = width;
-        this.height = height;
-        this.offset = offset;
-        int[,] map = Generate();
-        for (int i = 0; i < map.GetLength(0); i++)
-        {
-            for (int j = 0; j < map.GetLength(1); j++)
-            {
-                if (map[i, j] == WALL)
-                {
-                    result.Add(new Vector2Int(i + offset.x, j + offset.y), BlueprintAsset.Wall);
-                }
-                else if (map[i, j] >= FIXED_FLOOR)
-                {
-                    result.Add(new Vector2Int(i + offset.x, j + offset.y), BlueprintAsset.Floor);
-                }
-                
-            }
-        }
-        return result;
-
-    }
-
-    public Shape.ConnectionTime GetConnectionTime()
-    {
-        return Shape.ConnectionTime.PreConnection;
-    }
-
-    public void WipeEntrances()
-    {
-        this.fixedFloor = new List<Vector2>();
-    }
-
-    public void SetEntrance(Vector2Int point)
-    {
-        this.fixedFloor.Add(new Vector2(point.x, point.y));
-    }
 }

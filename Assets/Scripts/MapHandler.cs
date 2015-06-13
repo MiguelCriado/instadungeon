@@ -5,42 +5,45 @@ using System.Collections.Generic;
 using Random = UnityEngine.Random;
 using System.Text;
 
-[RequireComponent(typeof(HilbertLayoutGenerator), typeof(CavernousShapeGenerator))]
 public class MapHandler : MonoBehaviour {
+
+    public enum ShapeGeneratorTypes
+    {
+        Cavernous
+    }
 
     public bool customSeed = false;
     public int levelSeed;
-    [SerializeField] 
-    GameObject floorPrefab;
-    [SerializeField]
-    GameObject wallPrefab;
-    [SerializeField]
-    GameObject entranceStairs;
-    [SerializeField]
-    GameObject exitStairs;
+
+    public ShapeGeneratorTypes shapeGeneratorType;
+
+    public GameObject floorPrefab;
+    public GameObject wallPrefab;
+    public GameObject entranceStairs;
+    public GameObject exitStairs;
+
 
     public GameObject player; // TODO REMOVE THIS SHIT OUT OF HERE!!!!
 
     public Map<Tile> Map;
 
-    public SquareGrid PathFindingMap;
-
-	private CavernousShapeGenerator shapeGenerator;
-    private HilbertLayoutGenerator layoutGenerator;
-
-    
+	private ShapeGenerator shapeGenerator;
+    private LayoutGenerator layoutGenerator;
 
 	// Use this for initialization
 	void Start () {
-		shapeGenerator = GetComponent<CavernousShapeGenerator>();
-        layoutGenerator = GetComponent<HilbertLayoutGenerator>();
         Generate();
 	}
 
     public void Generate()
     {
+
         RecycleMap();
-        if (layoutGenerator && shapeGenerator)
+
+        layoutGenerator = GetComponent<LayoutGenerator>();
+        shapeGenerator = GetComponent<ShapeGenerator>();
+
+        if (layoutGenerator != null && shapeGenerator != null)
         {
             Stopwatch sw = Stopwatch.StartNew();
             long elapsedMs, lastElapsedMs;

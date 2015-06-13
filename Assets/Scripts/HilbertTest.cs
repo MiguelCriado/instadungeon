@@ -8,7 +8,6 @@ public class HilbertTest : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        int x = 0, y = 0;
         Vector2Int vector = HilbertCurve.d2xy(n, d);
         Debug.Log("Hilbert distance of " + d + " = (" + vector.x + ", " + vector.y + ")");
 	}
