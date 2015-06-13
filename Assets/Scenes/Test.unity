@@ -363,7 +363,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   customSeed: 0
-  levelSeed: 0
+  levelSeed: -195928240
+  layoutGeneratorType: 0
   shapeGeneratorType: 0
   floorPrefab: {fileID: 111926, guid: 07979e0c41425da4198a18aefff123e0, type: 2}
   wallPrefab: {fileID: 111926, guid: 846e37a9db712104fbdc92afce549d06, type: 2}
@@ -412,7 +413,7 @@ MonoBehaviour:
   zoneWidth: 15
   zoneHeight: 15
   Entrance: {x: 0, y: 0}
-  Exit: {x: 0, y: 0}
+  Exit: {x: 2, y: 0}
 --- !u!1 &1344549806
 GameObject:
   m_ObjectHideFlags: 0
@@ -438,7 +439,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1344549806}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -2, y: 4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 94659955}

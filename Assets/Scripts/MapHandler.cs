@@ -7,7 +7,12 @@ using System.Text;
 
 public class MapHandler : MonoBehaviour {
 
-    public enum ShapeGeneratorTypes
+    public enum LayoutType
+    {
+        Hilbert
+    }
+    
+    public enum ShapeType
     {
         Cavernous
     }
@@ -15,7 +20,8 @@ public class MapHandler : MonoBehaviour {
     public bool customSeed = false;
     public int levelSeed;
 
-    public ShapeGeneratorTypes shapeGeneratorType;
+    public LayoutType layoutType;
+    public ShapeType shapeType;
 
     public GameObject floorPrefab;
     public GameObject wallPrefab;
