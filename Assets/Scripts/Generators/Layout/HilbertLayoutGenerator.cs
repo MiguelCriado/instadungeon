@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+[System.Serializable]
 public class HilbertLayoutGenerator : MonoBehaviour, LayoutGenerator {
 
     [Flags]
@@ -37,11 +38,6 @@ public class HilbertLayoutGenerator : MonoBehaviour, LayoutGenerator {
     private Vector2Int mEntrance;
     private Vector2Int mExit;
     private Connections[,] mLayout;
-
-    public void Start() {
-        /*Generate();
-        PaintLayout();*/
-    }
 
     public void Update()
     {

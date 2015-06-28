@@ -24,6 +24,19 @@ public class RectangleInt {
 
     public static bool operator ==(RectangleInt a, RectangleInt b)
     {
+        // If both are null, or both are same instance, return true.
+        if (System.Object.ReferenceEquals(a, b))
+        {
+            return true;
+        }
+
+        // If one is null, but not both, return false.
+        if (((object)a == null) || ((object)b == null))
+        {
+            return false;
+        }
+
+        // Return true if the fields match:
         return a.x == b.x
             && a.y == b.y
             && a.width == b.width
@@ -33,6 +46,28 @@ public class RectangleInt {
     public static bool operator !=(RectangleInt a, RectangleInt b)
     {
         return !(a == b);
+    }
+
+    public override bool Equals(object obj)
+    {
+        // If parameter is null return false.
+        if (obj == null)
+        {
+            return false;
+        }
+
+        // If parameter cannot be cast to RectangleInt return false.
+        RectangleInt r = obj as RectangleInt;
+        if ((System.Object)r == null)
+        {
+            return false;
+        }
+
+        // Return true if the fields match:
+        return x == r.x
+            && y == r.y
+            && width == r.width
+            && height == r.height;
     }
 
     public bool Contains(Vector2Int point)

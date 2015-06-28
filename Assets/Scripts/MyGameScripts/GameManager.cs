@@ -28,17 +28,16 @@ public class GameManager : Singleton<GameManager> {
 
     public Tile GetTile(int x, int y)
     {
-        Tile result = null;
-        map.Map.GetTile(x, y);
+        Tile result = map.Map.GetTile(x, y);
         return result;
     }
 
-    public List<Vector2Int> FindPath(Vector2 start, Vector2 goal)
+    /*public List<Vector2Int> FindPath(Vector2 start, Vector2 goal)
     {
         List<Vector2Int> result = new List<Vector2Int>();
         Vector2Int startLocation = new Vector2Int((int)start.x, (int)start.y);
         Vector2Int goalLocation = new Vector2Int((int)goal.x, (int)goal.y);
-        AStarSearch astar = new AStarSearch(map.PathFindingMap, startLocation, goalLocation);
+        //AStarSearch astar = new AStarSearch(map.PathFindingMap, startLocation, goalLocation);
         Vector2Int currentLocation = goalLocation;
         bool noPath = false;
         result.Add(currentLocation);
@@ -62,5 +61,5 @@ public class GameManager : Singleton<GameManager> {
             result = null;
         }
         return result;
-    }
+    }*/
 }

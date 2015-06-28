@@ -43,7 +43,8 @@ public class CursorController : MonoBehaviour {
 
     private void UpdateCursorPrefabState()
     {
-        if (GameManager.Instance.GetTile((int)cursorPosition.x, (int)cursorPosition.y) != null)
+        Tile tile = GameManager.Instance.GetTile((int)cursorPosition.x, (int)cursorPosition.y);
+        if (tile != null)
         {
             cursorPrefab.SetActive(true);
             cursorPrefab.transform.position = IDTools.CartesianToIso(cursorPosition.x, cursorPosition.y);
@@ -66,7 +67,7 @@ public class CursorController : MonoBehaviour {
         return !cursorPosition.Equals(mLastTile);
     }
 
-    private void ProcessClick()
+    /*private void ProcessClick()
     {
         if (Input.GetMouseButtonDown(0))
         {
@@ -81,7 +82,7 @@ public class CursorController : MonoBehaviour {
                 }
             }
         }
-    }
+    }*/
 
     
 
