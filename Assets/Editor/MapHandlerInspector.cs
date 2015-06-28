@@ -6,15 +6,41 @@ using UnityEditor;
 public class MapHandlerInspector : Editor {
 
     private static GUIContent generateButtonText = new GUIContent("Generate Map!");
+    private static GUIContent tilePrefabFoldoutText = new GUIContent("Custom blocks");
     private static string ONLY_ONE_LAYOUT_GENERATOR = "There should only be one (1) Layout Generator attached to this object.";
     private static string ONLY_ONE_SHAPE_GENERATOR = "There should only be one (1) Shape Generator attached to this object.";
+
+    private bool showTilePrefabs = false;
 
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
         MapHandler handler = target as MapHandler;
         CheckGeneratorsPresence(handler);
-        DrawDefaultInspector();
+
+        // RandomSeed row
+        GUILayout.BeginHorizontal();
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("customSeed"), true);
+        if (!handler.customSeed) GUI.enabled = false;
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("levelSeed"),GUIContent.none);
+        GUI.enabled = true;
+        GUILayout.EndHorizontal();
+
+        // Generators
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("layoutType"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("shapeType"));
+
+        // Tile Prefabs
+        showTilePrefabs = EditorGUILayout.Foldout(showTilePrefabs, tilePrefabFoldoutText);
+        if (showTilePrefabs)
+        {
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("floorPrefab"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("wallPrefab"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("entranceStairs"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("exitStairs"));
+        }
+
+        //DrawDefaultInspector();
         if (Application.isPlaying)
         {
             if (GUILayout.Button(generateButtonText))
