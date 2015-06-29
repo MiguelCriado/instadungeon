@@ -3,18 +3,19 @@ using System;
 using UnityEngine;
 using Object = System.Object;
 
-[System.Serializable]
+[Serializable]
 public class Vector2Int
 {
-    [SerializeField]
-    public readonly int x;
-    [SerializeField]
-    public readonly int y;
+    public int x { get { return _x; } }
+    public int y { get { return _y; } }
+
+    [SerializeField] private int _x;
+    [SerializeField] private int _y;
 
     public Vector2Int(int x, int y)
     {
-        this.x = x;
-        this.y = y;
+        this._x = x;
+        this._y = y;
     }
 
     public static Vector2Int operator +(Vector2Int a, Vector2Int b)
@@ -66,19 +67,19 @@ public class Vector2Int
         }
 
         // Return true if the fields match:
-        return (x == p.x) && (y == p.y);
+        return (_x == p.x) && (_y == p.y);
     }
 
     public override int GetHashCode()
     {
         int hash = 13;
-        hash = (hash * 7) + x;
-        hash = (hash * 7) + y;
+        hash = (hash * 7) + _x;
+        hash = (hash * 7) + _y;
         return hash;
     }
 
     public override string ToString()
     {
-        return "(" + x + ", " + y + ")";
+        return "(" + _x + ", " + _y + ")";
     }
 }

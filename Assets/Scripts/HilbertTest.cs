@@ -3,6 +3,8 @@ using System.Collections;
 
 public class HilbertTest : MonoBehaviour {
 
+    public Vector2Int vector;
+
     public int n = 8;
     public int d = 0;
 
