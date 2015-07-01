@@ -199,27 +199,77 @@ public class HilbertLayoutGenerator : MonoBehaviour, LayoutGenerator {
     private void ConnectUnconnectedPaths(List<List<Vector2Int>> unconnectedPaths)
     {
         int numPaths = unconnectedPaths.Count;
-        for (int i = numPaths - 1; i > 0; i--)
+        bool connected = true;
+        bool connectedToNext = true;
+        for (int i = numPaths - 1; i >= 0; i--)
         {
-            bool connected = false;
-            int j = 0;
-            while (!connected && j < unconnectedPaths[i].Count)
+            if (!connected || !connectedToNext)
             {
-                int k = unconnectedPaths[i - 1].Count - 1;
-                while (!connected && k >= 0)
+                connectedToNext = ConnectToNextPaths(unconnectedPaths, connectedToNext, i);
+                // if connectedToNext == false, we failed trying to connect the next path. 
+                // We have to try on the next iteration again
+            }
+            if (i > 0)
+            {
+                connected = ConnectToPreviousPaths(unconnectedPaths, connected, i);
+                // if connected == false, we failed trying to connect the previous path. 
+                // We have to try on the next iteration with connectToNext. 
+            }           
+        }
+    }
+
+    private bool ConnectToNextPaths(List<List<Vector2Int>> unconnectedPaths, bool connectedToNext, int i)
+    {
+        connectedToNext = false;
+        int j = i + 2;
+        while (!connectedToNext && j < unconnectedPaths.Count)
+        {
+            int k = unconnectedPaths[i].Count - 1;
+            while (!connectedToNext && k >= 0)
+            {
+                int m = 0;
+                while (!connectedToNext && m < unconnectedPaths[j].Count)
                 {
-                    Connections direction = GetDirection(unconnectedPaths[i - 1][k], unconnectedPaths[i][j]);
+                    Connections direction = GetDirection(unconnectedPaths[i][k], unconnectedPaths[j][m]);
                     if (direction != Connections.None)
                     {
-                        mLayout[unconnectedPaths[i - 1][k].x, unconnectedPaths[i - 1][k].y] |= direction;
+                        mLayout[unconnectedPaths[i][k].x, unconnectedPaths[i][k].y] |= direction;
+                        connectedToNext = true;
+                    }
+                    m++;
+                }
+                k--;
+            }
+            j++;
+        }
+        return connectedToNext;
+    }
+
+    private bool ConnectToPreviousPaths(List<List<Vector2Int>> unconnectedPaths, bool connected, int i)
+    {
+        int j = i - 1;
+        while (!connected && j >= 0)
+        {
+            int k = 0;
+            while (!connected && k < unconnectedPaths[i].Count)
+            {
+                int m = unconnectedPaths[j].Count - 1;
+                while (!connected && m >= 0)
+                {
+                    Connections direction = GetDirection(unconnectedPaths[i][k], unconnectedPaths[j][m]);
+                    if (direction != Connections.None)
+                    {
+                        mLayout[unconnectedPaths[i][k].x, unconnectedPaths[i][k].y] |= direction;
                         connected = true;
                     }
-                    k--;
+                    m--;
                 }
-                j++;
+                k++;
             }
-
+            j--;
         }
+        
+        return connected;
     }
 
     private void CleanUpLayout()
