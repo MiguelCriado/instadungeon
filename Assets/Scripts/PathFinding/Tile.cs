@@ -6,16 +6,6 @@ public class Tile : MonoBehaviour {
 
     public List<GameObject> Entities = new List<GameObject>();
 
-	// Use this for initialization
-	void Start () {
-  
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
     public void AddEntity(GameObject entity) 
     {
         entity.transform.SetParent(this.transform);
