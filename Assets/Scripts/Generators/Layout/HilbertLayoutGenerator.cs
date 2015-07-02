@@ -30,8 +30,8 @@ public class HilbertLayoutGenerator : MonoBehaviour, LayoutGenerator {
     public int zoneWidth = 15;
     public int zoneHeight = 15;
 
-    public Vector2 Entrance;
-    public Vector2 Exit;
+    public Vector2Int Entrance;
+    public Vector2Int Exit;
 
     private Vector2Int mOffsetFrame;
     private int mN;
@@ -104,8 +104,8 @@ public class HilbertLayoutGenerator : MonoBehaviour, LayoutGenerator {
         Initialize();
         GenerateLayout();
         CleanUpLayout();
-        Entrance = new Vector2(Hilbert2Layout(mEntrance).x, Hilbert2Layout(mEntrance).y);
-        Exit = new Vector2(Hilbert2Layout(mExit).x, Hilbert2Layout(mExit).y);
+        Entrance = new Vector2Int(Hilbert2Layout(mEntrance).x, Hilbert2Layout(mEntrance).y);
+        Exit = new Vector2Int(Hilbert2Layout(mExit).x, Hilbert2Layout(mExit).y);
         return mLayout;
     }
 
@@ -175,7 +175,7 @@ public class HilbertLayoutGenerator : MonoBehaviour, LayoutGenerator {
             if (IsInsideOffsetFrame(nextTile.x, nextTile.y))
             {
                 direction = GetDirection(currentTile, nextTile);
-                if (direction != Connections.None)
+                if (direction != Connections.None) // we can connect currentTile and nextTile directly. 
                 {
                     Vector2Int layoutTile = Hilbert2Layout(currentTile);
                     mLayout[layoutTile.x, layoutTile.y] |= direction; 
@@ -211,6 +211,7 @@ public class HilbertLayoutGenerator : MonoBehaviour, LayoutGenerator {
             }
             if (i > 0)
             {
+                connected = false;
                 connected = ConnectToPreviousPaths(unconnectedPaths, connected, i);
                 // if connected == false, we failed trying to connect the previous path. 
                 // We have to try on the next iteration with connectToNext. 
