@@ -17,6 +17,12 @@ public class MapHandlerInspector : Editor {
         serializedObject.Update();
         MapHandler handler = target as MapHandler;
         CheckGeneratorsPresence(handler);
+        // DungeonType
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("dungeonType"));
+
+        // Generators
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("layoutType"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("shapeType"));
 
         // RandomSeed row
         GUILayout.BeginHorizontal();
@@ -25,10 +31,6 @@ public class MapHandlerInspector : Editor {
         EditorGUILayout.PropertyField(serializedObject.FindProperty("levelSeed"),GUIContent.none);
         GUI.enabled = true;
         GUILayout.EndHorizontal();
-
-        // Generators
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("layoutType"));
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("shapeType"));
 
         // Tile Prefabs
         showTilePrefabs = EditorGUILayout.Foldout(showTilePrefabs, tilePrefabFoldoutText);

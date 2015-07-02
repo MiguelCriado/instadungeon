@@ -362,10 +362,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8827bcd037833344aab136481c900dbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  customSeed: 1
-  levelSeed: -1651844049
+  dungeonType: 0
   layoutType: 0
   shapeType: 0
+  customSeed: 0
+  levelSeed: -1651844049
   floorPrefab: {fileID: 111926, guid: 07979e0c41425da4198a18aefff123e0, type: 2}
   wallPrefab: {fileID: 111926, guid: 846e37a9db712104fbdc92afce549d06, type: 2}
   entranceStairs: {fileID: 111926, guid: cdf9c173d8bb43d4cb21d13ae9bbfa80, type: 2}
@@ -408,12 +409,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7d5de942b0bd4449a7f2422f11cf279, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  height: 8
-  width: 8
-  zoneWidth: 10
-  zoneHeight: 10
-  Entrance: {x: 0, y: 0}
-  Exit: {x: 2, y: 0}
+  height: 4
+  width: 4
+  zoneWidth: 15
+  zoneHeight: 15
+  Entrance:
+    _x: 0
+    _y: 0
+  Exit:
+    _x: 0
+    _y: 0
 --- !u!1 &1344549806
 GameObject:
   m_ObjectHideFlags: 0

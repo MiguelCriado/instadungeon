@@ -17,11 +17,21 @@ public class MapHandler : MonoBehaviour {
         Cavernous
     }
 
-    public bool customSeed = false;
-    public int levelSeed;
+    public enum DungeonType
+    {
+        Isometric, 
+        Orthogonal, 
+        _3D
+    }
 
+    public DungeonType dungeonType;
     public LayoutType layoutType;
     public ShapeType shapeType;
+
+    float isometricTileSize = 1;
+
+    public bool customSeed = false;
+    public int levelSeed;
 
     public GameObject floorPrefab;
     public GameObject wallPrefab;
