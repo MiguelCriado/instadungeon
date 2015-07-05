@@ -75,22 +75,22 @@ public class HilbertLayoutGenerator : MonoBehaviour, LayoutGenerator {
             for (int j = 0; j < layoutArray.GetLength(1); j++)
             {
                 LayoutZone currentZone = result.FindZoneByPosition(new Vector2Int(i * zoneWidth, j * zoneHeight));
-                if (i > 0
+                if (i >= 0
                     && (layoutArray[i, j] & Connections.East) == Connections.East)
                 {
                     result.ConnectZones(currentZone, result.FindZoneByPosition(new Vector2Int((i + 1) * zoneWidth, j * zoneHeight)));
                 }
-                if (i < width - 1
+                if (i <= width - 1
                     && (layoutArray[i, j] & Connections.West) == Connections.West)
                 {
                     result.ConnectZones(currentZone, result.FindZoneByPosition(new Vector2Int((i - 1) * zoneWidth, j * zoneHeight)));
                 }
-                if (j > 0
+                if (j >= 0
                     && (layoutArray[i, j] & Connections.North) == Connections.North)
                 {
                     result.ConnectZones(currentZone, result.FindZoneByPosition(new Vector2Int(i * zoneWidth, (j + 1) * zoneHeight)));
                 }
-                if (j < height - 1
+                if (j <= height - 1
                     && (layoutArray[i, j] & Connections.South) == Connections.South)
                 {
                     result.ConnectZones(currentZone, result.FindZoneByPosition(new Vector2Int(i * zoneWidth, (j - 1) * zoneHeight)));

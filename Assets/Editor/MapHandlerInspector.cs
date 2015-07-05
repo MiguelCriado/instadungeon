@@ -36,13 +36,31 @@ public class MapHandlerInspector : Editor {
         showTilePrefabs = EditorGUILayout.Foldout(showTilePrefabs, tilePrefabFoldoutText);
         if (showTilePrefabs)
         {
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("floorPrefab"));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("wallPrefab"));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("entranceStairs"));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("exitStairs"));
+            switch (handler.dungeonType)
+            {
+                case MapHandler.DungeonType._3D:
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty("floorPrefab_3D"));
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty("wallPrefab_3D"));
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty("entranceStairs_3D"));
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty("exitStairs_3D"));
+                    break;
+                case MapHandler.DungeonType.Isometric:
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty("floorPrefab_iso"));
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty("wallPrefab_iso"));
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty("entranceStairs_iso"));
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty("exitStairs_iso"));
+                    break;
+                case MapHandler.DungeonType.Orthogonal:
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty("floorPrefab_ortho"));
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty("wallPrefab_ortho"));
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty("entranceStairs_ortho"));
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty("exitStairs_ortho"));
+                    break;
+            }
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("player"));
         }
 
-        //DrawDefaultInspector();
+        // Generate Dungeon button
         if (Application.isPlaying)
         {
             if (GUILayout.Button(generateButtonText))
