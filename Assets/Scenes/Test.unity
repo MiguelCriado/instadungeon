@@ -182,7 +182,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!81 &258550934
 AudioListener:
   m_ObjectHideFlags: 0
@@ -236,6 +236,7 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: .0219999999
+  m_StereoMirrorMode: 0
 --- !u!4 &258550938
 Transform:
   m_ObjectHideFlags: 0
@@ -474,6 +475,7 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: .0219999999
+  m_StereoMirrorMode: 0
 --- !u!114 &697139114
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -580,7 +582,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!81 &816749038
 AudioListener:
   m_ObjectHideFlags: 0
@@ -634,6 +636,7 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: .0219999999
+  m_StereoMirrorMode: 0
 --- !u!4 &816749042
 Transform:
   m_ObjectHideFlags: 0
@@ -768,7 +771,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8827bcd037833344aab136481c900dbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dungeonType: 2
+  dungeonType: 0
   layoutType: 0
   shapeType: 0
   customSeed: 1
@@ -892,6 +895,7 @@ MonoBehaviour:
   velocity: {x: 0, y: 0, z: 0}
 --- !u!50 &1344549809
 Rigidbody2D:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
@@ -900,11 +904,11 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0
   m_GravityScale: 0
-  m_FixedAngle: 1
   m_IsKinematic: 0
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
+  m_Constraints: 4
 --- !u!60 &1344549810
 PolygonCollider2D:
   m_ObjectHideFlags: 0
