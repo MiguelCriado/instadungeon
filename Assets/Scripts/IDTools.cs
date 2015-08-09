@@ -51,4 +51,10 @@ public static class IDTools {
             if (err < 0) { y += ystep; err += dX; }
         }
     }
+
+    public static int ManhattanDistance(Vector2Int origin, Vector2Int destiny)
+    {
+        int result = Math.Abs((destiny.x - origin.x)) + Math.Abs((destiny.y - origin.y));
+        return result;
+    }
 }

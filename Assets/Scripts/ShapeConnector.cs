@@ -64,6 +64,56 @@ public static class ShapeConnector {
         {
 
         }
+
+        // Placing Stairs
+        LayoutZone initialZone = result.GetLayout().InitialZone;
+        result.spawnPoint = FindPlaceForStairs(result, initialZone);
+        return result;
+    }
+
+    private static Vector2Int FindPlaceForStairs(Map<BlueprintAsset> map, LayoutZone zone)
+    {
+        Vector2Int result = null;
+        int currentSurroundingFloorTiles = -1;
+        int targetSurroundingFloorTiles = 8;
+        foreach (Vector2Int tile in zone.tiles)
+        {
+            int thisTileSurroundingFloorTiles = CountSurroundingFloor(map, zone, tile);
+            if (map.GetTile(tile.x, tile.y) == BlueprintAsset.Floor && thisTileSurroundingFloorTiles >= currentSurroundingFloorTiles)
+            {
+                result = tile;
+                currentSurroundingFloorTiles = thisTileSurroundingFloorTiles;
+                if (currentSurroundingFloorTiles >= targetSurroundingFloorTiles)
+                {
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    private static int CountSurroundingFloor(Map<BlueprintAsset> map, LayoutZone zone, Vector2Int tile)
+    {
+        int result = 0;
+        Vector2Int[] dirs = new[]
+        {
+            new Vector2Int(0, 1),
+            new Vector2Int(1, 0),
+            new Vector2Int(0, -1),
+            new Vector2Int(-1, 0), 
+            new Vector2Int(-1, -1),
+            new Vector2Int(-1, 1),
+            new Vector2Int(1, 1),
+            new Vector2Int(1, -1), 
+        };
+        for (int i = 0; i < dirs.Length; i++)
+        {
+            Vector2Int adjacentTile = tile + dirs[i];
+            if (zone.tiles.Contains(tile + dirs[i]) && map.GetTile(adjacentTile.x, adjacentTile.y) == BlueprintAsset.Floor)
+            {
+                result++;
+            }
+        }
         return result;
     }
 }

@@ -358,12 +358,6 @@ public class HilbertLayoutGenerator : MonoBehaviour, LayoutGenerator {
         return result;
     }
 
-    private int ManhattanDistance(Vector2Int origin, Vector2Int destiny)
-    {
-        int result = Math.Abs((destiny.x - origin.x)) + Math.Abs((destiny.y - origin.y));
-        return result;
-    }
-
     private void PaintLayout()
     {
         for (int i = 0; i < width; i++) {

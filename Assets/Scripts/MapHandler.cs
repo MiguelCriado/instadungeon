@@ -171,12 +171,15 @@ public class MapHandler : MonoBehaviour {
         }
         result.GetLayout().InitialZone = map.GetLayout().InitialZone;
         result.GetLayout().FinalZone = map.GetLayout().FinalZone;
+        result.spawnPoint = map.spawnPoint;
+        result.exitPoint = map.exitPoint;
 		return result;
 	}
 
     private void PlaceEntrance(Map<Tile> map)
     {
-        foreach (Vector2Int tile in map.GetLayout().InitialZone)
+        player.transform.position = CalculatePosition(map.spawnPoint, this.dungeonType);
+        /*foreach (Vector2Int tile in map.GetLayout().InitialZone)
         {
             if (map.GetTile(tile.x, tile.y).Cost() > 0)
             {
@@ -184,7 +187,7 @@ public class MapHandler : MonoBehaviour {
                 player.transform.position = CalculatePosition(tile, this.dungeonType);
                 break;
             }
-        }
+        }*/
     }
 
     private void CalculateSortingOrder(GameObject obj)

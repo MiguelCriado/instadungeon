@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Map<T> {
+    public Vector2Int spawnPoint;
+    public Vector2Int exitPoint;
 
     private Dictionary<Vector2Int, T> tiles;
     private Layout layout;
