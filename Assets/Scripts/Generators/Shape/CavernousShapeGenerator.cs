@@ -1,11 +1,11 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Text;
+﻿using KDTree;
 using System.Collections.Generic;
-using KDTree;
+using System.Text;
+using UnityEngine;
 
 [System.Serializable]
-public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator {
+public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator
+{
 	public delegate char PlaceWallRule(int x, int y);
 
 	public const char WALL_CHAR = '\u25A0';
@@ -24,30 +24,31 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator {
     private int width = 30;
     private int[,] mShape;
     private List<Vector2> fixedFloor;
-    private List<Vector2Int> entrances = new List<Vector2Int>();
-    private Vector2Int offset;
 	
 
     /// <summary>
     /// Convenient inner class to store lists of cells. Tipically containing a cavern system. 
     /// </summary>
-	private struct CellList {
+	private struct CellList
+	{
 		public int id;
 		public List<Vector2> cells;
 
-		public CellList (int id, List<Vector2> cells) {
+		public CellList (int id, List<Vector2> cells)
+		{
 			this.id = id;
 			this.cells = cells;
 		}
 
-		public static int CompareByListLength(CellList item1, CellList item2) {
+		public static int CompareByListLength(CellList item1, CellList item2)
+		{
 			return item1.cells.Count.CompareTo(item2.cells.Count);
 		}
-
 	}
 
-	public void Init(float InitialWallProb, int iterations, int height, int width, List<Vector2> fixedFloor) {
-		this.initialWallProb = InitialWallProb;
+	public void Init(float initialWallProb, int iterations, int height, int width, List<Vector2> fixedFloor)
+	{
+		this.initialWallProb = initialWallProb;
 		this.iterations = iterations;
 		this.height = height;
 		this.width = width;
@@ -57,10 +58,11 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator {
     public Dictionary<Vector2Int, BlueprintAsset> Generate(int width, int height, Vector2Int offset)
     {
         Dictionary<Vector2Int, BlueprintAsset> result = new Dictionary<Vector2Int, BlueprintAsset>();
+
         this.width = width;
         this.height = height;
-        this.offset = offset;
         int[,] map = Generate();
+
         for (int i = 0; i < map.GetLength(0); i++)
         {
             for (int j = 0; j < map.GetLength(1); j++)
@@ -73,11 +75,10 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator {
                 {
                     result.Add(new Vector2Int(i + offset.x, j + offset.y), BlueprintAsset.Floor);
                 }
-
             }
         }
-        return result;
 
+        return result;
     }
 
     public Shape.ConnectionTime GetConnectionTime()
@@ -102,30 +103,39 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator {
     private int[,] Generate()
     {
         InitializeShape();
+
         for (int i = 0; i < iterations; i++)
         {
             mShape = Step(1, 1, 5, 2, 2, 2);
         }
+
         for (int i = 0; i < refiningIterations; i++)
         {
             mShape = Step(1, 1, 5, 2, 2, -1);
         }
+
         IdentifyCaverns();
         //Debug.Log(PrintCavernList(ListCaverns()));
         ConnectCaverns();
         CleanUpShape();
+
         return mShape;
     }
 
     /// <summary>
     /// Initializes the shape with input parameters. 
     /// </summary>
-	private void InitializeShape() {
+	private void InitializeShape()
+	{
 		float wallCount = 0f;
 		mShape = new int[width, height];
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				if (Random.Range(0f, 1f) <= initialWallProb) {
+
+		for (int i = 0; i < width; i++)
+		{
+			for (int j = 0; j < height; j++)
+			{
+				if (Random.Range(0f, 1f) <= initialWallProb)
+				{
 					mShape[i,j] = WALL;
 					wallCount++;
 				} else {
@@ -133,7 +143,9 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator {
 				}
 			}
 		}
-        if (fixedFloor != null) {
+
+        if (fixedFloor != null)
+		{
             for (int i = 0; i < fixedFloor.Count; i++)
             {
                 // Debug.Log("Placing FixedFloor in " + fixedFloor[i]);
@@ -152,13 +164,18 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator {
     /// <param name="scopeY2"></param>
     /// <param name="lowerThreshold"></param>
     /// <returns></returns>
-	private int[,] Step(int scopeX1, int scopeY1, int upperThreshold, int scopeX2, int scopeY2, int lowerThreshold) {
+	private int[,] Step(int scopeX1, int scopeY1, int upperThreshold, int scopeX2, int scopeY2, int lowerThreshold)
+	{
 		int[,] result = new int[width, height];
-		for (int i = 0; i < mShape.GetLength(0); i++) {
-			for (int j = 0; j < mShape.GetLength(1); j++) {
+
+		for (int i = 0; i < mShape.GetLength(0); i++)
+		{
+			for (int j = 0; j < mShape.GetLength(1); j++)
+			{
 				result[i,j] = PlaceWallLogic(i, j, scopeX1, scopeY1, upperThreshold, scopeX2, scopeY2, lowerThreshold);
 			}
 		}
+
 		return result;
 	}
 
@@ -174,12 +191,15 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator {
     /// <param name="scopeY2"></param>
     /// <param name="lowerThreshold"></param>
     /// <returns></returns>
-	private int PlaceWallLogic(int x, int y, int scopeX1, int scopeY1, int upperThreshold, int scopeX2, int scopeY2, int lowerThreshold) {
+	private int PlaceWallLogic(int x, int y, int scopeX1, int scopeY1, int upperThreshold, int scopeX2, int scopeY2, int lowerThreshold)
+	{
 		int result = FLOOR;
+
         if (mShape[x, y] != FIXED_FLOOR)
         {
             int numWalls1 = CountSurroundingWalls(x, y, scopeX1, scopeY1);
             int numWalls2 = CountSurroundingWalls(x, y, scopeX2, scopeY2);
+
             if (IsBound(x, y) ||
                 (mShape[x, y] == WALL && (numWalls1 >= upperThreshold - 1 || numWalls2 <= lowerThreshold - 1)) ||
                 (numWalls1 >= upperThreshold || numWalls2 <= lowerThreshold))
@@ -191,6 +211,7 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator {
         {
             result = FIXED_FLOOR;
         }
+
 		return result;
 	}
 
@@ -203,44 +224,61 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator {
     /// <param name="scopeX"></param> number of tiles away we are scoping horizontally. 
     /// <param name="scopeY"></param> number of tiles away we are scoping vertically. 
     /// <returns></returns>
-	private int CountSurroundingWalls(int x, int y, int scopeX, int scopeY) {
+	private int CountSurroundingWalls(int x, int y, int scopeX, int scopeY)
+	{
 		int result = 0;
 		int xInit, yInit, xFinal, yFinal;
+
 		xInit = x - scopeX;
 		yInit = y - scopeY;
 		xFinal = x + scopeX;
 		yFinal = y + scopeY;
-		for (int i = xInit; i < xFinal+1; i++) {
-			for (int j = yInit; j < yFinal+1; j++){
-				if (IsWall(i,j)) {
+
+		for (int i = xInit; i < xFinal+1; i++)
+		{
+			for (int j = yInit; j < yFinal+1; j++)
+			{
+				if (IsWall(i,j))
+				{
 					result++;
 				}
 			}
 		}
+
 		return result;
 	}
 
-	private bool IsWall(int x, int y) {
+	private bool IsWall(int x, int y)
+	{
 		return IsOutOfBounds(x, y) || mShape[x,y] == WALL;
 	}
 
-	private bool IsOutOfBounds(int x, int y) {
+	private bool IsOutOfBounds(int x, int y)
+	{
 		return x < 0 || x >= mShape.GetLength(0) || y < 0 || y >= mShape.GetLength(1);
 	}
 
-	private bool IsBound(int x, int y) {
+	private bool IsBound(int x, int y)
+	{
 		return x == 0 || y == 0 || x == mShape.GetLength(0)-1 || y == mShape.GetLength(1)-1;
 	}
 
-	private int[,] IdentifyCaverns() {
+	private int[,] IdentifyCaverns()
+	{
 		int cont = FLOOR + 1;
-		for (int i = 0; i < mShape.GetLength(0); i++) {
-			for (int j = 0; j < mShape.GetLength(1); j++) {
-				if (mShape[i,j] == FLOOR) {
-					if (FloodFillIsle(i, j, FLOOR, cont) < 2) {
+
+		for (int i = 0; i < mShape.GetLength(0); i++)
+		{
+			for (int j = 0; j < mShape.GetLength(1); j++)
+			{
+				if (mShape[i,j] == FLOOR)
+				{
+					if (FloodFillIsle(i, j, FLOOR, cont) < 2)
+					{
                         // Debug.Log ("Filling isle " + cont);
 						FloodFillIsle(i, j, cont, WALL);
-					} else {
+					} else
+					{
 						cont++;
 					}
                 }
@@ -257,56 +295,78 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator {
                 }
 			}
 		}
+		
 		return mShape;
 	}
 	
-	private int FloodFillIsle(int x, int y, int previousValue, int value) {
+	private int FloodFillIsle(int x, int y, int previousValue, int value)
+	{
 		mShape[x,y] = value;
 		int cont = 1;
-		if (!IsOutOfBounds(x, y+1) && mShape[x,y+1] == previousValue) {
+
+		if (!IsOutOfBounds(x, y+1) && mShape[x,y+1] == previousValue)
+		{
 			cont += FloodFillIsle(x, y+1, previousValue, value);
 		}
+
         if (!IsOutOfBounds(x+1, y) && mShape[x + 1, y] == previousValue)
         {
 			cont += FloodFillIsle(x+1, y, previousValue, value);
 		}
+
         if (!IsOutOfBounds(x, y-1) && mShape[x, y - 1] == previousValue)
         {
 			cont += FloodFillIsle(x, y-1, previousValue, value);
 		}
+
         if (!IsOutOfBounds(x-1, y) && mShape[x - 1, y] == previousValue)
         {
 			cont += FloodFillIsle(x-1, y, previousValue, value);
 		}
+
 		return cont;
 	}
 
-	private string MapToString() {
+	private string MapToString()
+	{
 		StringBuilder result = new StringBuilder();
-		for (int i = 0; i < this.mShape.GetLength(0); i++) {
-			for (int j = 0; j < this.mShape.GetLength(1); j++) {
+
+		for (int i = 0; i < this.mShape.GetLength(0); i++)
+		{
+			for (int j = 0; j < this.mShape.GetLength(1); j++)
+			{
 				result.Append(mShape[i,j]);
 			}
 			result.AppendLine();
 		}
+
 		return result.ToString();
 	}
 
-	private List<CellList> ListCaverns() {
+	private List<CellList> ListCaverns()
+	{
 		List<CellList> result = new List<CellList>();
 		CellList cavernList;
-		for (int i = 0; i < mShape.GetLength(0); i++) {
-			for (int j = 0; j < mShape.GetLength(1); j++) {
-				if (mShape[i,j] > FLOOR) {
-					if (!result.Exists(x => x.id == mShape[i,j])) {
+
+		for (int i = 0; i < mShape.GetLength(0); i++)
+		{
+			for (int j = 0; j < mShape.GetLength(1); j++)
+			{
+				if (mShape[i,j] > FLOOR)
+				{
+					if (!result.Exists(x => x.id == mShape[i,j]))
+					{
 						result.Add(new CellList(mShape[i,j], new List<Vector2>()));
 					}
+
 					cavernList = result.Find(x => x.id == mShape[i,j]);
 					cavernList.cells.Add(new Vector2(i,j));
 				}
 			}
 		}
+
 		result.Sort(CellList.CompareByListLength);
+
 		return result;
 	}
 
@@ -314,11 +374,15 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator {
     private void ConnectCaverns()
     {
         List<CellList> cavernList = ListCaverns();
-        if (cavernList.Count > 1) {
+
+        if (cavernList.Count > 1)
+		{
             KDTree<Vector2> tree = new KDTree<Vector2>(2);
             FillTree(cavernList, ref tree);
             Vector2[] nearest;
-            for (int i = 0; i < cavernList.Count - 1; i++) {
+
+            for (int i = 0; i < cavernList.Count - 1; i++)
+			{
                 nearest = FindNearestTile(tree, cavernList[i].cells);
                 // Debug.Log("Gonna connect " + nearest[0] + " with " + nearest[1]);
                 MakePath(nearest[0], nearest[1]);
@@ -335,22 +399,27 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator {
     private bool PlacePathPoint(int x, int y)
     {
         bool result = true;
+
         if (!IsOutOfBounds(x, y) && !IsBound(x, y))
         {
             mShape[x, y] = FLOOR;
         }
+
         if (!IsOutOfBounds(x - 1, y) && !IsBound(x - 1, y))
         {
             mShape[x-1, y] = FLOOR;
         }
+
         if (!IsOutOfBounds(x + 1, y) && !IsBound(x + 1, y))
         {
             mShape[x+1, y] = FLOOR;
         }
+
         if (!IsOutOfBounds(x, y - 1) && !IsBound(x, y - 1))
         {
             mShape[x, y-1] = FLOOR;
         }
+
         if (!IsOutOfBounds(x, y + 1) && !IsBound(x, y + 1))
         {
             mShape[x, y+1] = FLOOR;
@@ -366,12 +435,15 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator {
         double nearestValue = float.PositiveInfinity;
         double[] point = new double[2];
         NearestNeighbour<Vector2> it;
+
         for (int i = 0; i < cells.Count; i++)
         {
             point[0] = cells[i].x;
             point[1] = cells[i].y;
+
             it = tree.NearestNeighbors(point, 1);
             //Debug.Log("Nearest to " + cells[i] + " = " + it.Current);
+
             while (it.MoveNext())
             {
                 if (it.CurrentDistance < nearestValue)
@@ -381,8 +453,8 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator {
                     result[1] = it.Current;
                 }
             }
-            
         }
+
         return result;
     }
 
@@ -390,12 +462,12 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator {
     private static void FillTree(List<CellList> cavernList, ref KDTree<Vector2> tree)
     {
         CellList biggestCavern = cavernList[cavernList.Count - 1];
+
         for (int i = 0; i < biggestCavern.cells.Count; i++)
         {
             //Debug.Log("Adding " + biggestCavern.cells[i] + " to the tree");
             tree.AddPoint(new double[] {biggestCavern.cells[i].x, biggestCavern.cells[i].y}, biggestCavern.cells[i]);
         }
-       
     }
 
     private void CleanUpShape()
@@ -423,6 +495,7 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator {
     private bool IsNearAFloorTile(int x, int y, bool checkDiagonals = false)
     {
         bool result = false;
+
         if ((!IsOutOfBounds(x-1, y) &&  mShape[x-1, y] >= FIXED_FLOOR)
             || (!IsOutOfBounds(x + 1, y) && mShape[x + 1, y] >= FIXED_FLOOR)
             || (!IsOutOfBounds(x, y - 1) && mShape[x, y - 1] >= FIXED_FLOOR)
@@ -430,6 +503,7 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator {
         {
             result = true;
         }
+
         if ((checkDiagonals && !result)
             && (!IsOutOfBounds(x - 1, y + 1) && mShape[x - 1, y + 1] >= FIXED_FLOOR)
             && (!IsOutOfBounds(x + 1, y + 1) && mShape[x + 1, y + 1] >= FIXED_FLOOR)
@@ -438,17 +512,24 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator {
         {
             result = true;
         }
+
         return result;
     }
 
-	private string PrintCavernList(List<CellList> caverns) {
+	private string PrintCavernList(List<CellList> caverns)
+	{
 		StringBuilder result = new StringBuilder();
-		for (int i = 0; i < caverns.Count; i++) {
+
+		for (int i = 0; i < caverns.Count; i++)
+		{
 			result.Append("id = " + caverns[i].id + "\n");
-			for (int j = 0; j < caverns[i].cells.Count; j++) {
+
+			for (int j = 0; j < caverns[i].cells.Count; j++)
+			{
 				result.Append("\t[" + caverns[i].cells[j].x + "," + caverns[i].cells[j].y + "]\n");
 			}
 		}
+
 		return result.ToString();
 	}
 }

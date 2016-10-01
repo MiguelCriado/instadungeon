@@ -1,12 +1,11 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 [System.Serializable]
 public class Layout 
 {
     public LayoutZone InitialZone;
     public LayoutZone FinalZone;
+
     public ICollection<LayoutZone> Zones
     {
         get { return zones.Keys; }
@@ -23,12 +22,14 @@ public class Layout
     {
         HashSet<LayoutZone> result = null;
         zones.TryGetValue(zone, out result);
+
         return result;
     }
 
     public LayoutZone FindZoneByPosition(Vector2Int tilePosition)
     {
         LayoutZone result = null;
+
         foreach (LayoutZone zone in zones.Keys)
         {
             if (zone.bounds.Contains(tilePosition))
@@ -37,6 +38,7 @@ public class Layout
                 break;
             }
         }
+
         return result;
     }
 
@@ -45,7 +47,7 @@ public class Layout
         if (!zones.ContainsKey(zone))
         {
             zones.Add(zone, new HashSet<LayoutZone>());
-            zone.SetParentLayout(this);
+			zone.ParentLayout = this;
         }
     }
 
@@ -60,6 +62,7 @@ public class Layout
     private void AddAdjacentZone(LayoutZone a, LayoutZone b)
     {
         HashSet<LayoutZone> adjacentZones;
+
         if (zones.TryGetValue(a, out adjacentZones))
         {
             adjacentZones.Add(b);

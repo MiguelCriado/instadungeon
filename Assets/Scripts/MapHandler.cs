@@ -1,12 +1,11 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Collections.Generic;
-using Random = UnityEngine.Random;
 using System.Text;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
-public class MapHandler : MonoBehaviour {
-
+public class MapHandler : MonoBehaviour
+{
     public enum LayoutType
     {
         Hilbert
@@ -28,7 +27,7 @@ public class MapHandler : MonoBehaviour {
     public LayoutType layoutType;
     public ShapeType shapeType;
 
-    float isometricTileSize = 1;
+    public float isometricTileSize = 1;
 
     public bool customSeed = false;
     public int levelSeed;
@@ -62,9 +61,8 @@ public class MapHandler : MonoBehaviour {
     private LayoutGenerator layoutGenerator;
 
 
-
-	// Use this for initialization
-	void Start () {
+	void Start ()
+	{
         Generate();
 	}
 
@@ -83,7 +81,10 @@ public class MapHandler : MonoBehaviour {
 
             if (!customSeed)
             {
-                levelSeed = Random.seed;
+				int seed = System.Guid.NewGuid().GetHashCode() ^ System.DateTime.UtcNow.Millisecond;
+				Random.InitState(seed);
+
+                levelSeed = seed;
             }
 
             Map<BlueprintAsset> blueprintMap = ShapeConnector.BuildMap(layoutGenerator, shapeGenerator, levelSeed);
@@ -137,7 +138,8 @@ public class MapHandler : MonoBehaviour {
         }
     }
 
-	private Map<Tile> PopulateWorld(Map<BlueprintAsset> map) {
+	private Map<Tile> PopulateWorld(Map<BlueprintAsset> map)
+	{
         Map<Tile> result = new Map<Tile>();
 		GameObject aux = null;
         GameObject tileAux = null;
@@ -150,9 +152,11 @@ public class MapHandler : MonoBehaviour {
             namer.Append(position.x).Append(", ").Append(position.y).Append(")");
             tileAux = new GameObject(namer.ToString());
             tileAux.AddComponent<Tile>();
-            tileAux.transform.SetParent(this.transform);
-            tileAux.transform.position = CalculatePosition(position, this.dungeonType);
-            switch (asset) {
+            tileAux.transform.SetParent(transform);
+            tileAux.transform.position = CalculatePosition(position, dungeonType);
+
+            switch (asset)
+			{
                 case BlueprintAsset.Floor:
                     aux = (GameObject)Instantiate(floorPrefab);
                     break;
@@ -160,25 +164,29 @@ public class MapHandler : MonoBehaviour {
                     aux = (GameObject)Instantiate(wallPrefab);
                     break;
             }
+
             tileAux.GetComponent<Tile>().AddEntity(aux);
             result.Add(position, tileAux.GetComponent<Tile>());
-            aux.transform.position = CalculatePosition(position, this.dungeonType);
+            aux.transform.position = CalculatePosition(position, dungeonType);
+
             if (dungeonType != DungeonType._3D)
             {
                 CalculateSortingOrder(aux);
             }
             // PathFindingMap.floorTiles.Add(new Vector2Int(position.x, position.y));
         }
+
         result.GetLayout().InitialZone = map.GetLayout().InitialZone;
         result.GetLayout().FinalZone = map.GetLayout().FinalZone;
         result.spawnPoint = map.spawnPoint;
         result.exitPoint = map.exitPoint;
+
 		return result;
 	}
 
     private void PlaceEntrance(Map<Tile> map)
     {
-        player.transform.position = CalculatePosition(map.spawnPoint, this.dungeonType);
+        player.transform.position = CalculatePosition(map.spawnPoint, dungeonType);
         /*foreach (Vector2Int tile in map.GetLayout().InitialZone)
         {
             if (map.GetTile(tile.x, tile.y).Cost() > 0)
@@ -199,6 +207,7 @@ public class MapHandler : MonoBehaviour {
     private Vector3 CalculatePosition(Vector2Int position, DungeonType dungeonType)
     {
         Vector3 result = new Vector3();
+
         switch (dungeonType)
         {
             case DungeonType.Isometric:
@@ -211,6 +220,7 @@ public class MapHandler : MonoBehaviour {
                 result.Set(position.x, 0f, position.y);
                 break;
         }
+
         return result;
     }
 }

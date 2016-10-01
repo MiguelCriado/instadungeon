@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public class CharacterController : MonoBehaviour {
-
+public class ActorController : MonoBehaviour
+{
     public bool useZVector;
 	public float speedDamping = 0.87f;
 	public KeyCode up = KeyCode.W;
@@ -16,27 +15,31 @@ public class CharacterController : MonoBehaviour {
 
 	public Vector3 velocity;
 
-
-	// Use this for initialization
-	void Start () {
+	void Start ()
+	{
 		speed = freeSpeed;
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		getInput();
+
+	void Update ()
+	{
+		GetInput();
 	}
 
-	void FixedUpdate() {
-		updatePosition();
+	void FixedUpdate()
+	{
+		UpdatePosition();
 	}
 
-	void getInput() {
-		updateVelocity();
+	void GetInput()
+	{
+		UpdateVelocity();
 	}
 
-	void updateVelocity() {
-		if (Input.GetKey(up)) {
+	void UpdateVelocity()
+	{
+		if (Input.GetKey(up))
+		{
             if (useZVector)
             {
                 velocity.z += speed;
@@ -46,7 +49,9 @@ public class CharacterController : MonoBehaviour {
                 velocity.y += speed;
             }
 		}
-		if (Input.GetKey(down)) {
+
+		if (Input.GetKey(down))
+		{
             if (useZVector)
             {
                 velocity.z -= speed;
@@ -56,22 +61,28 @@ public class CharacterController : MonoBehaviour {
                 velocity.y -= speed;
             }
 		}
-		if (Input.GetKey(right)) {
+
+		if (Input.GetKey(right))
+		{
 			velocity.x += speed;
 		}
-		if (Input.GetKey(left)) {
+
+		if (Input.GetKey(left))
+		{
 			velocity.x -= speed;
 		}
 
 		Vector3.ClampMagnitude(velocity, maxSpeed);
 		velocity *= speedDamping;
-		if (velocity.magnitude < minSpeed) {
+
+		if (velocity.magnitude < minSpeed)
+		{
 			velocity = new Vector3(0f, 0f, 0f);
 		}
 	}
 	
-	void updatePosition() {
+	void UpdatePosition()
+	{
 		transform.Translate(velocity.x, velocity.y, velocity.z);
 	}
-
 }
