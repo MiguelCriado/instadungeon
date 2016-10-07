@@ -158,10 +158,10 @@ public class MapHandler : MonoBehaviour
             switch (asset)
 			{
                 case BlueprintAsset.Floor:
-                    aux = (GameObject)Instantiate(floorPrefab);
+                    aux = Instantiate(floorPrefab);
                     break;
                 case BlueprintAsset.Wall:
-                    aux = (GameObject)Instantiate(wallPrefab);
+                    aux = Instantiate(wallPrefab);
                     break;
             }
 
@@ -176,8 +176,8 @@ public class MapHandler : MonoBehaviour
             // PathFindingMap.floorTiles.Add(new Vector2Int(position.x, position.y));
         }
 
-        result.GetLayout().InitialZone = map.GetLayout().InitialZone;
-        result.GetLayout().FinalZone = map.GetLayout().FinalZone;
+        result.Layout.InitialZone = map.Layout.InitialZone;
+        result.Layout.FinalZone = map.Layout.FinalZone;
         result.spawnPoint = map.spawnPoint;
         result.exitPoint = map.exitPoint;
 

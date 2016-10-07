@@ -1,13 +1,21 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-public class Map<T> {
+public class Map<T>
+{
+	public Layout Layout
+	{
+		get { return layout; }
+
+		set { layout = value; }
+	}
+
     public Vector2Int spawnPoint;
     public Vector2Int exitPoint;
 
     private Dictionary<Vector2Int, T> tiles;
     private Layout layout;
+
+	private Vector2Int accessor = new Vector2Int(0, 0);
 
     public Map()
     {
@@ -15,15 +23,32 @@ public class Map<T> {
         layout = new Layout();
     }
 
-    public void SetLayout(Layout layout)
-    {
-        this.layout = layout;
-    }
+	public T this[int x, int y]
+	{
+		get
+		{
+			if (tiles.ContainsKey(accessor.Set(x, y)))
+			{
+				return tiles[accessor];
+			}
+			else
+			{
+				return default(T);
+			}
+		}
 
-    public Layout GetLayout()
-    {
-        return this.layout;
-    }
+		set
+		{
+			if (tiles.ContainsKey(accessor.Set(x, y)))
+			{
+				tiles[accessor] = value;
+			}
+			else
+			{
+				tiles.Add(accessor, value);
+			}
+		}
+	}
 
     public void Add(Vector2Int position, T tile)
     {

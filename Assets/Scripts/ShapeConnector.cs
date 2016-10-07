@@ -9,7 +9,7 @@ public static class ShapeConnector
         Random.InitState(levelSeed);
         Map<BlueprintAsset> result = new Map<BlueprintAsset>();
         Layout layout = layoutG.Generate();
-        result.SetLayout(layout);
+		result.Layout = layout;
 
         if (shapeG.GetConnectionTime() == Shape.ConnectionTime.PreConnection)
         {
@@ -68,7 +68,7 @@ public static class ShapeConnector
         }
 
         // Placing Stairs
-        LayoutZone initialZone = result.GetLayout().InitialZone;
+        LayoutZone initialZone = result.Layout.InitialZone;
         result.spawnPoint = FindPlaceForStairs(result, initialZone);
 
         return result;

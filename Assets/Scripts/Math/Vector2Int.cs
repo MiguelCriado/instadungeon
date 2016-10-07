@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System;
+﻿using System;
 using UnityEngine;
 using Object = System.Object;
 
@@ -17,6 +16,14 @@ public class Vector2Int
         this._x = x;
         this._y = y;
     }
+
+	public Vector2Int Set(int x, int y)
+	{
+		_x = x;
+		_y = y;
+
+		return this;
+	}
 
     public static Vector2Int operator +(Vector2Int a, Vector2Int b)
     {
