@@ -55,7 +55,7 @@ public class MapHandler : MonoBehaviour
 
     public GameObject player; // TODO REMOVE THIS SHIT OUT OF HERE!!!!
 
-    public Map<Tile> Map;
+    public TileMap<TileBehaviour> Map;
 
 	private ShapeGenerator shapeGenerator;
     private LayoutGenerator layoutGenerator;
@@ -87,7 +87,7 @@ public class MapHandler : MonoBehaviour
                 levelSeed = seed;
             }
 
-            Map<BlueprintAsset> blueprintMap = ShapeConnector.BuildMap(layoutGenerator, shapeGenerator, levelSeed);
+            TileMap<TileType> blueprintMap = ShapeConnector.BuildMap(layoutGenerator, shapeGenerator, levelSeed);
 
             lastElapsedMs = sw.ElapsedMilliseconds;
             UnityEngine.Debug.Log("Time to generate blueprint Map: " + lastElapsedMs + "ms");
@@ -138,35 +138,35 @@ public class MapHandler : MonoBehaviour
         }
     }
 
-	private Map<Tile> PopulateWorld(Map<BlueprintAsset> map)
+	private TileMap<TileBehaviour> PopulateWorld(TileMap<TileType> map)
 	{
-        Map<Tile> result = new Map<Tile>();
+        TileMap<TileBehaviour> result = new TileMap<TileBehaviour>();
 		GameObject aux = null;
         GameObject tileAux = null;
 
-        foreach (KeyValuePair<Vector2Int, BlueprintAsset> tile in map)
+        foreach (KeyValuePair<int2, TileType> tile in map)
         {
-            BlueprintAsset asset = tile.Value;
-            Vector2Int position = tile.Key;
+            TileType asset = tile.Value;
+			int2 position = tile.Key;
             StringBuilder namer = new StringBuilder("tile (");
             namer.Append(position.x).Append(", ").Append(position.y).Append(")");
             tileAux = new GameObject(namer.ToString());
-            tileAux.AddComponent<Tile>();
+            tileAux.AddComponent<TileBehaviour>();
             tileAux.transform.SetParent(transform);
             tileAux.transform.position = CalculatePosition(position, dungeonType);
 
             switch (asset)
 			{
-                case BlueprintAsset.Floor:
+                case TileType.Floor:
                     aux = Instantiate(floorPrefab);
                     break;
-                case BlueprintAsset.Wall:
+                case TileType.Wall:
                     aux = Instantiate(wallPrefab);
                     break;
             }
 
-            tileAux.GetComponent<Tile>().AddEntity(aux);
-            result.Add(position, tileAux.GetComponent<Tile>());
+            tileAux.GetComponent<TileBehaviour>().AddEntity(aux);
+            result.Add(position, tileAux.GetComponent<TileBehaviour>());
             aux.transform.position = CalculatePosition(position, dungeonType);
 
             if (dungeonType != DungeonType._3D)
@@ -184,7 +184,7 @@ public class MapHandler : MonoBehaviour
 		return result;
 	}
 
-    private void PlaceEntrance(Map<Tile> map)
+    private void PlaceEntrance(TileMap<TileBehaviour> map)
     {
         player.transform.position = CalculatePosition(map.spawnPoint, dungeonType);
         /*foreach (Vector2Int tile in map.GetLayout().InitialZone)
@@ -204,7 +204,7 @@ public class MapHandler : MonoBehaviour
         renderer.sortingOrder = Mathf.FloorToInt((obj.transform.position.y - obj.transform.position.z) * -100);
     }
 
-    private Vector3 CalculatePosition(Vector2Int position, DungeonType dungeonType)
+    private Vector3 CalculatePosition(int2 position, DungeonType dungeonType)
     {
         Vector3 result = new Vector3();
 

@@ -7,7 +7,7 @@ public class RectangleIntTest {
     public void Contains()
     {
         RectangleInt rect = new RectangleInt(0, 0, 5, 5);
-        Vector2Int tile = new Vector2Int(3, 3);
+        int2 tile = new int2(3, 3);
 
         Assert.IsTrue(rect.Contains(tile));
     }
@@ -16,7 +16,7 @@ public class RectangleIntTest {
     public void NotContains()
     {
         RectangleInt rect = new RectangleInt(0, 0, 5, 5);
-        Vector2Int tile = new Vector2Int(10, 10);
+		int2 tile = new int2(10, 10);
 
         Assert.False(rect.Contains(tile));
     }
@@ -54,9 +54,9 @@ public class RectangleIntTest {
         RectangleInt a = new RectangleInt(0, 0, 5, 5);
         RectangleInt b = new RectangleInt(1, 5, 3, 3);
 
-        Assert.IsTrue(a.ContactArea(b).Contains(new Vector2Int(1, 4))
-                        && a.ContactArea(b).Contains(new Vector2Int(2, 4))
-                        && a.ContactArea(b).Contains(new Vector2Int(3, 4))
+        Assert.IsTrue(a.ContactArea(b).Contains(new int2(1, 4))
+                        && a.ContactArea(b).Contains(new int2(2, 4))
+                        && a.ContactArea(b).Contains(new int2(3, 4))
                         && a.ContactArea(b).Count == 3);
     }
 
@@ -66,9 +66,9 @@ public class RectangleIntTest {
         RectangleInt a = new RectangleInt(0, 0, 5, 5);
         RectangleInt b = new RectangleInt(5, 1, 3, 3);
 
-        Assert.IsTrue(a.ContactArea(b).Contains(new Vector2Int(4, 1))
-                        && a.ContactArea(b).Contains(new Vector2Int(4, 2))
-                        && a.ContactArea(b).Contains(new Vector2Int(4, 3))
+        Assert.IsTrue(a.ContactArea(b).Contains(new int2(4, 1))
+                        && a.ContactArea(b).Contains(new int2(4, 2))
+                        && a.ContactArea(b).Contains(new int2(4, 3))
                         && a.ContactArea(b).Count == 3);
     }
 
@@ -78,9 +78,9 @@ public class RectangleIntTest {
         RectangleInt a = new RectangleInt(0, 0, 5, 5);
         RectangleInt b = new RectangleInt(1, -3, 3, 3);
 
-        Assert.IsTrue(a.ContactArea(b).Contains(new Vector2Int(1, 0))
-                        && a.ContactArea(b).Contains(new Vector2Int(2, 0))
-                        && a.ContactArea(b).Contains(new Vector2Int(3, 0))
+        Assert.IsTrue(a.ContactArea(b).Contains(new int2(1, 0))
+                        && a.ContactArea(b).Contains(new int2(2, 0))
+                        && a.ContactArea(b).Contains(new int2(3, 0))
                         && a.ContactArea(b).Count == 3);
     }
 
@@ -90,9 +90,9 @@ public class RectangleIntTest {
         RectangleInt a = new RectangleInt(0, 0, 5, 5);
         RectangleInt b = new RectangleInt(-3, 1, 3, 3);
 
-        Assert.IsTrue(a.ContactArea(b).Contains(new Vector2Int(0, 1))
-                        && a.ContactArea(b).Contains(new Vector2Int(0, 2))
-                        && a.ContactArea(b).Contains(new Vector2Int(0, 3))
+        Assert.IsTrue(a.ContactArea(b).Contains(new int2(0, 1))
+                        && a.ContactArea(b).Contains(new int2(0, 2))
+                        && a.ContactArea(b).Contains(new int2(0, 3))
                         && a.ContactArea(b).Count == 3);
     }
 
@@ -102,8 +102,8 @@ public class RectangleIntTest {
         RectangleInt a = new RectangleInt(0, 0, 5, 5);
         RectangleInt b = new RectangleInt(-1, 5, 3, 3);
 
-        Assert.IsTrue(a.ContactArea(b).Contains(new Vector2Int(0, 4))
-                        && a.ContactArea(b).Contains(new Vector2Int(1, 4)));
+        Assert.IsTrue(a.ContactArea(b).Contains(new int2(0, 4))
+                        && a.ContactArea(b).Contains(new int2(1, 4)));
     }
 
     [Test]
@@ -112,7 +112,7 @@ public class RectangleIntTest {
         RectangleInt a = new RectangleInt(0, 0, 5, 5);
         RectangleInt b = new RectangleInt(1, 5, 3, 3);
 
-        Assert.IsTrue(a.ContactArea(b, true).Contains(new Vector2Int(2, 4))
+        Assert.IsTrue(a.ContactArea(b, true).Contains(new int2(2, 4))
                         && a.ContactArea(b, true).Count == 1);
     }
 
@@ -122,7 +122,7 @@ public class RectangleIntTest {
         RectangleInt a = new RectangleInt(0, 0, 5, 5);
         RectangleInt b = new RectangleInt(5, 1, 3, 3);
 
-        Assert.IsTrue(a.ContactArea(b, true).Contains(new Vector2Int(4, 2))
+        Assert.IsTrue(a.ContactArea(b, true).Contains(new int2(4, 2))
                         && a.ContactArea(b, true).Count == 1);
     }
 
@@ -132,7 +132,7 @@ public class RectangleIntTest {
         RectangleInt a = new RectangleInt(0, 0, 5, 5);
         RectangleInt b = new RectangleInt(1, -3, 3, 3);
 
-        Assert.IsTrue(a.ContactArea(b, true).Contains(new Vector2Int(2, 0))
+        Assert.IsTrue(a.ContactArea(b, true).Contains(new int2(2, 0))
                         && a.ContactArea(b, true).Count == 1);
     }
 
@@ -142,7 +142,7 @@ public class RectangleIntTest {
         RectangleInt a = new RectangleInt(0, 0, 5, 5);
         RectangleInt b = new RectangleInt(-3, 1, 3, 3);
 
-        Assert.IsTrue(a.ContactArea(b, true).Contains(new Vector2Int(0, 2))
+        Assert.IsTrue(a.ContactArea(b, true).Contains(new int2(0, 2))
                         && a.ContactArea(b, true).Count == 1);
     }
 }

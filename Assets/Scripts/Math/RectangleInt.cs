@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class RectangleInt
 {
-    public Vector2Int position
+    public int2 position
     {
-        get { return new Vector2Int(x, y); }
+        get { return new int2(x, y); }
     }
 
     public int x;
@@ -57,7 +57,8 @@ public class RectangleInt
 
         // If parameter cannot be cast to RectangleInt return false.
         RectangleInt r = obj as RectangleInt;
-        if ((System.Object)r == null)
+
+        if (r == null)
         {
             return false;
         }
@@ -79,7 +80,7 @@ public class RectangleInt
 		return hash;
 	}
 
-	public bool Contains(Vector2Int point)
+	public bool Contains(int2 point)
     {
         return point.x >= x 
             && point.x < x + width
@@ -107,9 +108,9 @@ public class RectangleInt
     /// <param name="other">A rectangle potentially adjacent to this rectangle.</param>
     /// <param name="discardEdges">Set true to discard tiles on any edges of this Rectangle or the other.</param>
     /// <returns>A list of points from this rectangle that are touched by other. The list will be empty if both rectangles are not adjacent.</returns>
-    public List<Vector2Int> ContactArea(RectangleInt other, bool discardEdges = false)
+    public List<int2> ContactArea(RectangleInt other, bool discardEdges = false)
     {
-        List<Vector2Int> result = new List<Vector2Int>();
+        List<int2> result = new List<int2>();
         
         if (IsAdjacent(other))
         {
@@ -178,7 +179,7 @@ public class RectangleInt
             {
                 for (int j = yMin; j <= yMax; j++)
                 {
-                    result.Add(new Vector2Int(i, j));
+                    result.Add(new int2(i, j));
                 }
             }
         }
@@ -191,19 +192,20 @@ public class RectangleInt
     /// </summary>
     /// <param name="point">A point potentially adjacent to this rectangle.</param>
     /// <returns>An adjacent point to the point provided. null if none found.</returns>
-    public Vector2Int ContactPoint(Vector2Int point)
+    public bool ContactPoint(int2 point, out int2 contactPoint)
     {
-        Vector2Int result = null;
+		bool result = false;
+		contactPoint = int2.zero;
 
         if (point.y >= this.y && point.y < this.y + this.height)
         {
             if (point.x == this.x - 1)
             {
-                result = new Vector2Int(x, point.y);
+				contactPoint = new int2(x, point.y);
             } 
             else if (point.x == this.x + this.width)
             {
-                result = new Vector2Int(point.x - 1, point.y);
+				contactPoint = new int2(point.x - 1, point.y);
             }
         } 
 
@@ -211,11 +213,11 @@ public class RectangleInt
         {
             if (point.y == this.y - 1)
             {
-                result = new Vector2Int(point.x, y);
+				contactPoint = new int2(point.x, y);
             }
             else if (point.y == this.y + this.height)
             {
-                result = new Vector2Int(point.x, point.y - 1);
+				contactPoint = new int2(point.x, point.y - 1);
             }
         }
 

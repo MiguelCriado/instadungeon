@@ -1,5 +1,4 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 public class LayoutZoneTest 
 {
@@ -19,7 +18,7 @@ public class LayoutZoneTest
         layout.bounds = new RectangleInt(0, 0, 3, 3);
         LayoutZone layout1 = new LayoutZone();
         layout1.bounds = new RectangleInt(0, 3, 3, 3);
-        layout.AddConnectionPoint(new Vector2Int(0, 2), layout1);
+        layout.AddConnectionPoint(new int2(0, 2), layout1);
         Assert.True(layout.connections.Count == 1);
     }
 
@@ -30,7 +29,10 @@ public class LayoutZoneTest
         layout.bounds = new RectangleInt(0, 0, 3, 3);
         LayoutZone layout1 = new LayoutZone();
         layout1.bounds = new RectangleInt(0, 3, 3, 3);
-        Assert.True(layout.ContactPoint(new Vector2Int(0, 3)) == new Vector2Int(0, 2));
+		int2 contactPoint;
+		layout.ContactPoint(new int2(0, 3), out contactPoint);
+
+		Assert.True(contactPoint == new int2(0, 2));
     }
 
     [Test]
@@ -38,7 +40,7 @@ public class LayoutZoneTest
     {
         LayoutZone zone = new LayoutZone();
         zone.bounds = new RectangleInt(5, 5, 10, 10);
-        Assert.True(zone.Map2Zone(new Vector2Int(5, 5)) == new Vector2Int(0, 0));
+        Assert.True(zone.Map2Zone(new int2(5, 5)) == new int2(0, 0));
     }
 
     [Test]
@@ -46,6 +48,6 @@ public class LayoutZoneTest
     {
         LayoutZone zone = new LayoutZone();
         zone.bounds = new RectangleInt(5, 5, 10, 10);
-        Assert.True(zone.Zone2Map(new Vector2Int(0, 0)) == new Vector2Int(5, 5));
+        Assert.True(zone.Zone2Map(new int2(0, 0)) == new int2(5, 5));
     }
 }

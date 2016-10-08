@@ -3,7 +3,7 @@ using UnityEngine;
 using Object = System.Object;
 
 [Serializable]
-public class Vector2Int
+public class Vector2Int : IEquatable<Vector2Int>
 {
     public int x { get { return _x; } }
     public int y { get { return _y; } }
@@ -58,7 +58,12 @@ public class Vector2Int
         return !(a == b);
     }
 
-    public override bool Equals(Object obj)
+	public bool Equals(Vector2Int other)
+	{
+		return (_x == other.x) && (_y == other.y);
+	}
+
+	public override bool Equals(Object obj)
     {
         // If parameter is null return false.
         if (obj == null)
