@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using InstaDungeon.TileMap;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using UnityEngine;
@@ -63,11 +64,28 @@ public class MapHandler : MonoBehaviour
 
 	void Start ()
 	{
-        Generate();
+		GenerateNewMap();
 	}
 
-    public void Generate()
+	public void GenerateNewMap()
+	{
+		TileMap<TileType> blueprint = GenerateBlueprint();
+
+		if (GetComponent<OrthogonalTileMapRenderer>() != null)
+		{
+			GenerateWorld(blueprint);
+		}
+		else
+		{
+			Map = PopulateWorld(blueprint);
+			PlaceEntrance(Map);
+		}
+	}
+
+    public TileMap<TileType> GenerateBlueprint()
     {
+		TileMap<TileType> result = null;
+			 
         AssignPrefabs();
         RecycleMap();
 
@@ -77,7 +95,6 @@ public class MapHandler : MonoBehaviour
         if (layoutGenerator != null && shapeGenerator != null)
         {
             Stopwatch sw = Stopwatch.StartNew();
-            long elapsedMs, lastElapsedMs;
 
             if (!customSeed)
             {
@@ -87,20 +104,13 @@ public class MapHandler : MonoBehaviour
                 levelSeed = seed;
             }
 
-            TileMap<TileType> blueprintMap = ShapeConnector.BuildMap(layoutGenerator, shapeGenerator, levelSeed);
+            result = ShapeConnector.BuildMap(layoutGenerator, shapeGenerator, levelSeed);
 
-            lastElapsedMs = sw.ElapsedMilliseconds;
-            UnityEngine.Debug.Log("Time to generate blueprint Map: " + lastElapsedMs + "ms");
-            Map = PopulateWorld(blueprintMap);
-            
-            sw.Stop();
-            elapsedMs = sw.ElapsedMilliseconds - lastElapsedMs;
-            UnityEngine.Debug.Log("Time to populate world: " + elapsedMs + "ms");
-            UnityEngine.Debug.Log("Total time to generate: " + sw.ElapsedMilliseconds + "ms");
-
-            PlaceEntrance(Map);
+            UnityEngine.Debug.Log("Time to generate blueprint Map: " + sw.ElapsedMilliseconds + "ms");
         }
-    }
+
+		return result;
+	}
 
     private void AssignPrefabs()
     {
@@ -138,9 +148,32 @@ public class MapHandler : MonoBehaviour
         }
     }
 
+	private void GenerateWorld(TileMap<TileType> blueprint)
+	{
+		Stopwatch sw = Stopwatch.StartNew();
+
+		int2[] blueprintTiles = blueprint.GetPresentTiles();
+
+		TileMap<Tile> actualMap = new TileMap<Tile>();
+
+		for (int i = 0; i < blueprintTiles.Length; i++)
+		{
+			int2 tilePosition = blueprintTiles[i];
+			actualMap[tilePosition.x, tilePosition.y] = new Tile(blueprint[tilePosition.x, tilePosition.y]);
+		}
+
+		OrthogonalTileMapRenderer renderer = GetComponent<OrthogonalTileMapRenderer>();
+		renderer.BuildMesh(actualMap);
+
+		sw.Stop();
+		UnityEngine.Debug.Log("Time to generate world: " + sw.ElapsedMilliseconds + "ms");
+	}
+
 	private TileMap<TileBehaviour> PopulateWorld(TileMap<TileType> map)
 	{
-        TileMap<TileBehaviour> result = new TileMap<TileBehaviour>();
+		Stopwatch sw = Stopwatch.StartNew();
+
+		TileMap<TileBehaviour> result = new TileMap<TileBehaviour>();
 		GameObject aux = null;
         GameObject tileAux = null;
 
@@ -180,6 +213,9 @@ public class MapHandler : MonoBehaviour
         result.Layout.FinalZone = map.Layout.FinalZone;
         result.spawnPoint = map.spawnPoint;
         result.exitPoint = map.exitPoint;
+
+		sw.Stop();
+		UnityEngine.Debug.Log("Time to populate world: " + sw.ElapsedMilliseconds + "ms");
 
 		return result;
 	}

@@ -18,9 +18,9 @@ public class TileSet : MonoBehaviour
 		float tileHeight = (float)tileResolution.y / texture.height;
 
 		SetTile(TileType.Space, new Rect(0, 0, tileWidth, tileHeight));
-		SetTile(TileType.Floor, new Rect(8f / 32f, 0, tileWidth, tileHeight));
-		SetTile(TileType.Wall, new Rect(16f / 32f, 0, tileWidth, tileHeight));
-		SetTile(TileType.Door, new Rect(24f / 32f, 0, tileWidth, tileHeight));
+		SetTile(TileType.Floor, new Rect((float)tileResolution.x / texture.width, 0, tileWidth, tileHeight));
+		SetTile(TileType.Wall, new Rect((float)tileResolution.x * 2 / texture.width, 0, tileWidth, tileHeight));
+		SetTile(TileType.Door, new Rect((float)tileResolution.x * 3 / texture.width, 0, tileWidth, tileHeight));
 	}
 
 	public void Setup(Texture2D texture, int2 tileResolution)
