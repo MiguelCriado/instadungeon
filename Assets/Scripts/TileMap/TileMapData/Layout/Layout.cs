@@ -26,7 +26,7 @@ public class Layout
         return result;
     }
 
-    public LayoutZone FindZoneByPosition(Vector2Int tilePosition)
+    public LayoutZone FindZoneByPosition(int2 tilePosition)
     {
         LayoutZone result = null;
 

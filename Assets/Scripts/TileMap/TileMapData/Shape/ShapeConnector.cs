@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using Random = UnityEngine.Random;
-using UnityEngine;
 
 public static class ShapeConnector
 {
-    public static Map<BlueprintAsset> BuildMap(LayoutGenerator layoutG, ShapeGenerator shapeG, int levelSeed)
+    public static TileMap<TileType> BuildMap(LayoutGenerator layoutG, ShapeGenerator shapeG, int levelSeed)
     {
         Random.InitState(levelSeed);
-        Map<BlueprintAsset> result = new Map<BlueprintAsset>();
+        TileMap<TileType> result = new TileMap<TileType>();
         Layout layout = layoutG.Generate();
 		result.Layout = layout;
 
@@ -29,12 +28,18 @@ public static class ShapeConnector
                     {
                         if (!zone.connections.ContainsValue(neighbour))
                         {
-                            Vector2Int connectionPoint;
-                            List<Vector2Int> connectionCandidates = zone.bounds.ContactArea(neighbour.bounds, true);
+							int2 connectionPoint;
+                            List<int2> connectionCandidates = zone.bounds.ContactArea(neighbour.bounds, true);
                             connectionPoint = connectionCandidates[Random.Range(0, connectionCandidates.Count - 1)];
                             zone.AddConnectionPoint(connectionPoint, neighbour);
-                            neighbour.AddConnectionPoint(neighbour.ContactPoint(connectionPoint), zone);
-                            zonesToConnect.Add(neighbour);
+
+							int2 contactPoint;
+							
+							if (neighbour.ContactPoint(connectionPoint, out contactPoint))
+							{
+								neighbour.AddConnectionPoint(contactPoint, zone);
+								zonesToConnect.Add(neighbour);
+							}
                         }
                     }
                 }
@@ -46,16 +51,17 @@ public static class ShapeConnector
 
             foreach (LayoutZone currentZone in zones)
             {
-                Dictionary<Vector2Int, BlueprintAsset> shape;
+                Dictionary<int2, TileType> shape;
                 shapeG.WipeEntrances();
 
-                foreach (KeyValuePair<Vector2Int, LayoutZone> connection in currentZone.connections) {
+                foreach (KeyValuePair<int2, LayoutZone> connection in currentZone.connections)
+				{
                     shapeG.SetEntrance(currentZone.Map2Zone(connection.Key));
                 }
 
                 shape = shapeG.Generate(currentZone.bounds.width, currentZone.bounds.height, currentZone.bounds.position);
 
-                foreach (KeyValuePair<Vector2Int, BlueprintAsset> tile in shape)
+                foreach (KeyValuePair<int2, TileType> tile in shape)
                 {
                     currentZone.tiles.Add(tile.Key);
                     result.Add(tile.Key, tile.Value);
@@ -69,25 +75,27 @@ public static class ShapeConnector
 
         // Placing Stairs
         LayoutZone initialZone = result.Layout.InitialZone;
-        result.spawnPoint = FindPlaceForStairs(result, initialZone);
+        FindPlaceForStairs(result, initialZone, out result.spawnPoint);
 
         return result;
     }
 
-    private static Vector2Int FindPlaceForStairs(Map<BlueprintAsset> map, LayoutZone zone)
+    private static bool FindPlaceForStairs(TileMap<TileType> map, LayoutZone zone, out int2 stairsLocation)
     {
-        Vector2Int result = null;
+        bool result = false;
+		stairsLocation = int2.zero;
         int currentSurroundingFloorTiles = -1;
         int targetSurroundingFloorTiles = 8;
 
-        foreach (Vector2Int tile in zone.tiles)
+        foreach (int2 tile in zone.tiles)
         {
             int thisTileSurroundingFloorTiles = CountSurroundingFloor(map, zone, tile);
 
-            if (map.GetTile(tile.x, tile.y) == BlueprintAsset.Floor && thisTileSurroundingFloorTiles >= currentSurroundingFloorTiles)
+            if (map.GetTile(tile.x, tile.y) == TileType.Floor && thisTileSurroundingFloorTiles >= currentSurroundingFloorTiles)
             {
-                result = tile;
+                stairsLocation = tile;
                 currentSurroundingFloorTiles = thisTileSurroundingFloorTiles;
+				result = true;
 
                 if (currentSurroundingFloorTiles >= targetSurroundingFloorTiles)
                 {
@@ -99,27 +107,27 @@ public static class ShapeConnector
         return result;
     }
 
-    private static int CountSurroundingFloor(Map<BlueprintAsset> map, LayoutZone zone, Vector2Int tile)
+    private static int CountSurroundingFloor(TileMap<TileType> map, LayoutZone zone, int2 tile)
     {
         int result = 0;
 
-        Vector2Int[] dirs = new[]
+		int2[] dirs = new[]
         {
-            new Vector2Int(0, 1),
-            new Vector2Int(1, 0),
-            new Vector2Int(0, -1),
-            new Vector2Int(-1, 0), 
-            new Vector2Int(-1, -1),
-            new Vector2Int(-1, 1),
-            new Vector2Int(1, 1),
-            new Vector2Int(1, -1), 
+            new int2(0, 1),
+            new int2(1, 0),
+            new int2(0, -1),
+            new int2(-1, 0), 
+            new int2(-1, -1),
+            new int2(-1, 1),
+            new int2(1, 1),
+            new int2(1, -1), 
         };
 
         for (int i = 0; i < dirs.Length; i++)
         {
-            Vector2Int adjacentTile = tile + dirs[i];
+			int2 adjacentTile = tile + dirs[i];
 
-            if (zone.tiles.Contains(tile + dirs[i]) && map.GetTile(adjacentTile.x, adjacentTile.y) == BlueprintAsset.Floor)
+            if (zone.tiles.Contains(tile + dirs[i]) && map.GetTile(adjacentTile.x, adjacentTile.y) == TileType.Floor)
             {
                 result++;
             }

@@ -55,9 +55,9 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator
         this.fixedFloor = fixedFloor;
 	}
 
-    public Dictionary<Vector2Int, BlueprintAsset> Generate(int width, int height, Vector2Int offset)
+    public Dictionary<int2, TileType> Generate(int width, int height, int2 offset)
     {
-        Dictionary<Vector2Int, BlueprintAsset> result = new Dictionary<Vector2Int, BlueprintAsset>();
+        Dictionary<int2, TileType> result = new Dictionary<int2, TileType>();
 
         this.width = width;
         this.height = height;
@@ -69,11 +69,11 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator
             {
                 if (map[i, j] == WALL)
                 {
-                    result.Add(new Vector2Int(i + offset.x, j + offset.y), BlueprintAsset.Wall);
+                    result.Add(new int2(i + offset.x, j + offset.y), TileType.Wall);
                 }
                 else if (map[i, j] >= FIXED_FLOOR)
                 {
-                    result.Add(new Vector2Int(i + offset.x, j + offset.y), BlueprintAsset.Floor);
+                    result.Add(new int2(i + offset.x, j + offset.y), TileType.Floor);
                 }
             }
         }
@@ -91,9 +91,9 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator
         this.fixedFloor = new List<Vector2>();
     }
 
-    public void SetEntrance(Vector2Int point)
+    public void SetEntrance(int2 point)
     {
-        this.fixedFloor.Add(new Vector2(point.x, point.y));
+        this.fixedFloor.Add(new int2(point.x, point.y));
     }
 
     /// <summary>

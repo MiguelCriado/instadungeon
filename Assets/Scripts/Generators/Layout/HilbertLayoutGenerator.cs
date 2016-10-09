@@ -16,12 +16,12 @@ public class HilbertLayoutGenerator : MonoBehaviour, LayoutGenerator {
         West = 8
     }
 
-    public static readonly Vector2Int[] DIRS = new[]
+    public static readonly int2[] DIRS = new[]
         {
-            new Vector2Int(0, 1),
-            new Vector2Int(1, 0),
-            new Vector2Int(0, -1),
-            new Vector2Int(-1, 0), 
+            new int2(0, 1),
+            new int2(1, 0),
+            new int2(0, -1),
+            new int2(-1, 0), 
         };
 
     public int height = 4;
@@ -30,13 +30,13 @@ public class HilbertLayoutGenerator : MonoBehaviour, LayoutGenerator {
     public int zoneWidth = 15;
     public int zoneHeight = 15;
 
-    public Vector2Int Entrance;
-    public Vector2Int Exit;
+    public int2 Entrance;
+    public int2 Exit;
 
-    private Vector2Int mOffsetFrame;
+    private int2 mOffsetFrame;
     private int mN;
-    private Vector2Int mEntrance;
-    private Vector2Int mExit;
+    private int2 mEntrance;
+    private int2 mExit;
     private Connections[,] mLayout;
 
     public void Update()
@@ -50,8 +50,8 @@ public class HilbertLayoutGenerator : MonoBehaviour, LayoutGenerator {
         Connections[,] layoutArray = GenerateLayoutArray();
         AddZones(result, layoutArray);
         ConnectZones(result, layoutArray);
-        result.InitialZone = result.FindZoneByPosition(new Vector2Int((int)Entrance.x * zoneWidth, (int)Entrance.y * zoneHeight));
-        result.FinalZone = result.FindZoneByPosition(new Vector2Int((int)Exit.x, (int)Exit.y));
+        result.InitialZone = result.FindZoneByPosition(new int2((int)Entrance.x * zoneWidth, (int)Entrance.y * zoneHeight));
+        result.FinalZone = result.FindZoneByPosition(new int2((int)Exit.x, (int)Exit.y));
         return result;
     }
 
@@ -74,26 +74,30 @@ public class HilbertLayoutGenerator : MonoBehaviour, LayoutGenerator {
         {
             for (int j = 0; j < layoutArray.GetLength(1); j++)
             {
-                LayoutZone currentZone = result.FindZoneByPosition(new Vector2Int(i * zoneWidth, j * zoneHeight));
+                LayoutZone currentZone = result.FindZoneByPosition(new int2(i * zoneWidth, j * zoneHeight));
+
                 if (i >= 0
                     && (layoutArray[i, j] & Connections.East) == Connections.East)
                 {
-                    result.ConnectZones(currentZone, result.FindZoneByPosition(new Vector2Int((i + 1) * zoneWidth, j * zoneHeight)));
+                    result.ConnectZones(currentZone, result.FindZoneByPosition(new int2((i + 1) * zoneWidth, j * zoneHeight)));
                 }
+
                 if (i <= width - 1
                     && (layoutArray[i, j] & Connections.West) == Connections.West)
                 {
-                    result.ConnectZones(currentZone, result.FindZoneByPosition(new Vector2Int((i - 1) * zoneWidth, j * zoneHeight)));
+                    result.ConnectZones(currentZone, result.FindZoneByPosition(new int2((i - 1) * zoneWidth, j * zoneHeight)));
                 }
+
                 if (j >= 0
                     && (layoutArray[i, j] & Connections.North) == Connections.North)
                 {
-                    result.ConnectZones(currentZone, result.FindZoneByPosition(new Vector2Int(i * zoneWidth, (j + 1) * zoneHeight)));
+                    result.ConnectZones(currentZone, result.FindZoneByPosition(new int2(i * zoneWidth, (j + 1) * zoneHeight)));
                 }
+
                 if (j <= height - 1
                     && (layoutArray[i, j] & Connections.South) == Connections.South)
                 {
-                    result.ConnectZones(currentZone, result.FindZoneByPosition(new Vector2Int(i * zoneWidth, (j - 1) * zoneHeight)));
+                    result.ConnectZones(currentZone, result.FindZoneByPosition(new int2(i * zoneWidth, (j - 1) * zoneHeight)));
                 }
             }
         }
@@ -104,8 +108,8 @@ public class HilbertLayoutGenerator : MonoBehaviour, LayoutGenerator {
         Initialize();
         GenerateLayout();
         CleanUpLayout();
-        Entrance = new Vector2Int(Hilbert2Layout(mEntrance).x, Hilbert2Layout(mEntrance).y);
-        Exit = new Vector2Int(Hilbert2Layout(mExit).x, Hilbert2Layout(mExit).y);
+        Entrance = new int2(Hilbert2Layout(mEntrance).x, Hilbert2Layout(mEntrance).y);
+        Exit = new int2(Hilbert2Layout(mExit).x, Hilbert2Layout(mExit).y);
         return mLayout;
     }
 
@@ -114,7 +118,7 @@ public class HilbertLayoutGenerator : MonoBehaviour, LayoutGenerator {
         mLayout = new Connections[width, height];
         InitializeConnections();
         InitializeMembers();
-        mEntrance = FindEntrance();
+        FindEntrance(out mEntrance);
     }
 
     private void InitializeConnections()
@@ -134,25 +138,29 @@ public class HilbertLayoutGenerator : MonoBehaviour, LayoutGenerator {
         mOffsetFrame = SetOffset();
     }
 
-    private Vector2Int SetOffset()
+    private int2 SetOffset()
     {
-        Vector2Int result = new Vector2Int(Random.Range(0, mN - width+1), Random.Range(0, mN - height+1));
+        int2 result = new int2(Random.Range(0, mN - width+1), Random.Range(0, mN - height+1));
         return result;
     }
 
-    private Vector2Int FindEntrance()
+    private bool FindEntrance(out int2 entrance)
     {
-        Vector2Int result = null;
-        bool found = false;
+		entrance = int2.zero;
+        bool result = false;
         int i = 0;
         int max = mN * mN - 1;
-        while (!found && i <= max)
+
+        while (!result && i <= max)
         {
-            Vector2Int candidate = HilbertCurve.d2xy(mN, i);
-            if (IsInsideOffsetFrame(candidate.x, candidate.y)) {
-                result = candidate;
-                found = true;
+            int2 candidate = HilbertCurve.d2xy(mN, i);
+
+            if (IsInsideOffsetFrame(candidate.x, candidate.y))
+			{
+                entrance = candidate;
+                result = true;
             }
+
             i++;
         }
         return result;
@@ -164,27 +172,30 @@ public class HilbertLayoutGenerator : MonoBehaviour, LayoutGenerator {
         int i = initialD; 
         int maxSteps = mN * mN - 1;
         Connections direction = Connections.None;
-        List<List<Vector2Int>> unconnectedPaths = new List<List<Vector2Int>>();
-        List<Vector2Int> currentPath = new List<Vector2Int>();
-        Vector2Int currentTile = new Vector2Int(mEntrance.x, mEntrance.y);
+        List<List<int2>> unconnectedPaths = new List<List<int2>>();
+        List<int2> currentPath = new List<int2>();
+        int2 currentTile = new int2(mEntrance.x, mEntrance.y);
         currentPath.Add(Hilbert2Layout(currentTile));
 
         while (i < maxSteps)
         {
-            Vector2Int nextTile = HilbertCurve.d2xy(mN, i + 1);
+            int2 nextTile = HilbertCurve.d2xy(mN, i + 1);
+
             if (IsInsideOffsetFrame(nextTile.x, nextTile.y))
             {
                 direction = GetDirection(currentTile, nextTile);
+
                 if (direction != Connections.None) // we can connect currentTile and nextTile directly. 
                 {
-                    Vector2Int layoutTile = Hilbert2Layout(currentTile);
+                    int2 layoutTile = Hilbert2Layout(currentTile);
                     mLayout[layoutTile.x, layoutTile.y] |= direction; 
                 }
                 else
                 {
                     unconnectedPaths.Add(currentPath);
-                    currentPath = new List<Vector2Int>();
+                    currentPath = new List<int2>();
                 }
+
                 currentPath.Add(Hilbert2Layout(nextTile));
                 currentTile = nextTile;
             }
@@ -196,11 +207,12 @@ public class HilbertLayoutGenerator : MonoBehaviour, LayoutGenerator {
         mExit = currentTile;
     }
 
-    private void ConnectUnconnectedPaths(List<List<Vector2Int>> unconnectedPaths)
+    private void ConnectUnconnectedPaths(List<List<int2>> unconnectedPaths)
     {
         int numPaths = unconnectedPaths.Count;
         bool connected = true;
         bool connectedToNext = true;
+
         for (int i = numPaths - 1; i >= 0; i--)
         {
             if (!connected || !connectedToNext)
@@ -209,6 +221,7 @@ public class HilbertLayoutGenerator : MonoBehaviour, LayoutGenerator {
                 // if connectedToNext == false, we failed trying to connect the next path. 
                 // We have to try on the next iteration again
             }
+
             if (i > 0)
             {
                 connected = false;
@@ -219,54 +232,68 @@ public class HilbertLayoutGenerator : MonoBehaviour, LayoutGenerator {
         }
     }
 
-    private bool ConnectToNextPaths(List<List<Vector2Int>> unconnectedPaths, bool connectedToNext, int i)
+    private bool ConnectToNextPaths(List<List<int2>> unconnectedPaths, bool connectedToNext, int i)
     {
         connectedToNext = false;
         int j = i + 2;
+
         while (!connectedToNext && j < unconnectedPaths.Count)
         {
             int k = unconnectedPaths[i].Count - 1;
+
             while (!connectedToNext && k >= 0)
             {
                 int m = 0;
+
                 while (!connectedToNext && m < unconnectedPaths[j].Count)
                 {
                     Connections direction = GetDirection(unconnectedPaths[i][k], unconnectedPaths[j][m]);
+
                     if (direction != Connections.None)
                     {
                         mLayout[unconnectedPaths[i][k].x, unconnectedPaths[i][k].y] |= direction;
                         connectedToNext = true;
                     }
+
                     m++;
                 }
+
                 k--;
             }
+
             j++;
         }
         return connectedToNext;
     }
 
-    private bool ConnectToPreviousPaths(List<List<Vector2Int>> unconnectedPaths, bool connected, int i)
+    private bool ConnectToPreviousPaths(List<List<int2>> unconnectedPaths, bool connected, int i)
     {
         int j = i - 1;
+
         while (!connected && j >= 0)
         {
             int k = 0;
+
             while (!connected && k < unconnectedPaths[i].Count)
             {
                 int m = unconnectedPaths[j].Count - 1;
+
                 while (!connected && m >= 0)
                 {
                     Connections direction = GetDirection(unconnectedPaths[i][k], unconnectedPaths[j][m]);
+
                     if (direction != Connections.None)
                     {
                         mLayout[unconnectedPaths[i][k].x, unconnectedPaths[i][k].y] |= direction;
                         connected = true;
                     }
+
                     m--;
                 }
+
                 k++;
             }
+
             j--;
         }
         
@@ -284,16 +311,19 @@ public class HilbertLayoutGenerator : MonoBehaviour, LayoutGenerator {
                 {
                     mLayout[i, j] |= Connections.West;
                 }
+
                 if (i < width-1
                     && (mLayout[i + 1, j] & Connections.West) == Connections.West)
                 {
                     mLayout[i, j] |= Connections.East;
                 }
+
                 if (j > 0
                     && (mLayout[i, j - 1] & Connections.North) == Connections.North)
                 {
                     mLayout[i, j] |= Connections.South;
                 }
+
                 if (j < height-1
                     && (mLayout[i, j + 1] & Connections.South) == Connections.South)
                 {
@@ -303,13 +333,15 @@ public class HilbertLayoutGenerator : MonoBehaviour, LayoutGenerator {
         }
     }
 
-    private Connections GetDirection(Vector2Int origin, Vector2Int destiny)
+    private Connections GetDirection(int2 origin, int2 destiny)
     {
         Connections result = Connections.None;
+
         if (origin + DIRS[0] == destiny)
         {
             result = Connections.North;
-        } else if (origin + DIRS[1] == destiny) 
+        }
+		else if (origin + DIRS[1] == destiny) 
         {
             result = Connections.East;
         }
@@ -336,31 +368,37 @@ public class HilbertLayoutGenerator : MonoBehaviour, LayoutGenerator {
     private int NextPowerOf2(int x)
     {
         int result = -1;
+
         if (x >= 0)
         {
             bool found = false;
             int i = 0;
+
             while (!found)
             {
-                if (Mathf.Pow(2, i) > x) {
+                if (Mathf.Pow(2, i) > x)
+				{
                     result = (int)Mathf.Pow(2, i);
                     found = true;
                 }
+
                 i++;
             }
         }
+
         return result;
     }
 
-    private Vector2Int Hilbert2Layout(Vector2Int point)
+    private int2 Hilbert2Layout(int2 point)
     {
-        Vector2Int result = new Vector2Int(point.x - mOffsetFrame.x, point.y - mOffsetFrame.y);
+        int2 result = new int2(point.x - mOffsetFrame.x, point.y - mOffsetFrame.y);
         return result;
     }
 
     private void PaintLayout()
     {
-        for (int i = 0; i < width; i++) {
+        for (int i = 0; i < width; i++)
+		{
             for (int j = 0; j < height; j++)
             {
                 PaintConnections(mLayout[i, j], i, j);
@@ -374,14 +412,17 @@ public class HilbertLayoutGenerator : MonoBehaviour, LayoutGenerator {
         {
             Debug.DrawLine(new Vector2(x, y), new Vector2(x, y+1));
         }
+
         if ((cell & Connections.East) == Connections.East)
         {
             Debug.DrawLine(new Vector2(x, y), new Vector2(x+1, y));
         }
+
         if ((cell & Connections.South) == Connections.South)
         {
             Debug.DrawLine(new Vector2(x, y), new Vector2(x, y-1));
         }
+
         if ((cell & Connections.West) == Connections.West)
         {
             Debug.DrawLine(new Vector2(x, y), new Vector2(x - 1, y));

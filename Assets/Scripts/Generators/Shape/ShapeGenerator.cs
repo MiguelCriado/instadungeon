@@ -1,11 +1,9 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-public interface ShapeGenerator {
-
-    Dictionary<Vector2Int, BlueprintAsset> Generate(int width, int height, Vector2Int offset);
+public interface ShapeGenerator
+{
+    Dictionary<int2, TileType> Generate(int width, int height, int2 offset);
     Shape.ConnectionTime GetConnectionTime();
     void WipeEntrances();
-    void SetEntrance(Vector2Int point);
+    void SetEntrance(int2 point);
 }

@@ -10,8 +10,8 @@ public class LayoutZone : IEnumerable
 
     public readonly int id;
     public RectangleInt bounds;
-    public HashSet<Vector2Int> tiles;
-    public Dictionary<Vector2Int, LayoutZone> connections;
+    public HashSet<int2> tiles;
+    public Dictionary<int2, LayoutZone> connections;
 
     public LayoutZone()
     {
@@ -27,17 +27,17 @@ public class LayoutZone : IEnumerable
 
     private void Init(int x, int y, int width, int height)
     {
-        connections = new Dictionary<Vector2Int, LayoutZone>();
-        tiles = new HashSet<Vector2Int>();
+        connections = new Dictionary<int2, LayoutZone>();
+        tiles = new HashSet<int2>();
         bounds = new RectangleInt(x, y, width, height);
     }
 
-    public void AddConnectionPoint(Vector2Int point, LayoutZone layoutZone)
+    public void AddConnectionPoint(int2 point, LayoutZone layoutZone)
     {
         connections.Add(point, layoutZone);
     }
 
-    public IEnumerator<Vector2Int> GetEnumerator()
+    public IEnumerator<int2> GetEnumerator()
     {
         return tiles.GetEnumerator();
     }
@@ -52,17 +52,17 @@ public class LayoutZone : IEnumerable
     /// </summary>
     /// <param name="layoutZonePoint"></param>
     /// <returns></returns>
-    public Vector2Int ContactPoint(Vector2Int layoutZonePoint)
+    public bool ContactPoint(int2 layoutZonePoint, out int2 contactPoint)
 	{
-        return bounds.ContactPoint(layoutZonePoint);
+        return bounds.ContactPoint(layoutZonePoint, out contactPoint);
     }
 
-    public Vector2Int Map2Zone(Vector2Int mapPosition)
+    public int2 Map2Zone(int2 mapPosition)
     {
         return mapPosition - bounds.position;
     }
 
-    public Vector2Int Zone2Map(Vector2Int zonePosition)
+    public int2 Zone2Map(int2 zonePosition)
     {
         return bounds.position + zonePosition;
     }

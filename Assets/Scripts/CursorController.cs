@@ -43,7 +43,7 @@ public class CursorController : MonoBehaviour {
 
     private void UpdateCursorPrefabState()
     {
-        Tile tile = GameManager.Instance.GetTile((int)cursorPosition.x, (int)cursorPosition.y);
+        TileBehaviour tile = GameManager.Instance.GetTile((int)cursorPosition.x, (int)cursorPosition.y);
         if (tile != null)
         {
             cursorPrefab.SetActive(true);

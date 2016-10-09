@@ -26,9 +26,9 @@ public class GameManager : Singleton<GameManager> {
 	
 	}
 
-    public Tile GetTile(int x, int y)
+    public TileBehaviour GetTile(int x, int y)
     {
-        Tile result = map.Map.GetTile(x, y);
+        TileBehaviour result = map.Map.GetTile(x, y);
         return result;
     }
 

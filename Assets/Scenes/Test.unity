@@ -124,7 +124,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &115152397
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -678,7 +678,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8827bcd037833344aab136481c900dbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dungeonType: 0
+  dungeonType: 1
   layoutType: 0
   shapeType: 0
   isometricTileSize: 1
@@ -739,16 +739,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7d5de942b0bd4449a7f2422f11cf279, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  height: 5
-  width: 5
-  zoneWidth: 6
-  zoneHeight: 6
+  height: 3
+  width: 3
+  zoneWidth: 17
+  zoneHeight: 17
   Entrance:
-    _x: 0
-    _y: 0
+    x: 0
+    y: 0
   Exit:
-    _x: 0
-    _y: 0
+    x: 0
+    y: 0
 --- !u!1 &1344549806
 GameObject:
   m_ObjectHideFlags: 0
@@ -1049,7 +1049,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!95 &1565695746
 Animator:
   serializedVersion: 3

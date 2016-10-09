@@ -1,5 +1,4 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 public class LayoutTest
 {
@@ -76,7 +75,7 @@ public class LayoutTest
         LayoutZone zone1 = new LayoutZone(0, 0, 10, 10);
         LayoutZone zone2 = new LayoutZone(10, 10, 10, 10);
         layout.ConnectZones(zone1, zone2);
-        Assert.True(layout.FindZoneByPosition(new Vector2Int(5, 5)) == zone1);
+        Assert.True(layout.FindZoneByPosition(new int2(5, 5)) == zone1);
     }
 
     [Test]
@@ -86,7 +85,7 @@ public class LayoutTest
         LayoutZone zone1 = new LayoutZone(0, 0, 10, 10);
         LayoutZone zone2 = new LayoutZone(0, 10, 10, 10);
         layout.ConnectZones(zone1, zone2);
-        Assert.True(layout.FindZoneByPosition(new Vector2Int(9, 19)) == zone2);
+        Assert.True(layout.FindZoneByPosition(new int2(9, 19)) == zone2);
     }
 
     [Test]
@@ -96,6 +95,6 @@ public class LayoutTest
         LayoutZone zone1 = new LayoutZone(0, 0, 10, 10);
         LayoutZone zone2 = new LayoutZone(0, 10, 10, 10);
         layout.ConnectZones(zone1, zone2);
-        Assert.IsNull(layout.FindZoneByPosition(new Vector2Int(-10, 19)));
+        Assert.IsNull(layout.FindZoneByPosition(new int2(-10, 19)));
     }
 }

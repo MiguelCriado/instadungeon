@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using InstaDungeon.TileMap;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using UnityEngine;
@@ -55,7 +56,7 @@ public class MapHandler : MonoBehaviour
 
     public GameObject player; // TODO REMOVE THIS SHIT OUT OF HERE!!!!
 
-    public Map<Tile> Map;
+    public TileMap<TileBehaviour> Map;
 
 	private ShapeGenerator shapeGenerator;
     private LayoutGenerator layoutGenerator;
@@ -63,11 +64,28 @@ public class MapHandler : MonoBehaviour
 
 	void Start ()
 	{
-        Generate();
+		GenerateNewMap();
 	}
 
-    public void Generate()
+	public void GenerateNewMap()
+	{
+		TileMap<TileType> blueprint = GenerateBlueprint();
+
+		if (GetComponent<OrthogonalTileMapRenderer>() != null)
+		{
+			GenerateWorld(blueprint);
+		}
+		else
+		{
+			Map = PopulateWorld(blueprint);
+			PlaceEntrance(Map);
+		}
+	}
+
+    public TileMap<TileType> GenerateBlueprint()
     {
+		TileMap<TileType> result = null;
+			 
         AssignPrefabs();
         RecycleMap();
 
@@ -77,7 +95,6 @@ public class MapHandler : MonoBehaviour
         if (layoutGenerator != null && shapeGenerator != null)
         {
             Stopwatch sw = Stopwatch.StartNew();
-            long elapsedMs, lastElapsedMs;
 
             if (!customSeed)
             {
@@ -87,20 +104,13 @@ public class MapHandler : MonoBehaviour
                 levelSeed = seed;
             }
 
-            Map<BlueprintAsset> blueprintMap = ShapeConnector.BuildMap(layoutGenerator, shapeGenerator, levelSeed);
+            result = ShapeConnector.BuildMap(layoutGenerator, shapeGenerator, levelSeed);
 
-            lastElapsedMs = sw.ElapsedMilliseconds;
-            UnityEngine.Debug.Log("Time to generate blueprint Map: " + lastElapsedMs + "ms");
-            Map = PopulateWorld(blueprintMap);
-            
-            sw.Stop();
-            elapsedMs = sw.ElapsedMilliseconds - lastElapsedMs;
-            UnityEngine.Debug.Log("Time to populate world: " + elapsedMs + "ms");
-            UnityEngine.Debug.Log("Total time to generate: " + sw.ElapsedMilliseconds + "ms");
-
-            PlaceEntrance(Map);
+            UnityEngine.Debug.Log("Time to generate blueprint Map: " + sw.ElapsedMilliseconds + "ms");
         }
-    }
+
+		return result;
+	}
 
     private void AssignPrefabs()
     {
@@ -138,35 +148,58 @@ public class MapHandler : MonoBehaviour
         }
     }
 
-	private Map<Tile> PopulateWorld(Map<BlueprintAsset> map)
+	private void GenerateWorld(TileMap<TileType> blueprint)
 	{
-        Map<Tile> result = new Map<Tile>();
+		Stopwatch sw = Stopwatch.StartNew();
+
+		int2[] blueprintTiles = blueprint.GetPresentTiles();
+
+		TileMap<Tile> actualMap = new TileMap<Tile>();
+
+		for (int i = 0; i < blueprintTiles.Length; i++)
+		{
+			int2 tilePosition = blueprintTiles[i];
+			actualMap[tilePosition.x, tilePosition.y] = new Tile(blueprint[tilePosition.x, tilePosition.y]);
+		}
+
+		OrthogonalTileMapRenderer renderer = GetComponent<OrthogonalTileMapRenderer>();
+		renderer.BuildMesh(actualMap);
+
+		sw.Stop();
+		UnityEngine.Debug.Log("Time to generate world: " + sw.ElapsedMilliseconds + "ms");
+	}
+
+	private TileMap<TileBehaviour> PopulateWorld(TileMap<TileType> map)
+	{
+		Stopwatch sw = Stopwatch.StartNew();
+
+		TileMap<TileBehaviour> result = new TileMap<TileBehaviour>();
 		GameObject aux = null;
         GameObject tileAux = null;
 
-        foreach (KeyValuePair<Vector2Int, BlueprintAsset> tile in map)
+        foreach (KeyValuePair<int2, TileType> tile in map)
         {
-            BlueprintAsset asset = tile.Value;
-            Vector2Int position = tile.Key;
+            TileType asset = tile.Value;
+			int2 position = tile.Key;
             StringBuilder namer = new StringBuilder("tile (");
             namer.Append(position.x).Append(", ").Append(position.y).Append(")");
             tileAux = new GameObject(namer.ToString());
-            tileAux.AddComponent<Tile>();
+            tileAux.AddComponent<TileBehaviour>();
             tileAux.transform.SetParent(transform);
             tileAux.transform.position = CalculatePosition(position, dungeonType);
 
             switch (asset)
 			{
-                case BlueprintAsset.Floor:
+                case TileType.Floor:
                     aux = Instantiate(floorPrefab);
                     break;
-                case BlueprintAsset.Wall:
+                case TileType.Wall:
                     aux = Instantiate(wallPrefab);
                     break;
             }
 
-            tileAux.GetComponent<Tile>().AddEntity(aux);
-            result.Add(position, tileAux.GetComponent<Tile>());
+            tileAux.GetComponent<TileBehaviour>().AddEntity(aux);
+            result.Add(position, tileAux.GetComponent<TileBehaviour>());
             aux.transform.position = CalculatePosition(position, dungeonType);
 
             if (dungeonType != DungeonType._3D)
@@ -181,10 +214,13 @@ public class MapHandler : MonoBehaviour
         result.spawnPoint = map.spawnPoint;
         result.exitPoint = map.exitPoint;
 
+		sw.Stop();
+		UnityEngine.Debug.Log("Time to populate world: " + sw.ElapsedMilliseconds + "ms");
+
 		return result;
 	}
 
-    private void PlaceEntrance(Map<Tile> map)
+    private void PlaceEntrance(TileMap<TileBehaviour> map)
     {
         player.transform.position = CalculatePosition(map.spawnPoint, dungeonType);
         /*foreach (Vector2Int tile in map.GetLayout().InitialZone)
@@ -204,7 +240,7 @@ public class MapHandler : MonoBehaviour
         renderer.sortingOrder = Mathf.FloorToInt((obj.transform.position.y - obj.transform.position.z) * -100);
     }
 
-    private Vector3 CalculatePosition(Vector2Int position, DungeonType dungeonType)
+    private Vector3 CalculatePosition(int2 position, DungeonType dungeonType)
     {
         Vector3 result = new Vector3();
 

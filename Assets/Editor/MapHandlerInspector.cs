@@ -65,7 +65,7 @@ public class MapHandlerInspector : Editor {
         {
             if (GUILayout.Button(generateButtonText))
             {
-                handler.Generate();
+				handler.GenerateNewMap();
             }
         }
         serializedObject.ApplyModifiedProperties();

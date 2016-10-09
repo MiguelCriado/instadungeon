@@ -1,8 +1,7 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
-public class Tile : MonoBehaviour {
+public class TileBehaviour : MonoBehaviour {
 
     public List<GameObject> Entities = new List<GameObject>();
 
