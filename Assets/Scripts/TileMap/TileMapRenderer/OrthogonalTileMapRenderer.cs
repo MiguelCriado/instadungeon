@@ -4,7 +4,7 @@ using UnityEngine;
 namespace InstaDungeon.TileMap
 {
 	[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(TileSet))]
-	public class ElevationTileMapRenderer : MonoBehaviour
+	public class OrthogonalTileMapRenderer : MonoBehaviour
 	{
 		public int width = 10;
 		public int height = 10;

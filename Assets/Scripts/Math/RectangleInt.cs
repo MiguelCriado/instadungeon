@@ -194,7 +194,6 @@ public class RectangleInt
     /// <returns>An adjacent point to the point provided. null if none found.</returns>
     public bool ContactPoint(int2 point, out int2 contactPoint)
     {
-		bool result = false;
 		contactPoint = int2.zero;
 
         if (point.y >= this.y && point.y < this.y + this.height)
@@ -202,11 +201,13 @@ public class RectangleInt
             if (point.x == this.x - 1)
             {
 				contactPoint = new int2(x, point.y);
+				return true;
             } 
             else if (point.x == this.x + this.width)
             {
 				contactPoint = new int2(point.x - 1, point.y);
-            }
+				return true;
+			}
         } 
 
         if (point.x >= this.x &&point.x < this.x + this.width)
@@ -214,13 +215,15 @@ public class RectangleInt
             if (point.y == this.y - 1)
             {
 				contactPoint = new int2(point.x, y);
-            }
+				return true;
+			}
             else if (point.y == this.y + this.height)
             {
 				contactPoint = new int2(point.x, point.y - 1);
-            }
+				return true;
+			}
         }
 
-        return result;
+        return false;
     }
 }
