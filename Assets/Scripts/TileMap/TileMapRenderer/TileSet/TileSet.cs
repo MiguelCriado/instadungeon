@@ -1,66 +1,92 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.IO;
+using UnityEngine;
 
-public class TileSet : MonoBehaviour
+public class TileSet
 {
+	public string tilesetName;
 	public Texture2D texture;
 	public int2 tileResolution;
+	public int spacing;
+	public int margin;
 
-	private Dictionary<TileType, List<Rect>> tiles;
+	private Tile[] tiles;
+	private Dictionary<string, AutoTile> autoTiles;
 
-	#region ToRemove
-
-	void Awake()
+	public TileSet(string name, Texture2D texture, int2 tileResolution) 
+		: this(name, texture, tileResolution, 0, 0)
 	{
-		Setup(texture, tileResolution);
-
-		float tileWidth = (float)tileResolution.x / texture.width;
-		float tileHeight = (float)tileResolution.y / texture.height;
-
-		SetTile(TileType.Space, new Rect(0, 0, tileWidth, tileHeight));
-		SetTile(TileType.Floor, new Rect((float)tileResolution.x / texture.width, 0, tileWidth, tileHeight));
-		SetTile(TileType.Wall, new Rect((float)tileResolution.x * 2 / texture.width, 0, tileWidth, tileHeight));
-		SetTile(TileType.Door, new Rect((float)tileResolution.x * 3 / texture.width, 0, tileWidth, tileHeight));
 	}
 
-	public void Setup(Texture2D texture, int2 tileResolution)
+	public TileSet(string name, string texturePath, int2 tileResolution, int spacing, int margin)
 	{
+		Texture2D texture = Resources.Load<Texture2D>(Path.ChangeExtension(texturePath, null));
+		Setup(name, texture, tileResolution, this.spacing, margin);
+	}
+
+	public TileSet(string name, Texture2D texture, int2 tileResolution, int spacing, int margin)
+	{
+		Setup(name, texture, tileResolution, spacing, margin);
+	}
+
+	private void Setup(string name, Texture2D texture, int2 tileResolution, int spacing, int margin)
+	{
+		tilesetName = name;
 		this.texture = texture;
 		this.tileResolution = tileResolution;
-		tiles = new Dictionary<TileType, List<Rect>>();
-	}
+		this.spacing = spacing;
+		this.margin = margin;
+		autoTiles = new Dictionary<string, AutoTile>();
 
-	#endregion
+		int horizontalTileCount = ((texture.width - margin * 2) + spacing) / (tileResolution.x + spacing);
+		int verticalTileCount = ((texture.height - margin * 2) + spacing) / (tileResolution.y + spacing);
+		int numTiles = horizontalTileCount * verticalTileCount;
 
-	public TileSet(Texture2D texture, int2 tileResolution)
-	{
-		this.texture = texture;
-		this.tileResolution = tileResolution;
-		tiles = new Dictionary<TileType, List<Rect>>();
-	}
+		Vector2 percentTileResolution = new Vector2(
+			(float)tileResolution.x / texture.width,
+			(float)tileResolution.y / texture.height);
 
-	public void SetTile(TileType type, Rect tile)
-	{
-		if (!tiles.ContainsKey(type))
+		tiles = new Tile[numTiles];
+
+		uint id = 0;
+
+		for (int y = verticalTileCount - 1; y >= 0; y--)
 		{
-			tiles.Add(type, new List<Rect>());
+			for (int x = 0; x < horizontalTileCount; x++)
+			{
+				Rect uvRect = new Rect(
+					x * percentTileResolution.x + margin + spacing * x,
+					y * percentTileResolution.y + margin + spacing * y,
+					percentTileResolution.x,
+					percentTileResolution.y);
+
+				Rect rect = new Rect(Vector2.zero, Vector2.one);
+
+				Tile tile = new Tile(id, new Rect[] { rect }, new Rect[] { uvRect });
+				tiles[id] = tile;
+				id++;
+			}
 		}
-
-		tiles[type].Add(tile);
 	}
 
-	public bool GetTile(TileType type, out Rect tile)
+	public void AddAutoTile(AutoTile autoTile)
 	{
-		bool result = false;
+		autoTiles.Add(autoTile.Id, autoTile);
+	}
 
-		if (tiles.ContainsKey(type))
+	public Tile GetTile(uint id)
+	{
+		return tiles[id];
+	}
+
+	public Tile GetTile(string autoTileId, byte mask)
+	{
+		Tile result = null;
+		AutoTile autoTile;
+
+		if (autoTiles.TryGetValue(autoTileId, out autoTile))
 		{
-			tile = tiles[type][Random.Range(0, tiles[type].Count)];
-			result = true;
-		}
-		else
-		{
-			tile = new Rect();
+			result = autoTile.GetTile(mask);
 		}
 
 		return result;
