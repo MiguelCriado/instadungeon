@@ -730,6 +730,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileScale: 1
+  chunkSize:
+    x: 10
+    y: 10
+  material: {fileID: 2100000, guid: f16146c5c6d99444aa875baeb3df66a1, type: 2}
 --- !u!114 &1144452018
 MonoBehaviour:
   m_ObjectHideFlags: 0
