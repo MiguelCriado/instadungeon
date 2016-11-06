@@ -660,8 +660,6 @@ GameObject:
   - 114: {fileID: 1144452015}
   - 114: {fileID: 1144452019}
   - 114: {fileID: 1144452018}
-  - 33: {fileID: 1144452022}
-  - 23: {fileID: 1144452021}
   - 114: {fileID: 1144452020}
   - 114: {fileID: 1144452017}
   m_Layer: 0
@@ -789,42 +787,6 @@ MonoBehaviour:
   margin: 0
   loadTileSet: 1
   tilesetPath: TileSets/DungeonSand.tsx
---- !u!23 &1144452021
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1144452014}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_Materials:
-  - {fileID: 2100000, guid: f16146c5c6d99444aa875baeb3df66a1, type: 2}
-  m_SubsetIndices: 
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_SelectedWireframeHidden: 0
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
---- !u!33 &1144452022
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1144452014}
-  m_Mesh: {fileID: 0}
 --- !u!1 &1344549806
 GameObject:
   m_ObjectHideFlags: 0
