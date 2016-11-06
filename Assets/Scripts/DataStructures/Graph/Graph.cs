@@ -1,16 +1,29 @@
-﻿using System.Collections.Generic;
-
-public class Graph<T>
+﻿public class Graph<T>
 {
-    private NodeList<T> nodeSet;
+	public NodeList<T> Nodes
+	{
+		get { return nodeSet; }
+	}
+
+	public int Count
+	{
+		get { return nodeSet.Count; }
+	}
+
+	private NodeList<T> nodeSet;
 
     public Graph() : this(null) { }
+
     public Graph(NodeList<T> nodeSet)
     {
         if (nodeSet == null)
-            this.nodeSet = new NodeList<T>();
+		{
+			this.nodeSet = new NodeList<T>();
+		}
         else
-            this.nodeSet = nodeSet;
+		{
+			this.nodeSet = nodeSet;
+		}
     }
 
     public void AddNode(GraphNode<T> node)
@@ -55,11 +68,13 @@ public class Graph<T>
         bool result = false;
         GraphNode<T> fromNode = nodeSet.FindByValue(from) as GraphNode<T>;
         GraphNode<T> toNode = nodeSet.FindByValue(to) as GraphNode<T>;
+
         if (fromNode != null && toNode != null)
         {
             result = true;
             AddUndirectedEdge(fromNode, toNode);
         }
+
         return result;
 
     }
@@ -73,9 +88,12 @@ public class Graph<T>
     {
         // first remove the node from the nodeset
         GraphNode<T> nodeToRemove = (GraphNode<T>)nodeSet.FindByValue(value);
+
         if (nodeToRemove == null)
-            // node wasn't found
-            return false;
+		{
+			// node wasn't found
+			return false;
+		}
 
         // otherwise, the node was found
         nodeSet.Remove(nodeToRemove);
@@ -84,6 +102,7 @@ public class Graph<T>
         foreach (GraphNode<T> gnode in nodeSet)
         {
             int index = gnode.Neighbors.IndexOf(nodeToRemove);
+
             if (index != -1)
             {
                 // remove the reference to the node and associated cost
@@ -93,18 +112,5 @@ public class Graph<T>
         }
 
         return true;
-    }
-
-    public NodeList<T> Nodes
-    {
-        get
-        {
-            return nodeSet;
-        }
-    }
-
-    public int Count
-    {
-        get { return nodeSet.Count; }
     }
 }

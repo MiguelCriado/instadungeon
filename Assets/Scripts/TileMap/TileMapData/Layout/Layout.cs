@@ -1,71 +1,64 @@
-﻿using System.Collections.Generic;
-
-[System.Serializable]
+﻿[System.Serializable]
 public class Layout 
 {
     public LayoutZone InitialZone;
     public LayoutZone FinalZone;
 
-    public ICollection<LayoutZone> Zones
+    public Graph<LayoutZone> Zones
     {
-        get { return zones.Keys; }
+        get { return zones; }
     }
 
-    private Dictionary<LayoutZone, HashSet<LayoutZone>> zones;
+    private Graph<LayoutZone> zones;
 
     public Layout()
     {
-        zones = new Dictionary<LayoutZone, HashSet<LayoutZone>>();
+		zones = new Graph<LayoutZone>();
     }
 
-    public HashSet<LayoutZone> GetAdjacentZones(LayoutZone zone)
+    public NodeList<LayoutZone> GetAdjacentZones(LayoutZone zone)
     {
-        HashSet<LayoutZone> result = null;
-        zones.TryGetValue(zone, out result);
+		NodeList<LayoutZone> result = null;
+		GraphNode<LayoutZone> node = zones.Nodes.FindByValue(zone) as GraphNode<LayoutZone>;
+
+		if (node != null)
+		{
+			result = node.Neighbors;
+		}
 
         return result;
     }
 
     public LayoutZone FindZoneByPosition(int2 tilePosition)
     {
-        LayoutZone result = null;
+		LayoutZone zone;
 
-        foreach (LayoutZone zone in zones.Keys)
-        {
-            if (zone.bounds.Contains(tilePosition))
-            {
-                result = zone;
-                break;
-            }
-        }
+		for (int i = 0; i < zones.Count; i++)
+		{
+			zone = zones.Nodes[i].Value;
 
-        return result;
+			if (zone.bounds.Contains(tilePosition))
+			{
+				return zone;
+			}
+		}
+
+		return null;
     }
 
     public void Add(LayoutZone zone)
     {
-        if (!zones.ContainsKey(zone))
-        {
-            zones.Add(zone, new HashSet<LayoutZone>());
-			zone.ParentLayout = this;
-        }
+		if (!zones.Contains(zone))
+		{
+			zones.AddNode(zone);
+		}
     }
 
     public void ConnectZones(LayoutZone a, LayoutZone b)
     {
-        Add(a);
-        Add(b);
-        AddAdjacentZone(a, b);
-        AddAdjacentZone(b, a);
-    }
+		Add(a);
+		Add(b);
 
-    private void AddAdjacentZone(LayoutZone a, LayoutZone b)
-    {
-        HashSet<LayoutZone> adjacentZones;
-
-        if (zones.TryGetValue(a, out adjacentZones))
-        {
-            adjacentZones.Add(b);
-        }
+		zones.AddUndirectedEdge(a, b);
     }
 }

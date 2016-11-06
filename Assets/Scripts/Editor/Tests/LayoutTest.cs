@@ -33,9 +33,9 @@ public class LayoutTest
         LayoutZone zone2 = new LayoutZone();
         layout.ConnectZones(zone1, zone2);
         Assert.True(layout.GetAdjacentZones(zone1).Count == 1
-                    && layout.GetAdjacentZones(zone1).Contains(zone2)
+                    && layout.GetAdjacentZones(zone1).FindByValue(zone2) != null
                     && layout.GetAdjacentZones(zone2).Count == 1
-                    && layout.GetAdjacentZones(zone2).Contains(zone1));
+                    && layout.GetAdjacentZones(zone2).FindByValue(zone1) != null);
     }
 
     [Test]
@@ -47,9 +47,9 @@ public class LayoutTest
         layout.ConnectZones(zone1, zone2);
         layout.ConnectZones(zone2, zone1);
         Assert.True(layout.GetAdjacentZones(zone1).Count == 1
-                    && layout.GetAdjacentZones(zone1).Contains(zone2)
-                    && layout.GetAdjacentZones(zone2).Count == 1
-                    && layout.GetAdjacentZones(zone2).Contains(zone1));
+                    && layout.GetAdjacentZones(zone1).FindByValue(zone2) != null
+					&& layout.GetAdjacentZones(zone2).Count == 1
+                    && layout.GetAdjacentZones(zone2).FindByValue(zone1) != null);
     }
 
     [Test]
@@ -63,9 +63,9 @@ public class LayoutTest
         layout.ConnectZones(zone1, zone2);
         layout.ConnectZones(zone2, zone1);
         Assert.True(layout.GetAdjacentZones(zone1).Count == 1
-                    && layout.GetAdjacentZones(zone1).Contains(zone2)
-                    && layout.GetAdjacentZones(zone2).Count == 1
-                    && layout.GetAdjacentZones(zone2).Contains(zone1));
+                    && layout.GetAdjacentZones(zone1).FindByValue(zone2) != null
+					&& layout.GetAdjacentZones(zone2).Count == 1
+                    && layout.GetAdjacentZones(zone2).FindByValue(zone1) != null);
     }
 
     [Test]

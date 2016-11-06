@@ -42,18 +42,18 @@ public class AutoTile
 	// ·╌╌╌·╌╌╌·╌╌╌·		·╌╌╌·╌╌╌·╌╌╌·
 	#endregion
 
-	private static readonly byte BLOCK_AUTOTILE = 0;		// (0) 00000000
-	private static readonly byte BLANK_AUTOTILE = 170;		// (1) 10101010
-	private static readonly byte CROSS_AUTOTILE = 85;		// (2) 01010101
-	private static readonly byte NW_CORNER_AUTOTILE = 28;	// (3) 00011100
-	private static readonly byte N_AUTOTILE = 31;			// (4) 00011111
-	private static readonly byte NE_CORNER_AUTOTILE = 7;	// (5) 00000111
-	private static readonly byte W_AUTOTILE = 124;          // (6) 01111100
-	private static readonly byte CENTER_AUTOTILE = 255;     // (7) 11111111
-	private static readonly byte E_AUTOTILE = 199;          // (8) 11000111
-	private static readonly byte SW_CORNER_AUTOTILE = 112;  // (9) 01110000
-	private static readonly byte S_AUTOTILE = 241;          // (A) 11110001
-	private static readonly byte SE_CORNER_AUTOTILE = 193;  // (B) 11000001
+	// private static readonly byte BLOCK_AUTOTILE = 0;			// (0) 00000000
+	// private static readonly byte BLANK_AUTOTILE = 170;		// (1) 10101010
+	// private static readonly byte CROSS_AUTOTILE = 85;		// (2) 01010101
+	// private static readonly byte NW_CORNER_AUTOTILE = 28;	// (3) 00011100
+	// private static readonly byte N_AUTOTILE = 31;			// (4) 00011111
+	// private static readonly byte NE_CORNER_AUTOTILE = 7;		// (5) 00000111
+	// private static readonly byte W_AUTOTILE = 124;			// (6) 01111100
+	// private static readonly byte CENTER_AUTOTILE = 255;		// (7) 11111111
+	// private static readonly byte E_AUTOTILE = 199;			// (8) 11000111
+	// private static readonly byte SW_CORNER_AUTOTILE = 112;	// (9) 01110000
+	// private static readonly byte S_AUTOTILE = 241;			// (A) 11110001
+	// private static readonly byte SE_CORNER_AUTOTILE = 193;	// (B) 11000001
 
 	#endregion
 

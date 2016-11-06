@@ -24,49 +24,61 @@ public static class ShapeConnector
                     LayoutZone zone = zonesToConnect[0];
                     zonesToConnect.Remove(zone);
 
-                    foreach (LayoutZone neighbour in layout.GetAdjacentZones(zone))
-                    {
-                        if (!zone.connections.ContainsValue(neighbour))
-                        {
-							int2 connectionPoint;
-                            List<int2> connectionCandidates = zone.bounds.ContactArea(neighbour.bounds, true);
-                            connectionPoint = connectionCandidates[Random.Range(0, connectionCandidates.Count - 1)];
-                            zone.AddConnectionPoint(connectionPoint, neighbour);
+					NodeList<LayoutZone> neighbors = layout.GetAdjacentZones(zone);
 
-							int2 contactPoint;
-							
-							if (neighbour.ContactPoint(connectionPoint, out contactPoint))
+					if (neighbors != null)
+					{
+						LayoutZone neighbor;
+
+						for (int i = 0; i < neighbors.Count; i++)
+						{
+							neighbor = neighbors[i].Value;
+
+							if (!zone.connections.ContainsValue(neighbor))
 							{
-								neighbour.AddConnectionPoint(contactPoint, zone);
-								zonesToConnect.Add(neighbour);
+								int2 connectionPoint;
+								List<int2> connectionCandidates = zone.bounds.ContactArea(neighbor.bounds, true);
+								connectionPoint = connectionCandidates[Random.Range(0, connectionCandidates.Count - 1)];
+								zone.AddConnectionPoint(connectionPoint, neighbor);
+
+								int2 contactPoint;
+
+								if (neighbor.ContactPoint(connectionPoint, out contactPoint))
+								{
+									neighbor.AddConnectionPoint(contactPoint, zone);
+									zonesToConnect.Add(neighbor);
+								}
 							}
-                        }
-                    }
+						} 
+					}
                 }
             }
 
             // Generating shapes
 
-            ICollection<LayoutZone> zones = layout.Zones;
+			NodeList<LayoutZone> zones = layout.Zones.Nodes;
 
-            foreach (LayoutZone currentZone in zones)
-            {
-                Dictionary<int2, TileType> shape;
-                shapeG.WipeEntrances();
+			LayoutZone currentZone;
 
-                foreach (KeyValuePair<int2, LayoutZone> connection in currentZone.connections)
+			for (int i = 0; i < zones.Count; i++)
+			{
+				currentZone = zones[i].Value;
+				Dictionary<int2, TileType> shape;
+				shapeG.WipeEntrances();
+
+				foreach (KeyValuePair<int2, LayoutZone> connection in currentZone.connections)
 				{
-                    shapeG.SetEntrance(currentZone.Map2Zone(connection.Key));
-                }
+					shapeG.SetEntrance(currentZone.Map2Zone(connection.Key));
+				}
 
-                shape = shapeG.Generate(currentZone.bounds.width, currentZone.bounds.height, currentZone.bounds.position);
+				shape = shapeG.Generate(currentZone.bounds.width, currentZone.bounds.height, currentZone.bounds.position);
 
-                foreach (KeyValuePair<int2, TileType> tile in shape)
-                {
-                    currentZone.tiles.Add(tile.Key);
-                    result.Add(tile.Key, tile.Value);
-                }
-            }
+				foreach (KeyValuePair<int2, TileType> tile in shape)
+				{
+					currentZone.tiles.Add(tile.Key);
+					result.Add(tile.Key, tile.Value);
+				}
+			}
         }
         else
         {
