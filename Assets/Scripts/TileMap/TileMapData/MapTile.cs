@@ -3,7 +3,9 @@
 	Space,
 	Floor,
 	Wall,
-	Door
+	Door, 
+	Entrance, 
+	Exit
 }
 
 public class MapTile

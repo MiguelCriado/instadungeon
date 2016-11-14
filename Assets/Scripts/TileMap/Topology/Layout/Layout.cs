@@ -1,25 +1,25 @@
 ﻿[System.Serializable]
 public class Layout 
 {
-    public LayoutZone InitialZone;
-    public LayoutZone FinalZone;
+    public Zone InitialZone;
+    public Zone FinalZone;
 
-    public Graph<LayoutZone> Zones
+    public Graph<Zone> Zones
     {
         get { return zones; }
     }
 
-    private Graph<LayoutZone> zones;
+    private Graph<Zone> zones;
 
     public Layout()
     {
-		zones = new Graph<LayoutZone>();
+		zones = new Graph<Zone>();
     }
 
-    public NodeList<LayoutZone> GetAdjacentZones(LayoutZone zone)
+    public NodeList<Zone> GetAdjacentZones(Zone zone)
     {
-		NodeList<LayoutZone> result = null;
-		GraphNode<LayoutZone> node = zones.Nodes.FindByValue(zone) as GraphNode<LayoutZone>;
+		NodeList<Zone> result = null;
+		GraphNode<Zone> node = zones.Nodes.FindByValue(zone) as GraphNode<Zone>;
 
 		if (node != null)
 		{
@@ -29,9 +29,9 @@ public class Layout
         return result;
     }
 
-    public LayoutZone FindZoneByPosition(int2 tilePosition)
+    public Zone FindZoneByPosition(int2 tilePosition)
     {
-		LayoutZone zone;
+		Zone zone;
 
 		for (int i = 0; i < zones.Count; i++)
 		{
@@ -46,7 +46,7 @@ public class Layout
 		return null;
     }
 
-    public void Add(LayoutZone zone)
+    public void Add(Zone zone)
     {
 		if (!zones.Contains(zone))
 		{
@@ -54,7 +54,7 @@ public class Layout
 		}
     }
 
-    public void ConnectZones(LayoutZone a, LayoutZone b)
+    public void ConnectZones(Zone a, Zone b)
     {
 		Add(a);
 		Add(b);

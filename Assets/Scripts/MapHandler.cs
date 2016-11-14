@@ -58,8 +58,8 @@ public class MapHandler : MonoBehaviour
 
     public TileMap<TileBehaviour> Map;
 
-	private ShapeGenerator shapeGenerator;
-    private LayoutGenerator layoutGenerator;
+	private IZoneGenerator shapeGenerator;
+    private ILayoutGenerator layoutGenerator;
 
 
 	void Start ()
@@ -89,8 +89,8 @@ public class MapHandler : MonoBehaviour
         AssignPrefabs();
         RecycleMap();
 
-        layoutGenerator = GetComponent<LayoutGenerator>();
-        shapeGenerator = GetComponent<ShapeGenerator>();
+        layoutGenerator = GetComponent<ILayoutGenerator>();
+        shapeGenerator = GetComponent<IZoneGenerator>();
 
         if (layoutGenerator != null && shapeGenerator != null)
         {
@@ -104,7 +104,7 @@ public class MapHandler : MonoBehaviour
                 levelSeed = seed;
             }
 
-            result = ShapeConnector.BuildMap(layoutGenerator, shapeGenerator, levelSeed);
+            result = ZoneConnector.BuildMap(layoutGenerator, shapeGenerator, levelSeed);
 
             UnityEngine.Debug.Log("Time to generate blueprint Map: " + sw.ElapsedMilliseconds + "ms");
         }
