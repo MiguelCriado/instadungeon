@@ -101,7 +101,39 @@ public class CavernousZoneGenerator : MonoBehaviour, IZoneGenerator
 		return map;
 	}
 
-	public TileMap<TileType> Generate(Zone zone, TileMap<TileType> map)
+	public TileMap<TileType> Generate(TileMap<TileType> map)
+	{
+		TileMap<TileType> result = map;
+
+		NodeList<Zone> zones = map.Layout.Zones.Nodes;
+
+		// TODO: make this concurrent with threads
+
+		for (int i = 0; i < zones.Count; i++)
+		{
+			result = Generate(zones[i].Value, result); 
+		}
+
+		return result;
+	}
+
+	public TileMap<TileType> PostConnectZones(TileMap<TileType> map)
+	{
+		return map;
+	}
+
+	public TileMap<TileType> PlaceStairs(Zone zone, TileMap<TileType> map)
+	{
+		TileType stairs = zone == map.Layout.InitialZone ? TileType.Entrance : TileType.Exit;
+		int2 stairsPosition = ZoneGeneratorUtils.FindPlaceForStairs(map, zone);
+
+		map[stairsPosition.x, stairsPosition.y] = stairs;
+		zone.tiles.Add(stairsPosition);
+
+		return map;
+	}
+
+	private TileMap<TileType> Generate(Zone zone, TileMap<TileType> map)
 	{
 		fixedFloor = new List<int2>();
 
@@ -128,22 +160,6 @@ public class CavernousZoneGenerator : MonoBehaviour, IZoneGenerator
 
 			zone.tiles.Add(position);
 		}
-
-		return map;
-	}
-
-	public TileMap<TileType> PostConnectZones(TileMap<TileType> map)
-	{
-		return map;
-	}
-
-	public TileMap<TileType> PlaceStairs(Zone zone, TileMap<TileType> map)
-	{
-		TileType stairs = zone == map.Layout.InitialZone ? TileType.Entrance : TileType.Exit;
-		int2 stairsPosition = ZoneGeneratorUtils.FindPlaceForStairs(map, zone);
-
-		map[stairsPosition.x, stairsPosition.y] = stairs;
-		zone.tiles.Add(stairsPosition);
 
 		return map;
 	}

@@ -15,14 +15,7 @@ public static class ZoneConnector
 			result.Layout = layoutGenerator.Iterate(layout);
 
 			result = zoneGenerator.PreConnectZones(result);
-
-			NodeList<Zone> zones = layout.Zones.Nodes;
-
-			for (int i = 0; i < zones.Count; i++)
-			{
-				result = zoneGenerator.Generate(zones[i].Value, result);
-			}
-
+			result = zoneGenerator.Generate(result);
 			result = zoneGenerator.PostConnectZones(result);
 		}
 
