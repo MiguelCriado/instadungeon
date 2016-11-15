@@ -60,8 +60,8 @@ public class HilbertLayoutGenerator : MonoBehaviour, ILayoutGenerator {
         Connections[,] layoutArray = GenerateLayoutArray();
         AddZones(result, layoutArray);
         ConnectZones(result, layoutArray);
-        result.InitialZone = result.FindZoneByPosition(new int2((int)Entrance.x * zoneWidth, (int)Entrance.y * zoneHeight));
-        result.FinalZone = result.FindZoneByPosition(new int2((int)Exit.x, (int)Exit.y));
+        result.InitialZone = result.FindZoneByPosition(new int2(Entrance.x * zoneWidth, Entrance.y * zoneHeight));
+        result.FinalZone = result.FindZoneByPosition(new int2(Exit.x * zoneWidth, Exit.y * zoneHeight));
         return result;
     }
 
@@ -133,7 +133,7 @@ public class HilbertLayoutGenerator : MonoBehaviour, ILayoutGenerator {
         layoutConnections = new Connections[width, height];
         InitializeConnections();
         InitializeMembers();
-        FindEntrance(out initialHilbertTile);
+        initialHilbertTile = FindEntrance();
     }
 
     private void InitializeConnections()
@@ -159,21 +159,21 @@ public class HilbertLayoutGenerator : MonoBehaviour, ILayoutGenerator {
         return result;
     }
 
-    private bool FindEntrance(out int2 entrance)
+    private int2 FindEntrance()
     {
-		entrance = int2.zero;
-        bool result = false;
+		int2 result = int2.zero;
+        bool found = false;
         int i = 0;
         int max = n * n - 1;
 
-        while (!result && i <= max)
+        while (!found && i <= max)
         {
             int2 candidate = HilbertCurve.d2xy(n, i);
 
             if (IsInsideOffsetFrame(candidate.x, candidate.y))
 			{
-                entrance = candidate;
-                result = true;
+                result = candidate;
+                found = true;
             }
 
             i++;
