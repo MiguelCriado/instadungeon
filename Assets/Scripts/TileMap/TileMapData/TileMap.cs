@@ -89,6 +89,16 @@ public class TileMap<T>
 		return Add(position.x, position.y, tile);
     }
 
+	public void AddSet(Dictionary<int2, T> tileGroup)
+	{
+		var enumerator = tileGroup.GetEnumerator();
+
+		while (enumerator.MoveNext())
+		{
+			this[enumerator.Current.Key.x, enumerator.Current.Key.y] = enumerator.Current.Value;
+		}
+	}
+
     public T GetTile(int x, int y)
     {
 		return this[x, y];
@@ -99,11 +109,12 @@ public class TileMap<T>
 		if (dirty)
 		{
 			cachedPresentTiles = new int2[tiles.Keys.Count];
+			var enumerator = tiles.GetEnumerator();
 			int i = 0;
 
-			foreach (var tile in tiles.Keys)
+			while (enumerator.MoveNext())
 			{
-				cachedPresentTiles[i] = tile;
+				cachedPresentTiles[i] = enumerator.Current.Key;
 				i++;
 			}
 

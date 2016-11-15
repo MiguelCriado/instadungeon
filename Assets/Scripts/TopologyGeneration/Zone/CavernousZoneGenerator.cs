@@ -4,7 +4,7 @@ using System.Text;
 using UnityEngine;
 
 [System.Serializable]
-public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator
+public class CavernousZoneGenerator : MonoBehaviour, IZoneGenerator
 {
 	public delegate char PlaceWallRule(int x, int y);
 
@@ -22,8 +22,8 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator
 	
     private int height = 30;
     private int width = 30;
-    private int[,] mShape;
-    private List<Vector2> fixedFloor;
+    private int[,] zoneArray;
+    private List<int2> fixedFloor;
 	
 
     /// <summary>
@@ -46,7 +46,7 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator
 		}
 	}
 
-	public void Init(float initialWallProb, int iterations, int height, int width, List<Vector2> fixedFloor)
+	public void Init(float initialWallProb, int iterations, int height, int width, List<int2> fixedFloor)
 	{
 		this.initialWallProb = initialWallProb;
 		this.iterations = iterations;
@@ -55,12 +55,122 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator
         this.fixedFloor = fixedFloor;
 	}
 
-    public Dictionary<int2, TileType> Generate(int width, int height, int2 offset)
+	public TileMap<TileType> PreConnectZones(TileMap<TileType> map)
+	{
+		List<Zone> zonesToConnect = new List<Zone>();
+
+		if (map.Layout.Zones.Count > 0)
+		{
+			zonesToConnect.Add(map.Layout.InitialZone);
+
+			while (zonesToConnect.Count > 0)
+			{
+				Zone zone = zonesToConnect[0];
+				zonesToConnect.Remove(zone);
+
+				NodeList<Zone> neighbors = map.Layout.GetAdjacentZones(zone);
+
+				if (neighbors != null)
+				{
+					Zone neighbor;
+
+					for (int i = 0; i < neighbors.Count; i++)
+					{
+						neighbor = neighbors[i].Value;
+
+						if (!zone.connections.ContainsValue(neighbor))
+						{
+							int2 connectionPoint;
+							List<int2> connectionCandidates = zone.bounds.ContactArea(neighbor.bounds, true);
+							connectionPoint = connectionCandidates[Random.Range(0, connectionCandidates.Count - 1)];
+							zone.AddConnectionPoint(connectionPoint, neighbor);
+
+							int2 contactPoint;
+
+							if (neighbor.ContactPoint(connectionPoint, out contactPoint))
+							{
+								neighbor.AddConnectionPoint(contactPoint, zone);
+								zonesToConnect.Add(neighbor);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return map;
+	}
+
+	public TileMap<TileType> Generate(TileMap<TileType> map)
+	{
+		TileMap<TileType> result = map;
+
+		NodeList<Zone> zones = map.Layout.Zones.Nodes;
+
+		// TODO: make this concurrent with threads
+
+		for (int i = 0; i < zones.Count; i++)
+		{
+			result = Generate(zones[i].Value, result); 
+		}
+
+		return result;
+	}
+
+	public TileMap<TileType> PostConnectZones(TileMap<TileType> map)
+	{
+		return map;
+	}
+
+	public TileMap<TileType> PlaceStairs(Zone zone, TileMap<TileType> map)
+	{
+		TileType stairs = zone == map.Layout.InitialZone ? TileType.Entrance : TileType.Exit;
+		int2 stairsPosition = ZoneGeneratorUtils.FindPlaceForStairs(map, zone);
+
+		map[stairsPosition.x, stairsPosition.y] = stairs;
+		zone.tiles.Add(stairsPosition);
+
+		return map;
+	}
+
+	private TileMap<TileType> Generate(Zone zone, TileMap<TileType> map)
+	{
+		fixedFloor = new List<int2>();
+
+		var connectionsEnumerator = zone.connections.GetEnumerator();
+
+		while (connectionsEnumerator.MoveNext())
+		{
+			fixedFloor.Add(connectionsEnumerator.Current.Key - zone.bounds.position);
+		}
+
+		Dictionary<int2, TileType> zoneTiles = Generate(zone.bounds.width, zone.bounds.height, zone.bounds.position);
+
+		var enumerator = zoneTiles.GetEnumerator();
+
+		int2 position;
+		TileType tile;
+
+		while (enumerator.MoveNext())
+		{
+			position = enumerator.Current.Key;
+			tile = enumerator.Current.Value;
+
+			map[position.x, position.y] = tile;
+
+			zone.tiles.Add(position);
+		}
+
+		return map;
+	}
+
+	private Dictionary<int2, TileType> Generate(int width, int height, int2 offset)
     {
         Dictionary<int2, TileType> result = new Dictionary<int2, TileType>();
 
         this.width = width;
         this.height = height;
+
         int[,] map = Generate();
 
         for (int i = 0; i < map.GetLength(0); i++)
@@ -81,21 +191,6 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator
         return result;
     }
 
-    public Shape.ConnectionTime GetConnectionTime()
-    {
-        return Shape.ConnectionTime.PreConnection;
-    }
-
-    public void WipeEntrances()
-    {
-        this.fixedFloor = new List<Vector2>();
-    }
-
-    public void SetEntrance(int2 point)
-    {
-        this.fixedFloor.Add(new int2(point.x, point.y));
-    }
-
     /// <summary>
     /// Generates a new Shape;
     /// </summary>
@@ -106,12 +201,12 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator
 
         for (int i = 0; i < iterations; i++)
         {
-            mShape = Step(1, 1, 5, 2, 2, 2);
+            zoneArray = Step(1, 1, 5, 2, 2, 2);
         }
 
         for (int i = 0; i < refiningIterations; i++)
         {
-            mShape = Step(1, 1, 5, 2, 2, -1);
+            zoneArray = Step(1, 1, 5, 2, 2, -1);
         }
 
         IdentifyCaverns();
@@ -119,7 +214,7 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator
         ConnectCaverns();
         CleanUpShape();
 
-        return mShape;
+        return zoneArray;
     }
 
     /// <summary>
@@ -128,7 +223,7 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator
 	private void InitializeShape()
 	{
 		float wallCount = 0f;
-		mShape = new int[width, height];
+		zoneArray = new int[width, height];
 
 		for (int i = 0; i < width; i++)
 		{
@@ -136,10 +231,12 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator
 			{
 				if (Random.Range(0f, 1f) <= initialWallProb)
 				{
-					mShape[i,j] = WALL;
+					zoneArray[i,j] = WALL;
 					wallCount++;
-				} else {
-					mShape[i,j] = FLOOR;
+				}
+				else
+				{
+					zoneArray[i,j] = FLOOR;
 				}
 			}
 		}
@@ -148,8 +245,7 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator
 		{
             for (int i = 0; i < fixedFloor.Count; i++)
             {
-                // Debug.Log("Placing FixedFloor in " + fixedFloor[i]);
-                mShape[(int)fixedFloor[i].x, (int)fixedFloor[i].y] = FIXED_FLOOR;
+                zoneArray[fixedFloor[i].x, fixedFloor[i].y] = FIXED_FLOOR;
             }
         }
 	}
@@ -168,9 +264,9 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator
 	{
 		int[,] result = new int[width, height];
 
-		for (int i = 0; i < mShape.GetLength(0); i++)
+		for (int i = 0; i < zoneArray.GetLength(0); i++)
 		{
-			for (int j = 0; j < mShape.GetLength(1); j++)
+			for (int j = 0; j < zoneArray.GetLength(1); j++)
 			{
 				result[i,j] = PlaceWallLogic(i, j, scopeX1, scopeY1, upperThreshold, scopeX2, scopeY2, lowerThreshold);
 			}
@@ -195,13 +291,13 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator
 	{
 		int result = FLOOR;
 
-        if (mShape[x, y] != FIXED_FLOOR)
+        if (zoneArray[x, y] != FIXED_FLOOR)
         {
             int numWalls1 = CountSurroundingWalls(x, y, scopeX1, scopeY1);
             int numWalls2 = CountSurroundingWalls(x, y, scopeX2, scopeY2);
 
             if (IsBound(x, y) ||
-                (mShape[x, y] == WALL && (numWalls1 >= upperThreshold - 1 || numWalls2 <= lowerThreshold - 1)) ||
+                (zoneArray[x, y] == WALL && (numWalls1 >= upperThreshold - 1 || numWalls2 <= lowerThreshold - 1)) ||
                 (numWalls1 >= upperThreshold || numWalls2 <= lowerThreshold))
             {
                 result = WALL;
@@ -250,28 +346,28 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator
 
 	private bool IsWall(int x, int y)
 	{
-		return IsOutOfBounds(x, y) || mShape[x,y] == WALL;
+		return IsOutOfBounds(x, y) || zoneArray[x,y] == WALL;
 	}
 
 	private bool IsOutOfBounds(int x, int y)
 	{
-		return x < 0 || x >= mShape.GetLength(0) || y < 0 || y >= mShape.GetLength(1);
+		return x < 0 || x >= zoneArray.GetLength(0) || y < 0 || y >= zoneArray.GetLength(1);
 	}
 
 	private bool IsBound(int x, int y)
 	{
-		return x == 0 || y == 0 || x == mShape.GetLength(0)-1 || y == mShape.GetLength(1)-1;
+		return x == 0 || y == 0 || x == zoneArray.GetLength(0)-1 || y == zoneArray.GetLength(1)-1;
 	}
 
 	private int[,] IdentifyCaverns()
 	{
 		int cont = FLOOR + 1;
 
-		for (int i = 0; i < mShape.GetLength(0); i++)
+		for (int i = 0; i < zoneArray.GetLength(0); i++)
 		{
-			for (int j = 0; j < mShape.GetLength(1); j++)
+			for (int j = 0; j < zoneArray.GetLength(1); j++)
 			{
-				if (mShape[i,j] == FLOOR)
+				if (zoneArray[i,j] == FLOOR)
 				{
 					if (FloodFillIsle(i, j, FLOOR, cont) < 2)
 					{
@@ -282,7 +378,7 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator
 						cont++;
 					}
                 }
-                else if (mShape[i, j] == FIXED_FLOOR)
+                else if (zoneArray[i, j] == FIXED_FLOOR)
                 {
                     FloodFillIsle(i, j, FIXED_FLOOR, cont);
                     cont++;
@@ -296,30 +392,30 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator
 			}
 		}
 		
-		return mShape;
+		return zoneArray;
 	}
 	
 	private int FloodFillIsle(int x, int y, int previousValue, int value)
 	{
-		mShape[x,y] = value;
+		zoneArray[x,y] = value;
 		int cont = 1;
 
-		if (!IsOutOfBounds(x, y+1) && mShape[x,y+1] == previousValue)
+		if (!IsOutOfBounds(x, y+1) && zoneArray[x,y+1] == previousValue)
 		{
 			cont += FloodFillIsle(x, y+1, previousValue, value);
 		}
 
-        if (!IsOutOfBounds(x+1, y) && mShape[x + 1, y] == previousValue)
+        if (!IsOutOfBounds(x+1, y) && zoneArray[x + 1, y] == previousValue)
         {
 			cont += FloodFillIsle(x+1, y, previousValue, value);
 		}
 
-        if (!IsOutOfBounds(x, y-1) && mShape[x, y - 1] == previousValue)
+        if (!IsOutOfBounds(x, y-1) && zoneArray[x, y - 1] == previousValue)
         {
 			cont += FloodFillIsle(x, y-1, previousValue, value);
 		}
 
-        if (!IsOutOfBounds(x-1, y) && mShape[x - 1, y] == previousValue)
+        if (!IsOutOfBounds(x-1, y) && zoneArray[x - 1, y] == previousValue)
         {
 			cont += FloodFillIsle(x-1, y, previousValue, value);
 		}
@@ -331,11 +427,11 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator
 	{
 		StringBuilder result = new StringBuilder();
 
-		for (int i = 0; i < this.mShape.GetLength(0); i++)
+		for (int i = 0; i < this.zoneArray.GetLength(0); i++)
 		{
-			for (int j = 0; j < this.mShape.GetLength(1); j++)
+			for (int j = 0; j < this.zoneArray.GetLength(1); j++)
 			{
-				result.Append(mShape[i,j]);
+				result.Append(zoneArray[i,j]);
 			}
 			result.AppendLine();
 		}
@@ -348,18 +444,18 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator
 		List<CellList> result = new List<CellList>();
 		CellList cavernList;
 
-		for (int i = 0; i < mShape.GetLength(0); i++)
+		for (int i = 0; i < zoneArray.GetLength(0); i++)
 		{
-			for (int j = 0; j < mShape.GetLength(1); j++)
+			for (int j = 0; j < zoneArray.GetLength(1); j++)
 			{
-				if (mShape[i,j] > FLOOR)
+				if (zoneArray[i,j] > FLOOR)
 				{
-					if (!result.Exists(x => x.id == mShape[i,j]))
+					if (!result.Exists(x => x.id == zoneArray[i,j]))
 					{
-						result.Add(new CellList(mShape[i,j], new List<Vector2>()));
+						result.Add(new CellList(zoneArray[i,j], new List<Vector2>()));
 					}
 
-					cavernList = result.Find(x => x.id == mShape[i,j]);
+					cavernList = result.Find(x => x.id == zoneArray[i,j]);
 					cavernList.cells.Add(new Vector2(i,j));
 				}
 			}
@@ -402,27 +498,27 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator
 
         if (!IsOutOfBounds(x, y) && !IsBound(x, y))
         {
-            mShape[x, y] = FLOOR;
+            zoneArray[x, y] = FLOOR;
         }
 
         if (!IsOutOfBounds(x - 1, y) && !IsBound(x - 1, y))
         {
-            mShape[x-1, y] = FLOOR;
+            zoneArray[x-1, y] = FLOOR;
         }
 
         if (!IsOutOfBounds(x + 1, y) && !IsBound(x + 1, y))
         {
-            mShape[x+1, y] = FLOOR;
+            zoneArray[x+1, y] = FLOOR;
         }
 
         if (!IsOutOfBounds(x, y - 1) && !IsBound(x, y - 1))
         {
-            mShape[x, y-1] = FLOOR;
+            zoneArray[x, y-1] = FLOOR;
         }
 
         if (!IsOutOfBounds(x, y + 1) && !IsBound(x, y + 1))
         {
-            mShape[x, y+1] = FLOOR;
+            zoneArray[x, y+1] = FLOOR;
         } 
 
         return result;
@@ -476,15 +572,15 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator
         {
             for (int j = 0; j < height; j++)
             {
-                if (mShape[i, j] < FIXED_FLOOR)
+                if (zoneArray[i, j] < FIXED_FLOOR)
                 {
                     if (IsNearAFloorTile(i, j))
                     {
-                        mShape[i, j] = WALL;
+                        zoneArray[i, j] = WALL;
                     }
                     else
                     {
-                        mShape[i, j] = EMPTY;
+                        zoneArray[i, j] = EMPTY;
                     }
                 }
                 // TODO avoid fake passages on diagonals
@@ -496,19 +592,19 @@ public class CavernousShapeGenerator : MonoBehaviour, ShapeGenerator
     {
         bool result = false;
 
-        if ((!IsOutOfBounds(x-1, y) &&  mShape[x-1, y] >= FIXED_FLOOR)
-            || (!IsOutOfBounds(x + 1, y) && mShape[x + 1, y] >= FIXED_FLOOR)
-            || (!IsOutOfBounds(x, y - 1) && mShape[x, y - 1] >= FIXED_FLOOR)
-            || (!IsOutOfBounds(x, y + 1) && mShape[x, y + 1] >= FIXED_FLOOR))
+        if ((!IsOutOfBounds(x-1, y) &&  zoneArray[x-1, y] >= FIXED_FLOOR)
+            || (!IsOutOfBounds(x + 1, y) && zoneArray[x + 1, y] >= FIXED_FLOOR)
+            || (!IsOutOfBounds(x, y - 1) && zoneArray[x, y - 1] >= FIXED_FLOOR)
+            || (!IsOutOfBounds(x, y + 1) && zoneArray[x, y + 1] >= FIXED_FLOOR))
         {
             result = true;
         }
 
         if ((checkDiagonals && !result)
-            && (!IsOutOfBounds(x - 1, y + 1) && mShape[x - 1, y + 1] >= FIXED_FLOOR)
-            && (!IsOutOfBounds(x + 1, y + 1) && mShape[x + 1, y + 1] >= FIXED_FLOOR)
-            && (!IsOutOfBounds(x + 1, y - 1) && mShape[x + 1, y - 1] >= FIXED_FLOOR)
-            && (!IsOutOfBounds(x - 1, y - 1) && mShape[x - 1, y - 1] >= FIXED_FLOOR))
+            && (!IsOutOfBounds(x - 1, y + 1) && zoneArray[x - 1, y + 1] >= FIXED_FLOOR)
+            && (!IsOutOfBounds(x + 1, y + 1) && zoneArray[x + 1, y + 1] >= FIXED_FLOOR)
+            && (!IsOutOfBounds(x + 1, y - 1) && zoneArray[x + 1, y - 1] >= FIXED_FLOOR)
+            && (!IsOutOfBounds(x - 1, y - 1) && zoneArray[x - 1, y - 1] >= FIXED_FLOOR))
         {
             result = true;
         }

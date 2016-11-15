@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 [System.Serializable]
-public class LayoutZone : IEnumerable
+public class Zone : IEnumerable
 {
     private static int id_counter = 0;
 
@@ -11,15 +11,15 @@ public class LayoutZone : IEnumerable
     public readonly int id;
     public RectangleInt bounds;
     public HashSet<int2> tiles;
-    public Dictionary<int2, LayoutZone> connections;
+    public Dictionary<int2, Zone> connections;
 
-    public LayoutZone()
+    public Zone()
     {
         id = id_counter++;
         Init(0, 0, 0, 0);
     }
 
-    public LayoutZone(int x, int y, int width, int height)
+    public Zone(int x, int y, int width, int height)
     {
         id = id_counter++;
         Init(x, y, width, height);
@@ -27,12 +27,12 @@ public class LayoutZone : IEnumerable
 
     private void Init(int x, int y, int width, int height)
     {
-        connections = new Dictionary<int2, LayoutZone>();
+        connections = new Dictionary<int2, Zone>();
         tiles = new HashSet<int2>();
         bounds = new RectangleInt(x, y, width, height);
     }
 
-    public void AddConnectionPoint(int2 point, LayoutZone layoutZone)
+    public void AddConnectionPoint(int2 point, Zone layoutZone)
     {
         connections.Add(point, layoutZone);
     }

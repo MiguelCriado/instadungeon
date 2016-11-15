@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEngine;
 
 [CustomEditor (typeof(MapHandler))]
 public class MapHandlerInspector : Editor {
@@ -73,7 +72,7 @@ public class MapHandlerInspector : Editor {
 
     private void CheckGeneratorsPresence(MapHandler handler)
     {
-        LayoutGenerator[] layoutGenerators = handler.gameObject.GetComponents<LayoutGenerator>();
+        ILayoutGenerator[] layoutGenerators = handler.gameObject.GetComponents<ILayoutGenerator>();
         if (layoutGenerators.Length < 1)
         {
             AddLayoutGenerator(handler);
@@ -81,7 +80,7 @@ public class MapHandlerInspector : Editor {
         {
             EditorGUILayout.HelpBox(ONLY_ONE_LAYOUT_GENERATOR, MessageType.Warning, true);
         }
-        ShapeGenerator[] shapeGenerators = handler.gameObject.GetComponents<ShapeGenerator>();
+        IZoneGenerator[] shapeGenerators = handler.gameObject.GetComponents<IZoneGenerator>();
         if (shapeGenerators.Length < 1)
         {
             AddShapeGenerator(handler);
@@ -106,7 +105,7 @@ public class MapHandlerInspector : Editor {
         switch (handler.shapeType)
         {
             case MapHandler.ShapeType.Cavernous:
-                handler.gameObject.AddComponent<CavernousShapeGenerator>();
+                handler.gameObject.AddComponent<CavernousZoneGenerator>();
                 break;
         }
     }
