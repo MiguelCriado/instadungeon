@@ -154,12 +154,12 @@ public class MapHandler : MonoBehaviour
 
 		int2[] blueprintTiles = blueprint.GetPresentTiles();
 
-		TileMap<MapTile> actualMap = new TileMap<MapTile>();
+		TileMap<TileInfo> actualMap = new TileMap<TileInfo>();
 
 		for (int i = 0; i < blueprintTiles.Length; i++)
 		{
 			int2 tilePosition = blueprintTiles[i];
-			actualMap[tilePosition.x, tilePosition.y] = new MapTile(blueprint[tilePosition.x, tilePosition.y]);
+			actualMap[tilePosition.x, tilePosition.y] = new TileInfo(blueprint[tilePosition.x, tilePosition.y]);
 		}
 
 		OrthogonalTileMapRenderer renderer = GetComponent<OrthogonalTileMapRenderer>();

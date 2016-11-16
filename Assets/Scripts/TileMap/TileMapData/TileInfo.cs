@@ -8,11 +8,11 @@
 	Exit
 }
 
-public class MapTile
+public class TileInfo
 {
 	public TileType TileType { get; private set; }
 
-	public MapTile(TileType type)
+	public TileInfo(TileType type)
 	{
 		TileType = type;
 	}

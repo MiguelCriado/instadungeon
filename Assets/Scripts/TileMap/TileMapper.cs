@@ -13,11 +13,11 @@
 
 	};
 
-	public static Tile GetTile(TileMap<MapTile> map, int2 position, TileSet tileSet)
+	public static Tile GetTile(TileMap<TileInfo> map, int2 position, TileSet tileSet)
 	{
 		Tile result = null;
 
-		MapTile tile = map[position.x, position.y];
+		TileInfo tile = map[position.x, position.y];
 
 		switch (tile.TileType)
 		{
@@ -33,12 +33,12 @@
 		return result;
 	}
 
-	private static byte GetNeighboursMask(TileMap<MapTile> map, int2 position, TileType tileType)
+	private static byte GetNeighboursMask(TileMap<TileInfo> map, int2 position, TileType tileType)
 	{
 		byte result = 0;
 		byte mask = 128; // 10000000
 
-		MapTile neighbour;
+		TileInfo neighbour;
 
 		for (int i = 0; i < neighboursCheck.Length; i++)
 		{

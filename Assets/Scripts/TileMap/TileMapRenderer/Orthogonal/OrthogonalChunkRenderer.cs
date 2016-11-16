@@ -12,7 +12,7 @@ namespace InstaDungeon.TileMap
 		private MeshFilter meshFilter;
 		private MeshRenderer meshRenderer;
 
-		private TileMap<MapTile> map;
+		private TileMap<TileInfo> map;
 		private List<Vector3> vertices;
 		private List<Vector3> normals;
 		private List<Vector2> uv;
@@ -35,7 +35,7 @@ namespace InstaDungeon.TileMap
 			this.material = material;
 		}
 
-		public void BeginBuilding(TileMap<MapTile> map)
+		public void BeginBuilding(TileMap<TileInfo> map)
 		{
 			this.map = map;
 			vertices = new List<Vector3>();

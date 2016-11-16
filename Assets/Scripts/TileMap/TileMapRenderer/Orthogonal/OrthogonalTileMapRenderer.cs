@@ -34,7 +34,7 @@ namespace InstaDungeon.TileMap
 			chunkPool.SetParent(transform);
 		}
 
-		public void BuildMesh(TileMap<MapTile> map)
+		public void BuildMesh(TileMap<TileInfo> map)
 		{
 			RecycleChunks(chunks);
 
