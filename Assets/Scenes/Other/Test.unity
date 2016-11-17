@@ -567,7 +567,7 @@ MonoBehaviour:
   cameraHeight: 3
   screenHeight: 0
   mX: 2
-  pixelsPerUnit: 16
+  pixelsPerUnit: 24
 --- !u!114 &816749044
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -761,12 +761,6 @@ MonoBehaviour:
   width: 3
   zoneWidth: 17
   zoneHeight: 17
-  Entrance:
-    x: 0
-    y: 0
-  Exit:
-    x: 0
-    y: 0
 --- !u!114 &1144452020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -796,8 +790,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 1344549807}
   - 114: {fileID: 1344549808}
-  - 60: {fileID: 1344549810}
-  - 50: {fileID: 1344549809}
   m_Layer: 0
   m_Name: Character
   m_TagString: Player
@@ -836,53 +828,11 @@ MonoBehaviour:
   down: 115
   right: 100
   left: 97
-  freeSpeed: 0.015
+  freeSpeed: 1
   speed: 0
   maxSpeed: 0
   minSpeed: 0
   velocity: {x: 0, y: 0, z: 0}
---- !u!50 &1344549809
-Rigidbody2D:
-  serializedVersion: 2
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1344549806}
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0
-  m_GravityScale: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 4
---- !u!60 &1344549810
-PolygonCollider2D:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1344549806}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0.25}
-  m_Points:
-    m_Paths:
-    - - {x: 0.011654737, y: 0.10978156}
-      - {x: -0.19708358, y: 0.081246436}
-      - {x: -0.5068939, y: 0.00018560886}
-      - {x: -0.5002508, y: -0.18977663}
-      - {x: -0.37562147, y: -0.37434176}
-      - {x: -0.18608806, y: -0.49709368}
-      - {x: 0.18318172, y: -0.49709368}
-      - {x: 0.3692149, y: -0.375}
-      - {x: 0.49646997, y: -0.18652001}
-      - {x: 0.4923659, y: -0.014723003}
-      - {x: 0.19970669, y: 0.08726138}
 --- !u!1001 &1380695285
 Prefab:
   m_ObjectHideFlags: 0

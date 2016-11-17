@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class CameraFollow : MonoBehaviour 
 {
@@ -34,12 +33,10 @@ public class CameraFollow : MonoBehaviour
 		return Mathf.Abs(transform.position.y - player.position.y) > yMargin;
 	}
 
-
-	void FixedUpdate ()
+	void Update()
 	{
 		TrackPlayer();
-	}
-	
+	}	
 	
 	void TrackPlayer ()
 	{
