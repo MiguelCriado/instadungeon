@@ -20,11 +20,13 @@ public static class TileMapExtensions
 			Zone newZone = new Zone(bounds.x, bounds.y, bounds.width, bounds.height);
 
 			var enumerator = zone.GetEnumerator();
+			int2 tile;
 
 			while (enumerator.MoveNext())
 			{
-				newZone.tiles.Add(enumerator.Current);
-				result.Add(enumerator.Current, conversionFunction(map[enumerator.Current.x, enumerator.Current.y]));
+				tile = enumerator.Current;
+				newZone.tiles.Add(tile);
+				result.Add(tile, conversionFunction(map[tile.x, tile.y]));
 			}
 
 			resultLayout.Add(newZone);
@@ -61,7 +63,6 @@ public static class TileMapExtensions
 		for (int i = 0; i < mapGraph.Count; i++)
 		{
 			zone = mapGraph.Nodes[i].Value;
-			GraphNode<Zone> mapZoneNode = mapGraph.Nodes.FindByValue(zone) as GraphNode<Zone>;
 			resultZone = resultLayout.FindZoneByPosition(zone.bounds.position);
 
 			int2 connectionPoint;

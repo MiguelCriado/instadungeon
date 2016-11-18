@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class ActorController : MonoBehaviour
+public class ActorControllerDeprecated : MonoBehaviour
 {
     public bool useZVector;
 	public float speedDamping = 0.87f;

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace InstaDungeon.TileMap
 {
 	[RequireComponent(typeof(TileSetBehaviour))]
-	public class OrthogonalTileMapRenderer : MonoBehaviour
+	public class OrthogonalTileMapRenderer : MonoBehaviour, ITileMapRenderer
 	{
 		public float TileScale { get { return tileScale; } }
 		public int2 ChunkSize { get { return chunkSize; } }
@@ -34,7 +34,7 @@ namespace InstaDungeon.TileMap
 			chunkPool.SetParent(transform);
 		}
 
-		public void BuildMesh(TileMap<TileInfo> map)
+		public void RenderMap(TileMap<Cell> map)
 		{
 			RecycleChunks(chunks);
 
@@ -69,7 +69,19 @@ namespace InstaDungeon.TileMap
 				chunkRenderer.Value.FinishBuilding();
 			}
 		}
-		
+
+		public Vector3 TileMapToWorldPosition(Vector2 tileMapPosition)
+		{
+			return tileMapPosition * tileScale;
+		}
+
+		public int2 WorldToTileMapPosition(Vector3 worldPosition)
+		{
+			Vector3 scaledPosition = worldPosition / tileScale;
+			int2 result = new int2(Mathf.FloorToInt(scaledPosition.x), Mathf.FloorToInt(scaledPosition.y));
+			return result;
+		}
+
 		private int2 GetChunkId(int2 tilePosition)
 		{
 			return new int2(tilePosition.x / chunkSize.x, tilePosition.y / chunkSize.y);

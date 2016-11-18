@@ -1,23 +1,18 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-[CustomEditor (typeof(MapHandler))]
-public class MapHandlerInspector : Editor {
-
+[CustomEditor (typeof(MapGenerator))]
+public class MapHandlerInspector : Editor
+{
     private static GUIContent generateButtonText = new GUIContent("Generate Map!");
-    private static GUIContent tilePrefabFoldoutText = new GUIContent("Custom blocks");
     private static string ONLY_ONE_LAYOUT_GENERATOR = "There should only be one (1) Layout Generator attached to this object.";
     private static string ONLY_ONE_SHAPE_GENERATOR = "There should only be one (1) Shape Generator attached to this object.";
-
-    private bool showTilePrefabs = false;
 
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
-        MapHandler handler = target as MapHandler;
+        MapGenerator handler = target as MapGenerator;
         CheckGeneratorsPresence(handler);
-        // DungeonType
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("dungeonType"));
 
         // Generators
         EditorGUILayout.PropertyField(serializedObject.FindProperty("layoutType"));
@@ -25,39 +20,18 @@ public class MapHandlerInspector : Editor {
 
         // RandomSeed row
         GUILayout.BeginHorizontal();
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("customSeed"), true);
-        if (!handler.customSeed) GUI.enabled = false;
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("levelSeed"),GUIContent.none);
-        GUI.enabled = true;
-        GUILayout.EndHorizontal();
+		{
+			EditorGUILayout.PropertyField(serializedObject.FindProperty("customSeed"), true);
 
-        // Tile Prefabs
-        showTilePrefabs = EditorGUILayout.Foldout(showTilePrefabs, tilePrefabFoldoutText);
-        if (showTilePrefabs)
-        {
-            switch (handler.dungeonType)
-            {
-                case MapHandler.DungeonType._3D:
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("floorPrefab_3D"));
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("wallPrefab_3D"));
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("entranceStairs_3D"));
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("exitStairs_3D"));
-                    break;
-                case MapHandler.DungeonType.Isometric:
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("floorPrefab_iso"));
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("wallPrefab_iso"));
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("entranceStairs_iso"));
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("exitStairs_iso"));
-                    break;
-                case MapHandler.DungeonType.Orthogonal:
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("floorPrefab_ortho"));
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("wallPrefab_ortho"));
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("entranceStairs_ortho"));
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("exitStairs_ortho"));
-                    break;
-            }
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("player"));
-        }
+			if (!handler.customSeed)
+			{
+				GUI.enabled = false;
+			}
+
+			EditorGUILayout.PropertyField(serializedObject.FindProperty("levelSeed"), GUIContent.none);
+			GUI.enabled = true;
+		}
+        GUILayout.EndHorizontal();
 
         // Generate Dungeon button
         if (Application.isPlaying)
@@ -67,44 +41,50 @@ public class MapHandlerInspector : Editor {
 				handler.GenerateNewMap();
             }
         }
+
         serializedObject.ApplyModifiedProperties();
     }
 
-    private void CheckGeneratorsPresence(MapHandler handler)
+    private void CheckGeneratorsPresence(MapGenerator handler)
     {
         ILayoutGenerator[] layoutGenerators = handler.gameObject.GetComponents<ILayoutGenerator>();
+
         if (layoutGenerators.Length < 1)
         {
             AddLayoutGenerator(handler);
-        } else if (layoutGenerators.Length > 1)
+        }
+		else if (layoutGenerators.Length > 1)
         {
             EditorGUILayout.HelpBox(ONLY_ONE_LAYOUT_GENERATOR, MessageType.Warning, true);
         }
+
         IZoneGenerator[] shapeGenerators = handler.gameObject.GetComponents<IZoneGenerator>();
+
         if (shapeGenerators.Length < 1)
         {
             AddShapeGenerator(handler);
-        } else if (shapeGenerators.Length > 1)
+        }
+		else if (shapeGenerators.Length > 1)
         {
             EditorGUILayout.HelpBox(ONLY_ONE_SHAPE_GENERATOR, MessageType.Warning, true);
         }
     }
 
-    private void AddLayoutGenerator(MapHandler handler)
+    private void AddLayoutGenerator(MapGenerator handler)
     {
         switch (handler.layoutType)
         {
-            case MapHandler.LayoutType.Hilbert:
+            case MapGenerator.LayoutType.Hilbert:
                 handler.gameObject.AddComponent<HilbertLayoutGenerator>();
                 break;
         }
     }
 
-    private void AddShapeGenerator(MapHandler handler)
+    private void AddShapeGenerator(MapGenerator handler)
     {
         switch (handler.shapeType)
         {
-            case MapHandler.ShapeType.Cavernous:
+            case MapGenerator.ShapeType.Cavernous:
                 handler.gameObject.AddComponent<CavernousZoneGenerator>();
                 break;
         }

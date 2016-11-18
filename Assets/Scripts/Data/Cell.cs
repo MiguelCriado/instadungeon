@@ -14,7 +14,7 @@ public class Cell
 
 	public Cell(TileInfo tileInfo)
 	{
-		TileInfo = TileInfo;
+		TileInfo = tileInfo;
 		items = new List<GameObject>();
 	}
 

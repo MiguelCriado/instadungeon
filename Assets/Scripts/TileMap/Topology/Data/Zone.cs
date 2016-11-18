@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-[System.Serializable]
 public class Zone : IEnumerable
 {
     private static int id_counter = 0;
