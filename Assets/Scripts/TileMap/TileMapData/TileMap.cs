@@ -2,27 +2,19 @@
 
 public class TileMap<T>
 {
+	public Layout Layout { get { return layout; } set { layout = value; } }
 	public int2 Min { get { return min; } }
 	public int2 Max { get { return max; } }
+	public int2 SpawnPoint { get; set; }
+	public int2 ExitPoint { get; set; }
 
-	public Layout Layout
-	{
-		get { return layout; }
+	private Dictionary<int2, T> tiles;
+	private Layout layout;
 
-		set { layout = value; }
-	}
-
-    public int2 spawnPoint;
-    public int2 exitPoint;
-
-    private Dictionary<int2, T> tiles;
-
-    private Layout layout;
-
-	private int2 accessor = int2.zero;
 	private int2 min = new int2(int.MaxValue, int.MaxValue);
 	private int2 max = new int2(int.MinValue, int.MinValue);
 
+	private int2 accessor = int2.zero;
 	private bool dirty;
 	private int2[] cachedPresentTiles;
 

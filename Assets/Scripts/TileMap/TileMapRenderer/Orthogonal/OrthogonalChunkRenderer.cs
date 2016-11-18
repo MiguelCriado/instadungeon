@@ -4,7 +4,7 @@ using UnityEngine;
 namespace InstaDungeon.TileMap
 {
 	[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
-	public class OrthogonalChunkRenderer : MonoBehaviour
+	public class OrthogonalChunkRenderer : MonoBehaviour, IChunkRenderer
 	{
 		private OrthogonalTileMapRenderer tileMapRenderer;
 		private TileSet tileSet;
@@ -12,7 +12,7 @@ namespace InstaDungeon.TileMap
 		private MeshFilter meshFilter;
 		private MeshRenderer meshRenderer;
 
-		private TileMap<MapTile> map;
+		private TileMap<Cell> map;
 		private List<Vector3> vertices;
 		private List<Vector3> normals;
 		private List<Vector2> uv;
@@ -35,7 +35,7 @@ namespace InstaDungeon.TileMap
 			this.material = material;
 		}
 
-		public void BeginBuilding(TileMap<MapTile> map)
+		public void BeginBuilding(TileMap<Cell> map)
 		{
 			this.map = map;
 			vertices = new List<Vector3>();

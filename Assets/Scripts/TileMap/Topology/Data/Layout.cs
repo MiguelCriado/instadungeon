@@ -1,5 +1,4 @@
-﻿[System.Serializable]
-public class Layout 
+﻿public class Layout 
 {
     public Zone InitialZone;
     public Zone FinalZone;

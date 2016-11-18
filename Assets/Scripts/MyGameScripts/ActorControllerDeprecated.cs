@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class ActorController : MonoBehaviour
+public class ActorControllerDeprecated : MonoBehaviour
 {
     public bool useZVector;
 	public float speedDamping = 0.87f;
@@ -24,10 +24,6 @@ public class ActorController : MonoBehaviour
 	void Update ()
 	{
 		GetInput();
-	}
-
-	void FixedUpdate()
-	{
 		UpdatePosition();
 	}
 
@@ -38,15 +34,17 @@ public class ActorController : MonoBehaviour
 
 	void UpdateVelocity()
 	{
+		float deltaSpeed = speed * Time.deltaTime;
+
 		if (Input.GetKey(up))
 		{
             if (useZVector)
             {
-                velocity.z += speed;
+                velocity.z += deltaSpeed;
             }
             else
             {
-                velocity.y += speed;
+                velocity.y += deltaSpeed;
             }
 		}
 
@@ -54,22 +52,22 @@ public class ActorController : MonoBehaviour
 		{
             if (useZVector)
             {
-                velocity.z -= speed;
+                velocity.z -= deltaSpeed;
             }
             else
             {
-                velocity.y -= speed;
+                velocity.y -= deltaSpeed;
             }
 		}
 
 		if (Input.GetKey(right))
 		{
-			velocity.x += speed;
+			velocity.x += deltaSpeed;
 		}
 
 		if (Input.GetKey(left))
 		{
-			velocity.x -= speed;
+			velocity.x -= deltaSpeed;
 		}
 
 		Vector3.ClampMagnitude(velocity, maxSpeed);

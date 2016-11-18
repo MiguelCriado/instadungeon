@@ -43,7 +43,8 @@ public class SquareGrid : WeightedGraph<Vector2Int>
 
     public int Cost(Vector2Int a, Vector2Int b)
     {
-        return GameManager.Instance.GetTile(b.x, b.y).Cost();
+		// TODO: calculate cost
+		return 0;
     }
 
     public IEnumerable<Vector2Int> Neighbors(Vector2Int id)

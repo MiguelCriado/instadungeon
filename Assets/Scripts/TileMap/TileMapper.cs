@@ -13,38 +13,42 @@
 
 	};
 
-	public static Tile GetTile(TileMap<MapTile> map, int2 position, TileSet tileSet)
+	public static Tile GetTile(TileMap<Cell> map, int2 position, TileSet tileSet)
 	{
 		Tile result = null;
+		Cell cell = map[position.x, position.y];
 
-		MapTile tile = map[position.x, position.y];
-
-		switch (tile.TileType)
+		if (cell != null)
 		{
-			default:
-			case TileType.Space: break;
-			case TileType.Floor: result = tileSet.GetTile(0); break;
-			case TileType.Wall:
-				result = tileSet.GetTile("wall", GetNeighboursMask(map, position, TileType.Wall));
-				break;
-			case TileType.Door: result = tileSet.GetTile(1); break;
+			TileInfo tile = cell.TileInfo;
+
+			switch (tile.TileType)
+			{
+				default:
+				case TileType.Space: break;
+				case TileType.Floor: result = tileSet.GetTile(0); break;
+				case TileType.Wall:
+					result = tileSet.GetTile("wall", GetNeighboursMask(map, position, TileType.Wall));
+					break;
+				case TileType.Door: result = tileSet.GetTile(1); break;
+			}
 		}
 
 		return result;
 	}
 
-	private static byte GetNeighboursMask(TileMap<MapTile> map, int2 position, TileType tileType)
+	private static byte GetNeighboursMask(TileMap<Cell> map, int2 position, TileType tileType)
 	{
 		byte result = 0;
 		byte mask = 128; // 10000000
 
-		MapTile neighbour;
+		Cell neighbour;
 
 		for (int i = 0; i < neighboursCheck.Length; i++)
 		{
 			neighbour = map[position.x + neighboursCheck[i].x, position.y + neighboursCheck[i].y];
 
-			if (neighbour != null && neighbour.TileType == tileType)
+			if (neighbour != null && neighbour.TileInfo != null && neighbour.TileInfo.TileType == tileType)
 			{
 				result += mask;
 			}
