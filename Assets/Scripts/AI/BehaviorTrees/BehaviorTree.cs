@@ -12,7 +12,6 @@ namespace AI.BehaviorTrees
 		private BaseNode root;
 		private Tick tick;
 
-
 		public BehaviorTree(BaseNode root)
 		{
 			Id = Guid.NewGuid().ToString();

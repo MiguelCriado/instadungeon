@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace AI.BehaviorTrees
 {
@@ -61,7 +62,12 @@ namespace AI.BehaviorTrees
 		private void OpenWrapper(Tick tick)
 		{
 			tick.OpenNode(this);
+			string isOpen = IS_OPEN;
+			string treeId = tick.Tree.Id;
+			string nodeId = Id;
+			Profiler.BeginSample("Jauri fuera!!!!");
 			tick.Blackboard.Set(IS_OPEN, true, tick.Tree.Id, Id);
+			Profiler.EndSample();
 			Open(tick);
 		}
 

@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class MapManager : MonoBehaviour
+public class MapManager
 {
 	public TileMap<Cell> Map { get { return map; } }
 
 	private TileMap<Cell> map;
 	private Dictionary<int, GameObject> entities;
 
-	protected void Awake()
+	public MapManager()
 	{
 		entities = new Dictionary<int, GameObject>();
 	}

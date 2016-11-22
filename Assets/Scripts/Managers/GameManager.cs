@@ -1,20 +1,32 @@
-﻿using UnityEngine;
+﻿using AI.BehaviorTrees;
+using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
 	private MapManager mapManager;
+	private TurnManager turnManager;
 	private ITileMapRenderer mapRenderer;
 	private MapGenerator mapGenerator;
+
+	private BehaviorTree turnTree;
+	private Blackboard turnBlackboard;
 
 	void Start()
 	{
 		Initialize();
 		GenerateNewMap();
+		StartUpTurnSystem();
+	}
+
+	void Update()
+	{
+		turnTree.Tick(turnManager, turnBlackboard);
 	}
 
 	public void Initialize()
 	{
-		mapManager = FindObjectOfType<MapManager>();
+		mapManager = new MapManager();
+		turnManager = new TurnManager();
 
 		GameObject mapRendererObject = GameObject.FindGameObjectWithTag("TileMapRenderer");
 
@@ -51,5 +63,24 @@ public class GameManager : Singleton<GameManager>
 	public static void MoveActorTo(GameObject actor, int2 position)
 	{
 		Instance.mapManager.MoveTo(actor, position);
+	}
+
+	private void StartUpTurnSystem()
+	{
+		GameObject player = GameObject.FindGameObjectWithTag("Player");
+
+		turnManager.AddActor(player);
+		turnBlackboard = new Blackboard();
+
+		turnTree = new BehaviorTree
+			(
+				new Sequence
+				(
+					new Inverter(new IsLevelCompletedCondition()),
+					new ManageTurnAction()
+				)
+			);
+
+		turnManager.Init();
 	}
 }

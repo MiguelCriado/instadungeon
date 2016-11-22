@@ -9,6 +9,7 @@ namespace AI.BehaviorTrees
 
 		private Dictionary<string, object> baseMemory;
 		private Dictionary<string, object> treeMemory;
+		private Dictionary<string, object> memory;
 
 		public Blackboard()
 		{
@@ -16,19 +17,18 @@ namespace AI.BehaviorTrees
 			treeMemory = new Dictionary<string, object>();
 		}
 
-		public void Set(string key, object value, string treeScope, string nodeScope)
+		public void Set<T>(string key, T value, string treeScope, string nodeScope)
 		{
-			Dictionary<string, object> memory = GetMemory(treeScope, nodeScope);
-
+			memory = GetMemory(treeScope, nodeScope);
 			memory[key] = value;
 		}
 
-		public void Set(string key, object value)
+		public void Set<T>(string key, T value)
 		{
 			Set(key, value, null, null);
 		}
 
-		public void Set(string key, object value, string treeScope)
+		public void Set<T>(string key, T value, string treeScope)
 		{
 			Set(key, value, treeScope, null);
 		}
@@ -37,7 +37,7 @@ namespace AI.BehaviorTrees
 		{
 			bool result = false;
 
-			Dictionary<string, object> memory = GetMemory(treeScope, nodeScope);
+			memory = GetMemory(treeScope, nodeScope);
 
 			object returnValue;
 

@@ -4,6 +4,10 @@
 	{
 		private static readonly string RUNNING_CHILD = "runningChild";
 
+		public MemPriority(params BaseNode[] children) : base(children)
+		{
+		}
+
 		protected override void Open(Tick tick)
 		{
 			base.Open(tick);
