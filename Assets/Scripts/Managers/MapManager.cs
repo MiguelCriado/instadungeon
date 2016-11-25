@@ -42,26 +42,21 @@ public class MapManager
 		return result;
 	}
 
-	public bool Spawn(GameObject entity, int2 position)
+	public bool Spawn(MoveActorCommand spawnCommand)
 	{
 		bool result = false;
 
-		CellTransform cellTransform = entity.GetComponent<CellTransform>();
-
-		if (cellTransform == null)
-		{
-			throw new System.Exception("Every entity must contain a CellTransform component in order to be handled by a MapManager");
-		}
+		GameObject entity = spawnCommand.ActorTransform.gameObject;
 
 		if (!entities.ContainsKey(entity.GetInstanceID()))
 		{
-			Cell spawnPoint = map[position.x, position.y];
+			Cell spawnPoint = map[spawnCommand.Position.x, spawnCommand.Position.y];
 
 			if (spawnPoint != null && spawnPoint.Entity == null)
 			{
-				spawnPoint.Entity = entity;
+				spawnPoint.Entity = spawnCommand.ActorTransform.gameObject;
 				entities.Add(entity.GetInstanceID(), entity);
-				cellTransform.Position = position;
+				spawnCommand.Execute();
 				result = true;
 			}
 		}
@@ -69,19 +64,23 @@ public class MapManager
 		return result;
 	}
 
-	public bool MoveTo(GameObject entity, int2 position)
+	public bool MoveTo(MoveActorCommand moveCommand)
 	{
 		bool result = false;
 
+		GameObject entity = moveCommand.ActorTransform.gameObject;
+
 		if (entities.ContainsKey(entity.GetInstanceID()))
 		{
-			CellTransform cellTransform = entity.GetComponent<CellTransform>();
-			Cell movePoint = map[position.x, position.y];
+			Cell currentPoint = map[moveCommand.ActorTransform.Position.x, moveCommand.ActorTransform.Position.y];
+			Cell movePoint = map[moveCommand.Position.x, moveCommand.Position.y];
 
-			if (movePoint != null && movePoint.Entity == null)
+			if (movePoint != null && movePoint.Entity == null
+				&& currentPoint != null && currentPoint.Entity == entity)
 			{
+				currentPoint.Entity = null;
 				movePoint.Entity = entity;
-				cellTransform.Position = position;
+				moveCommand.Execute();
 				result = true;
 			}
 		}

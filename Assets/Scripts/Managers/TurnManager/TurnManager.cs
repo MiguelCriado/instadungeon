@@ -47,6 +47,7 @@ public class TurnManager
 		token.Round = 0;
 		token.Turn = 0;
 		running = true;
+		turnDone = true;
 	}
 
 	public void StartRound()

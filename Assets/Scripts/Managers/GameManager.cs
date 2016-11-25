@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
+	public CellTransform player; // TODO: remove this from here
+
 	private MapManager mapManager;
 	private TurnManager turnManager;
 	private ITileMapRenderer mapRenderer;
@@ -15,6 +17,7 @@ public class GameManager : Singleton<GameManager>
 	{
 		Initialize();
 		GenerateNewMap();
+		InitializePlayer();
 		StartUpTurnSystem();
 	}
 
@@ -60,16 +63,38 @@ public class GameManager : Singleton<GameManager>
 		mapRenderer.RenderMap(mapManager.Map);
 	}
 
-	public static void MoveActorTo(GameObject actor, int2 position)
+	public void InitializePlayer()
 	{
-		Instance.mapManager.MoveTo(actor, position);
+		mapManager.Spawn(new MoveActorCommand(player, mapManager.Map.SpawnPoint));
+
+		TurnComponent playerTurn = player.GetComponent<TurnComponent>();
+
+		if (playerTurn != null)
+		{
+			turnManager.AddActor(playerTurn);
+		}
+	}
+
+	public static bool MoveActor(MoveActorCommand moveCommand)
+	{
+		bool result = false;
+
+		if (Instance.mapManager.MoveTo(moveCommand))
+		{
+			moveCommand.Execute();
+			result = true;
+		}
+
+		return result;
+	}
+
+	public static Vector3 CellToWorld(int2 position)
+	{
+		return Instance.mapRenderer.TileMapToWorldPosition(position);
 	}
 
 	private void StartUpTurnSystem()
 	{
-		GameObject player = GameObject.FindGameObjectWithTag("Player");
-
-		turnManager.AddActor(player);
 		turnBlackboard = new Blackboard();
 
 		turnTree = new BehaviorTree

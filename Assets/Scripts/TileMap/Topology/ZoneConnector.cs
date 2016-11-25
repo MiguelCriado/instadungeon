@@ -19,8 +19,8 @@ public static class ZoneConnector
 			result = zoneGenerator.PostConnectZones(result);
 		}
 
-		result = zoneGenerator.PlaceStairs(layout.InitialZone, result);
-		result = zoneGenerator.PlaceStairs(layout.FinalZone, result);
+		result.SpawnPoint = zoneGenerator.PlaceStairs(layout.InitialZone, result);
+		result.ExitPoint = zoneGenerator.PlaceStairs(layout.FinalZone, result);
 
 		return result;
 	}
