@@ -66,7 +66,14 @@ public class MapGenerator : MonoBehaviour
 
 		TileMap<Cell> actualMap = blueprint.Convert((TileType cellType) => 
 		{
-			return new Cell(new TileInfo(cellType));
+			bool walkable = true;
+
+			if (cellType == TileType.Wall)
+			{
+				walkable = false;
+			}
+
+			return new Cell(new TileInfo(cellType, walkable));
 		});
 
 		ITileMapRenderer tileMapRenderer = GetComponent<ITileMapRenderer>();

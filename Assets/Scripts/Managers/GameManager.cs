@@ -56,7 +56,14 @@ public class GameManager : Singleton<GameManager>
 
 		TileMap<TileInfo> tileInfoMap = blueprintMap.Convert((TileType cellType) =>
 		{
-			return new TileInfo(cellType);
+			bool walkable = true;
+
+			if (cellType == TileType.Wall)
+			{
+				walkable = false;
+			}
+
+			return new TileInfo(cellType, walkable);
 		}); // TODO: work a way to avoid this conversion
 
 		mapManager.Initialize(tileInfoMap);

@@ -52,7 +52,7 @@ public class MapManager
 		{
 			Cell spawnPoint = map[spawnCommand.Position.x, spawnCommand.Position.y];
 
-			if (spawnPoint != null && spawnPoint.Entity == null)
+			if (spawnPoint != null && spawnPoint.TileInfo.Walkable && spawnPoint.Entity == null)
 			{
 				spawnPoint.Entity = spawnCommand.ActorTransform.gameObject;
 				entities.Add(entity.GetInstanceID(), entity);
@@ -75,7 +75,7 @@ public class MapManager
 			Cell currentPoint = map[moveCommand.ActorTransform.Position.x, moveCommand.ActorTransform.Position.y];
 			Cell movePoint = map[moveCommand.Position.x, moveCommand.Position.y];
 
-			if (movePoint != null && movePoint.Entity == null
+			if (movePoint != null && movePoint.TileInfo.Walkable && movePoint.Entity == null
 				&& currentPoint != null && currentPoint.Entity == entity)
 			{
 				currentPoint.Entity = null;
