@@ -70,6 +70,11 @@ namespace InstaDungeon.TileMap
 			}
 		}
 
+		public Vector3 SnappedTileMapToWorldPosition(int2 tileMapPosition)
+		{
+			return (tileMapPosition * tileScale) + Vector2.one * (tileScale / 2f);
+		}
+
 		public Vector3 TileMapToWorldPosition(Vector2 tileMapPosition)
 		{
 			return tileMapPosition * tileScale;

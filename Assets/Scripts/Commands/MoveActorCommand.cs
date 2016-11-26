@@ -1,27 +1,27 @@
 ﻿public class MoveActorCommand : Command
 {
-	private CellTransform actorTransform;
-	private int2 lastPosition;
-	private int2 position;
+	public CellTransform ActorTransform { get; private set; }
+	public int2 LastPosition { get; private set; }
+	public int2 Position { get; private set; }
 
 	public MoveActorCommand(CellTransform actorTransform, int2 position)
 	{
-		this.actorTransform = actorTransform;
-		this.position = position;
+		ActorTransform = actorTransform;
+		Position = position;
 	}
 
 	public override void Execute()
 	{
 		base.Execute();
 
-		lastPosition = actorTransform.Position;
-		actorTransform.MoveTo(position);
+		LastPosition = ActorTransform.Position;
+		ActorTransform.MoveTo(Position);
 	}
 
 	public override void Undo()
 	{
 		base.Undo();
 
-		actorTransform.MoveTo(lastPosition);
+		ActorTransform.MoveTo(LastPosition);
 	}
 }

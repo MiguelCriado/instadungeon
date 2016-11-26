@@ -86,6 +86,11 @@ public static class TileMapExtensions
 		resultLayout.InitialZone = resultLayout.FindZoneByPosition(map.Layout.InitialZone.bounds.position);
 		resultLayout.FinalZone = resultLayout.FindZoneByPosition(map.Layout.FinalZone.bounds.position);
 
+		// Set Spawn & Exit zones
+
+		result.SpawnPoint = map.SpawnPoint;
+		result.ExitPoint = map.ExitPoint;
+
 		return result;
 	}
 

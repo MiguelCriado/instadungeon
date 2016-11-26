@@ -1,24 +1,53 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public class CameraHeightCorrector : MonoBehaviour {
+public class CameraHeightCorrector : MonoBehaviour
+{
+	[Range(1, 10), SerializeField]
+	private int zoom = 2;
+	[SerializeField]
+	private float pixelsPerUnit = 24;
 
-	public float cameraHeight = 10f;
-	public float screenHeight;
-	public float mX;
-	public float pixelsPerUnit = 32;
+	private Camera targetCamera;
+	private int lastScreenHeight;
 
+	void OnValidate()
+	{
+		Initialize();
+	}
 
-	// Use this for initialization
-	void Start () {
-		screenHeight = Screen.height;
-		//float x = Screen.height / (cameraHeight*pixelsPerUnit);
-		GetComponent<Camera>().orthographicSize = Screen.height/(pixelsPerUnit*mX);
+	void Start ()
+	{
+		Initialize();
 	}
 	
-	// Update is called once per frame
-	void Update () {
-        screenHeight = Screen.height;
-		GetComponent<Camera>().orthographicSize = Screen.height/(pixelsPerUnit*mX);
+	void Update ()
+	{
+		if (Screen.height != lastScreenHeight)
+		{
+			UpdateOrthographicSize();
+		}
+
+		lastScreenHeight = Screen.height;
+	}
+
+	private void Initialize()
+	{
+		if (zoom < 1)
+		{
+			zoom = 1;
+		}
+
+		if (targetCamera == null)
+		{
+			targetCamera = GetComponent<Camera>();
+		}
+
+		UpdateOrthographicSize();
+		lastScreenHeight = Screen.height;
+	}
+
+	private void UpdateOrthographicSize()
+	{
+		targetCamera.orthographicSize = Screen.height / (pixelsPerUnit * zoom);
 	}
 }
