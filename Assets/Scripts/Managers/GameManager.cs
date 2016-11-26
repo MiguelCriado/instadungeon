@@ -90,7 +90,7 @@ public class GameManager : Singleton<GameManager>
 
 	public static Vector3 CellToWorld(int2 position)
 	{
-		return Instance.mapRenderer.TileMapToWorldPosition(position);
+		return Instance.mapRenderer.SnappedTileMapToWorldPosition(position);
 	}
 
 	private void StartUpTurnSystem()
