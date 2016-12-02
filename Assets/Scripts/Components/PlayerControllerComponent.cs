@@ -49,25 +49,21 @@ public class PlayerControllerComponent : MonoBehaviour
 	{
 		if (Input.GetKeyDown(up))
 		{
-			Debug.Log("Move up!!");
 			return moveUp;
 		}
 
 		if (Input.GetKeyDown(right))
 		{
-			Debug.Log("Move right!!");
 			return moveRight;
 		}
 
 		if (Input.GetKeyDown(down))
 		{
-			Debug.Log("Move down!!");
 			return moveDown;
 		}
 
 		if (Input.GetKeyDown(left))
 		{
-			Debug.Log("Move left!!");
 			return moveLeft;
 		}
 

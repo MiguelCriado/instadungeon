@@ -10,7 +10,6 @@
 		new int2(0, -1),
 		new int2(-1, -1),
 		new int2(-1, 0)
-
 	};
 
 	public static Tile GetTile(TileMap<Cell> map, int2 position, TileSet tileSet)

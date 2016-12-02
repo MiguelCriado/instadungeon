@@ -16,14 +16,42 @@ public class GameManager : Singleton<GameManager>
 	void Start()
 	{
 		Initialize();
-		GenerateNewMap();
-		InitializePlayer();
+		LoadNewMap();
 		StartUpTurnSystem();
 	}
 
 	void Update()
 	{
 		turnTree.Tick(turnManager, turnBlackboard);
+	}
+
+	public static void LoadNewMap()
+	{
+		Instance.GenerateNewMap();
+		Instance.InitializePlayer();
+	}
+
+	public static bool MoveActor(MoveActorCommand moveCommand)
+	{
+		bool result = false;
+
+		if (Instance.mapManager.MoveTo(moveCommand))
+		{
+			moveCommand.Execute();
+			result = true;
+		}
+
+		return result;
+	}
+
+	public static Vector3 CellToWorld(int2 position)
+	{
+		return Instance.mapRenderer.SnappedTileMapToWorldPosition(position);
+	}
+
+	public static Cell GetCell(int x, int y)
+	{
+		return Instance.mapManager[x, y];
 	}
 
 	public void Initialize()
@@ -82,35 +110,22 @@ public class GameManager : Singleton<GameManager>
 		}
 	}
 
-	public static bool MoveActor(MoveActorCommand moveCommand)
-	{
-		bool result = false;
-
-		if (Instance.mapManager.MoveTo(moveCommand))
-		{
-			moveCommand.Execute();
-			result = true;
-		}
-
-		return result;
-	}
-
-	public static Vector3 CellToWorld(int2 position)
-	{
-		return Instance.mapRenderer.SnappedTileMapToWorldPosition(position);
-	}
-
 	private void StartUpTurnSystem()
 	{
 		turnBlackboard = new Blackboard();
 
 		turnTree = new BehaviorTree
 			(
-				new Sequence
+				new Priority
 				(
-					new Inverter(new IsLevelCompletedCondition()),
-					new ManageTurnAction()
+					new Sequence
+					(
+						new Inverter(new IsLevelCompletedCondition()),
+						new ManageTurnAction()
+					),
+					new LoadNewLevelAction()
 				)
+				
 			);
 
 		turnManager.Init();
