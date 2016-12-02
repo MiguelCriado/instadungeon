@@ -10,7 +10,6 @@
 		new int2(0, -1),
 		new int2(-1, -1),
 		new int2(-1, 0)
-
 	};
 
 	public static Tile GetTile(TileMap<Cell> map, int2 position, TileSet tileSet)
@@ -26,11 +25,13 @@
 			{
 				default:
 				case TileType.Space: break;
-				case TileType.Floor: result = tileSet.GetTile(0); break;
+				case TileType.Floor: result = tileSet.GetTile(9); break;
 				case TileType.Wall:
 					result = tileSet.GetTile("wall", GetNeighboursMask(map, position, TileType.Wall));
 					break;
 				case TileType.Door: result = tileSet.GetTile(1); break;
+				case TileType.Entrance: result = tileSet.GetTile(23); break;
+				case TileType.Exit: result = tileSet.GetTile(22); break;
 			}
 		}
 

@@ -25,8 +25,6 @@ public class TurnComponent : MonoBehaviour
 		{
 			OnTurnGranted.Invoke(this);
 		}
-
-		Debug.Log(string.Format("{0} has been granted the turn", gameObject.name));
 	}
 
 	public void RevokeTurn(TurnToken token)
@@ -37,8 +35,6 @@ public class TurnComponent : MonoBehaviour
 		{
 			OnTurnRevoked.Invoke(this);
 		}
-
-		Debug.Log(string.Format("{0} has been revoked the turn", gameObject.name));
 	}
 
 	public void TurnDone()
