@@ -1,22 +1,26 @@
-﻿using UnityEngine;
+﻿using InstaDungeon.Commands;
+using UnityEngine;
 
-[RequireComponent(typeof(CellTransform))]
-public class LocomotionComponent : MonoBehaviour
+namespace InstaDungeon.Components
 {
-	private CellTransform cellTransform;
-
-	void Awake()
+	[RequireComponent(typeof(CellTransform))]
+	public class LocomotionComponent : MonoBehaviour
 	{
-		cellTransform = GetComponent<CellTransform>();
+		private CellTransform cellTransform;
+
+		void Awake()
+		{
+			cellTransform = GetComponent<CellTransform>();
+		}
+
+		public bool Move(int xStep, int yStep)
+		{
+			return Move(new int2(xStep, yStep));
+		}
+
+		public bool Move(int2 step)
+		{
+			return GameManager.MoveActor(new MoveActorCommand(cellTransform, cellTransform.Position + step));
+		}
 	}
-
-	public bool Move(int xStep, int yStep)
-	{
-		return Move(new int2(xStep, yStep));
-	}
-
-	public bool Move(int2 step)
-	{
-		return GameManager.MoveActor(new MoveActorCommand(cellTransform, cellTransform.Position + step));
-	} 
 }

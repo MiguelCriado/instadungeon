@@ -2,20 +2,22 @@
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.Events;
+using RSG;
+using System;
 
 namespace InstaDungeon.Services
 {
-	static public class AssetBundleManager
+	static public class AssetBundleLoader
 	{
 		private class DummyMonoBehaviour : MonoBehaviour { }
 
-		static private Dictionary<string, AssetBundleRef> assetBundleRefs;
-		static private DummyMonoBehaviour monoBehaviourHelper;
+		private static Dictionary<string, AssetBundleRef> assetBundleRefs;
+		private static DummyMonoBehaviour monoBehaviourHelper;
 
-		static AssetBundleManager ()
+		static AssetBundleLoader ()
 		{
 			assetBundleRefs = new Dictionary<string, AssetBundleRef>();
-			GameObject go = new GameObject("AssetBundleManager");
+			GameObject go = new GameObject("AssetBundleLoader");
 			go.hideFlags |= HideFlags.HideInHierarchy;
 			GameObject.DontDestroyOnLoad(go);
 			monoBehaviourHelper = go.AddComponent<DummyMonoBehaviour>();
@@ -50,19 +52,33 @@ namespace InstaDungeon.Services
 			return result;
 		}
 
-		public static void DownloadAssetBundle(string url, int version, UnityAction<AssetBundle> onBundleLoaded)
+		public static IPromise<AssetBundle> LoadAssetBundle(string url, int version)
 		{
-			monoBehaviourHelper.StartCoroutine(DownloadAssetBundleInternal(url, version, onBundleLoaded));
+			return LoadAssetBundle(url, version, null);
 		}
 
-		public static void DownloadAssetBundle(string url, int version, UnityAction<AssetBundle> onBundleLoaded, UnityAction<float> downloadProgress)
+		public static IPromise<AssetBundle> LoadAssetBundle(string url, int version, UnityAction<float> downloadProgress)
 		{
-			monoBehaviourHelper.StartCoroutine(DownloadAssetBundleInternal(url, version, onBundleLoaded, downloadProgress));
+			return new Promise<AssetBundle>((resolve, reject) => 
+				monoBehaviourHelper.StartCoroutine(LoadAssetBundleInternal(
+					url,
+					version,
+					resolve,
+					reject,
+					downloadProgress
+				))
+			);
 		}
 
-		private static IEnumerator DownloadAssetBundleInternal(string url, int version, UnityAction<AssetBundle> onBundleLoaded, UnityAction<float> downloadProgress = null)
+		private static IEnumerator LoadAssetBundleInternal(
+			string url,
+			int version,
+			Action<AssetBundle> resolve,
+			Action<Exception> reject,
+			UnityAction<float> downloadProgress = null)
 		{
 			string keyName = url + version.ToString();
+			bool failed = false;
 
 			if (assetBundleRefs.ContainsKey(keyName))
 			{
@@ -90,9 +106,10 @@ namespace InstaDungeon.Services
 						yield return www;
 					}
 
-					if (www.error != null)
+					if (!string.IsNullOrEmpty(www.error))
 					{
-						Debug.LogError("WWW download:" + www.error);
+						failed = true;
+						reject(new ApplicationException(string.Format("Failed to load asset bundle {0}\r\n{1}", url, www.error)));
 					}
 					else
 					{
@@ -103,15 +120,17 @@ namespace InstaDungeon.Services
 				}
 			}
 
-			if (onBundleLoaded != null)
+			if (!failed)
 			{
-				if (assetBundleRefs.ContainsKey(keyName))
+				AssetBundleRef result;
+
+				if (assetBundleRefs.TryGetValue(keyName, out result))
 				{
-					onBundleLoaded(assetBundleRefs[keyName].assetBundle);
+					resolve(result.assetBundle);
 				}
 				else
 				{
-					onBundleLoaded(null);
+					reject(new ApplicationException(string.Format("Asset bundle {0} not found in cache.", url)));
 				}
 			}
 		}

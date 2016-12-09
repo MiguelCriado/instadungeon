@@ -1,28 +1,31 @@
 ﻿using AI.BehaviorTrees;
 
-public class ManageTurnAction : ActionNode
+namespace InstaDungeon.BehaviorTreeNodes
 {
-	private TurnManager manager;
-
-	protected override void Open(Tick tick)
+	public class ManageTurnAction : ActionNode
 	{
-		base.Open(tick);
+		private TurnManager manager;
 
-		manager = tick.Target as TurnManager;
-		manager.Update();
-	}
-
-	protected override NodeStates Tick(Tick tick)
-	{
-		manager = tick.Target as TurnManager;
-
-		if (manager.TurnDone || !manager.Running)
+		protected override void Open(Tick tick)
 		{
-			return NodeStates.Success;
+			base.Open(tick);
+
+			manager = tick.Target as TurnManager;
+			manager.Update();
 		}
-		else
+
+		protected override NodeStates Tick(Tick tick)
 		{
-			return NodeStates.Running;
+			manager = tick.Target as TurnManager;
+
+			if (manager.TurnDone || !manager.Running)
+			{
+				return NodeStates.Success;
+			}
+			else
+			{
+				return NodeStates.Running;
+			}
 		}
 	}
 }

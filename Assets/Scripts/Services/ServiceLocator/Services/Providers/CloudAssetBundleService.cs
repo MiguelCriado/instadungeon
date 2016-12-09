@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections;
+﻿using RSG;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.Events;
 
 namespace InstaDungeon.Services
@@ -10,64 +11,107 @@ namespace InstaDungeon.Services
 	{
 		#region Private Type Definitions
 
-		private delegate bool CachedAssetDelegate(out object cachedAsset);
-
 		private class DummyMonoBehaviour : MonoBehaviour { }
 
-		private class AssetBundleDownloadJob
-		{
-			public AssetBundleInfo bundleInfo;
-			public CachedAssetDelegate checkIfAssetIsAlreadyCached;
-			public UnityAction<object> onAssetLoaded;
-			public UnityAction<AssetBundle> onBundleLoaded;
-			public UnityAction<AssetBundleDownloadJob> onJobFinished;
+		private class AssetBundleEvent : UnityEvent<AssetBundle> { }
 
-			public AssetBundleDownloadJob(
+		private abstract class AssetBundleLoadJob
+		{
+			public AssetBundleInfo BundleInfo { get; protected set; }
+			public string AssetName { get; protected set; }
+
+			public AssetBundleEvent OnBundleLoaded = new AssetBundleEvent();
+			public abstract void Resolve(object asset);
+			public abstract void Reject(Exception ex);
+			public abstract void Load();
+			public abstract object TryGetCachedAsset();
+		}
+
+		private class AssetBundleLoadJob<T> : AssetBundleLoadJob where T : UnityEngine.Object
+		{
+			private Action<T> resolve;
+			private Action<Exception> reject;
+			private Action<AssetBundleLoadJob> onLoadFinished;
+			private Func<object> tryGetCachedAsset;
+
+			public AssetBundleLoadJob(
 				AssetBundleInfo bundleInfo,
-				CachedAssetDelegate checkIfAssetIsAlreadyCached,
-				UnityAction<object> onAssetLoaded,
-				UnityAction<AssetBundle> onBundleLoaded,
-				UnityAction<AssetBundleDownloadJob> onJobFinished)
+				string assetName,
+				Action<T> resolve,
+				Action<Exception> reject,
+				Func<object> tryGetCachedAsset,
+				Action<AssetBundleLoadJob> onLoadFinished)
 			{
-				this.bundleInfo = bundleInfo;
-				this.checkIfAssetIsAlreadyCached = checkIfAssetIsAlreadyCached;
-				this.onAssetLoaded = onAssetLoaded;
-				this.onBundleLoaded = onBundleLoaded;
-				this.onJobFinished = onJobFinished;
+				BundleInfo = bundleInfo;
+				AssetName = assetName;
+				this.resolve = resolve;
+				this.reject = reject;
+				this.tryGetCachedAsset = tryGetCachedAsset;
+				this.onLoadFinished = onLoadFinished;
 			}
 
-			public void Download()
+			public override void Resolve(object asset)
 			{
-				object cachedAsset = null;
+				Assert.IsNotNull(resolve);
+				Assert.IsTrue(asset is T);
+				resolve(asset as T);
+			}
 
-				if (checkIfAssetIsAlreadyCached(out cachedAsset))
+			public override void Reject(Exception ex)
+			{
+				Assert.IsNotNull(reject);
+				reject(ex);
+			}
+
+			public override void Load()
+			{
+				AssetBundleLoader.LoadAssetBundle(BundleInfo.url, BundleInfo.version)
+					.Then(assetBundle =>
+					{
+						T result = assetBundle.LoadAsset<T>(AssetName);
+
+						if (result != null)
+						{
+							Assert.IsNotNull(resolve);
+							resolve.Invoke(result);
+
+							if (OnBundleLoaded != null)
+							{
+								OnBundleLoaded.Invoke(assetBundle);
+							}
+						}
+						else
+						{
+							Assert.IsNotNull(reject);
+							reject(new ApplicationException(string.Format("Asset \"{0}\" not found in asset bundle \"{1}\"", AssetName, BundleInfo.url)));
+						}
+
+						if (onLoadFinished != null)
+						{
+							onLoadFinished(this);
+						}
+					})
+					.Catch(ex =>
+					{
+						Assert.IsNotNull(reject);
+						reject(ex);
+
+						if (onLoadFinished != null)
+						{
+							onLoadFinished(this);
+						}
+					});
+			}
+
+			public override object TryGetCachedAsset()
+			{
+				if (tryGetCachedAsset != null)
 				{
-					if (onAssetLoaded != null)
-					{
-						onAssetLoaded(cachedAsset);
-					}
-
-					if (onJobFinished != null)
-					{
-						onJobFinished.Invoke(this);
-					}
+					return TryGetCachedAsset();
 				}
 				else
 				{
-					AssetBundleManager.DownloadAssetBundle(bundleInfo.url, bundleInfo.version, OnBundleLoaded);
-				}
-			}
-
-			private void OnBundleLoaded(AssetBundle bundle)
-			{
-				if (onBundleLoaded != null)
-				{
-					onBundleLoaded.Invoke(bundle);
-				}
-
-				if (onJobFinished != null)
-				{
-					onJobFinished.Invoke(this);
+					return null;
 				}
 			}
 		}
@@ -90,9 +134,8 @@ namespace InstaDungeon.Services
 
 		private Dictionary<string, AssetBundleInfo> assetBundles;
 		private Dictionary<string, Dictionary<string, WeakReference>> cachedAssets;
-		private Dictionary<string, Queue<AssetBundleDownloadJob>> assetBundleDownloadQueue;
+		private Dictionary<string, Queue<AssetBundleLoadJob>> assetBundleDownloadQueue;
 
-		private MonoBehaviour monoBehaviourHelper;
 		private bool dirty;
 		private string[] assetBundleIdList;
 
@@ -100,12 +143,7 @@ namespace InstaDungeon.Services
 		{
 			assetBundles = new Dictionary<string, AssetBundleInfo>();
 			cachedAssets = new Dictionary<string, Dictionary<string, WeakReference>>();
-			assetBundleDownloadQueue = new Dictionary<string, Queue<AssetBundleDownloadJob>>();
-
-			GameObject go = new GameObject("CloudAssetBundleService");
-			GameObject.DontDestroyOnLoad(go);
-			go.hideFlags |= HideFlags.HideInHierarchy;
-			monoBehaviourHelper = go.AddComponent<DummyMonoBehaviour>();
+			assetBundleDownloadQueue = new Dictionary<string, Queue<AssetBundleLoadJob>>();
 		}
 
 		public override void RegisterBundle(string id, string url, int version)
@@ -115,7 +153,7 @@ namespace InstaDungeon.Services
 				AssetBundleInfo abInfo = new AssetBundleInfo(id, url, version);
 				assetBundles.Add(id, abInfo);
 				cachedAssets.Add(id, new Dictionary<string, WeakReference>());
-				assetBundleDownloadQueue.Add(id, new Queue<AssetBundleDownloadJob>());
+				assetBundleDownloadQueue.Add(id, new Queue<AssetBundleLoadJob>());
 
 				dirty = true;
 
@@ -164,206 +202,127 @@ namespace InstaDungeon.Services
 			return assetBundleIdList;
 		}
 
-		public override void GetAllAssets<T>(string bundleId, UnityAction<T[]> onAssetsLoaded)
+		public override IPromise<T[]> GetAllAssets<T>(string bundleId)
 		{
-			if (assetBundles.ContainsKey(bundleId))
+			AssetBundleInfo bundleInfo;
+
+			if (assetBundles.TryGetValue(bundleId, out bundleInfo))
 			{
-				UnityAction<AssetBundle> onBundleDownloaded = (AssetBundle bundle) => 
+				return new Promise<T[]>((resolve, reject) => 
 				{
-					if (bundle != null)
-					{
-						T[] result = bundle.LoadAllAssets<T>();
-
-						var cachedBundle = cachedAssets[bundleId];
-						string assetName;
-
-						for (int i = 0; i < result.Length; i++)
-						{
-							cachedBundle = cachedAssets[bundleId];
-							assetName = result[i].name;
-
-							if (cachedBundle.ContainsKey(assetName))
-							{
-								cachedBundle[assetName].Target = result[i];
-							}
-							else
-							{
-								cachedBundle.Add(assetName, new WeakReference(result[i]));
-							}
-						}
-
-						AssetBundleManager.Unload(assetBundles[bundleId].url, assetBundles[bundleId].version, false);
-
-						if (onAssetsLoaded != null)
-						{
-							onAssetsLoaded(result);
-						}
-					}
-					else
-					{
-						onAssetsLoaded(default(T[]));
-					}
-				};
-
-				CachedAssetDelegate checkIfAssetAlreadyCached = (out object cachedAsset) =>
-				{
-					cachedAsset = null;
-					return false;
-				};
-
-				EnqueueDownload(new AssetBundleDownloadJob(
-						assetBundles[bundleId],
-						checkIfAssetAlreadyCached,
-						null,
-						onBundleDownloaded,
-						OnDownloadJobFinished));
+					LoadAllAssets(bundleInfo, resolve, reject);
+				});
 			}
 			else
 			{
-				if (onAssetsLoaded != null)
+				return new Promise<T[]>((resolve, reject) => 
 				{
-					onAssetsLoaded(default(T[]));
-				}
+					reject(new ApplicationException(string.Format("Asset Bundle \"{0}\" not found.", bundleId)));
+				});
 			}
-
 		}
 
-		public override void GetAsset<T>(string bundleId, string assetName, UnityAction<T> onAssetLoaded)
+		public override IPromise<T> GetAsset<T>(string bundleId, string assetName)
 		{
 			if (!string.IsNullOrEmpty(assetName))
 			{
-				LoadAsset(bundleId, assetName, onAssetLoaded, (AssetBundle bundle) =>
-				{
-					if (bundle != null)
-					{
-						T result = bundle.LoadAsset<T>(assetName);
-
-						cachedAssets[bundleId].Add(assetName, new WeakReference(result));
-
-						AssetBundleManager.Unload(assetBundles[bundleId].url, assetBundles[bundleId].version, false);
-
-						if (onAssetLoaded != null)
-						{
-							onAssetLoaded(result);
-						}
-					}
-					else
-					{
-						onAssetLoaded(default(T));
-					}
-				});
+				return LoadAsset<T>(bundleId, assetName);
 			}
 			else
 			{
-				Locator.Log.Warning("The assetName cannot be null or empty.");
-
-				if (onAssetLoaded != null)
+				return new Promise<T>((resolve, reject) => 
 				{
-					onAssetLoaded(default(T));
-				}
-			}
-		}
-
-		public override void GetAssetAsync<T>(string bundleId, string assetName, UnityAction<T> onAssetLoaded)
-		{
-			if (string.IsNullOrEmpty(assetName))
-			{
-				LoadAsset(bundleId, assetName, onAssetLoaded, (AssetBundle bundle) =>
-				{
-					if (bundle != null)
-					{
-						AssetBundleRequest request = bundle.LoadAssetAsync<T>(assetName);
-						monoBehaviourHelper.StartCoroutine(LoadAssetAsync(bundleId, assetName, bundle, request, onAssetLoaded));
-					}
-					else
-					{
-						if (onAssetLoaded != null)
-						{
-							onAssetLoaded(default(T));
-						}
-					}
+					reject(new ApplicationException("The assetName cannot be null or empty."));
 				});
 			}
-			else
-			{
-				Locator.Log.Warning("The assetName cannot be null or empty.");
-
-				if (onAssetLoaded != null)
-				{
-					onAssetLoaded(default(T));
-				}
-			}
 		}
 
-		private void LoadAsset<T>(string bundleId, string assetName, UnityAction<T> onAssetLoaded, UnityAction<AssetBundle> onBundleLoaded) where T : UnityEngine.Object
+		private IPromise<T> LoadAsset<T>(string bundleId, string assetName) where T : UnityEngine.Object
 		{
 			if (cachedAssets.ContainsKey(bundleId))
 			{
+				object cachedAsset = null;
 
-				CachedAssetDelegate checkIfAssetAlreadyCached = (out object cachedAsset) =>
+				if (TryGetCachedAsset<T>(bundleId, assetName, out cachedAsset))
 				{
-					bool result = false;
-					cachedAsset = null;
-
-					if (TryGetCachedAsset<T>(bundleId, assetName, out cachedAsset))
-					{
-						result = true;
-					}
-
-					return result;
-				};
-
-				UnityAction<object> onAssetRetrieved = (object assetRetrieved) =>
-				{
-					T asset = assetRetrieved as T;
-
-					if (onAssetLoaded != null)
-					{
-						onAssetLoaded(asset);
-					}
-				};
-
-				object cached = null;
-
-				if (!checkIfAssetAlreadyCached(out cached))
-				{
-					EnqueueDownload(new AssetBundleDownloadJob(
-						assetBundles[bundleId],
-						checkIfAssetAlreadyCached,
-						onAssetRetrieved,
-						onBundleLoaded,
-						OnDownloadJobFinished));
+					return OnAssetRetrieved(bundleId, assetName, cachedAsset as T);
 				}
 				else
 				{
-					onAssetRetrieved(cached);
+					return EnqueueDownload<T>(bundleId, assetName);
 				}
 			}
 			else
 			{
-				Debug.LogWarning("bundleId not found, you must register the bundle before trying to get any asset from it.");
-
-				if (onAssetLoaded != null)
+				return new Promise<T>((resolve, reject) => 
 				{
-					onAssetLoaded(default(T));
-				}
+					reject(new ApplicationException("bundleId not found, you must register the bundle before trying to get any asset from it."));
+				});
 			}
 		}
 
-		private IEnumerator LoadAssetAsync<T>(string bundleId, string assetName, AssetBundle bundle, AssetBundleRequest request, UnityAction<T> onAssetLoaded) where T : UnityEngine.Object
+		private void LoadAllAssets<T>(AssetBundleInfo bundleInfo, Action<T[]> resolve, Action<Exception> reject) where T : UnityEngine.Object
 		{
-			yield return request;
+			AssetBundleLoader.LoadAssetBundle(bundleInfo.url, bundleInfo.version)
+					.Then(bundle =>
+					{
+						T[] result = bundle.LoadAllAssets<T>();
 
-			T asset = request.asset as T;
+						for (int i = 0; i < result.Length; i++)
+						{
+							AddAssetToCache(bundleInfo.bundleId, result[i].name, result[i]);
+						}
 
-			cachedAssets[bundleId].Add(assetName, new WeakReference(asset));
+						resolve(result);
+					})
+					.Catch(exception =>
+					{
+						reject(exception);
+					});
+		}
 
-			AssetBundleManager.Unload(assetBundles[bundleId].url, assetBundles[bundleId].version, false);
-
-			if (onAssetLoaded != null)
+		private IPromise<T> OnAssetRetrieved<T>(string bundleId, string assetName, T asset) where T : UnityEngine.Object
+		{
+			return new Promise<T>((resolve, reject) =>
 			{
-				onAssetLoaded(asset);
+				resolve(asset);
+			});
+		}
+
+		private IPromise<T> ProcessBundle<T>(string bundleId, string assetName, AssetBundle bundle) where T : UnityEngine.Object
+		{
+			if (bundle != null)
+			{
+				T result = bundle.LoadAsset<T>(assetName);
+
+				AddAssetToCache(bundleId, assetName, result);
+
+				AssetBundleLoader.Unload(assetBundles[bundleId].url, assetBundles[bundleId].version, false);
+
+				return new Promise<T>((resolve, reject) =>
+				{
+					resolve(result);
+				});
 			}
+			else
+			{
+				return new Promise<T>((resolve, reject) =>
+				{
+					reject(new ApplicationException(string.Format("Failed to load asset bundle {0}.", bundleId)));
+				});
+			}
+		}
+
+		private void AddAssetToCache<T>(string bundleId, string assetName, T asset) where T : UnityEngine.Object
+		{
+			if (!cachedAssets.ContainsKey(bundleId))
+			{
+				cachedAssets.Add(bundleId, new Dictionary<string, WeakReference>());
+			}
+
+			Dictionary<string, WeakReference> cache = cachedAssets[bundleId];
+
+			cache[assetName] = new WeakReference(asset);
 		}
 
 		private bool TryGetCachedAsset<T>(string bundleId, string assetName, out object cachedAsset)  where T : UnityEngine.Object
@@ -394,31 +353,86 @@ namespace InstaDungeon.Services
 			return result;
 		}
 
-		private void EnqueueDownload(AssetBundleDownloadJob job)
+		private IPromise<T> EnqueueDownload<T>(string bundleId, string assetName) where T : UnityEngine.Object
 		{
-			if (assetBundleDownloadQueue.ContainsKey(job.bundleInfo.bundleId))
+			if (assetBundleDownloadQueue.ContainsKey(bundleId))
 			{
-				Queue<AssetBundleDownloadJob> queue = assetBundleDownloadQueue[job.bundleInfo.bundleId];
-				queue.Enqueue(job);
-
-				if (queue.Count == 1)
+				Func<object> tryGetCachedAsset = () => 
 				{
-					queue.Peek().Download();
+					object cachedAsset;
+
+					if (TryGetCachedAsset<T>(bundleId, assetName, out cachedAsset))
+					{
+						return cachedAsset;
+					}
+
+					return null;
+				};
+
+				AssetBundleLoadJob<T> job = null;
+
+				IPromise<T> result = new Promise<T>((resolve, reject) => 
+				{
+					job = new AssetBundleLoadJob<T>(
+						assetBundles[bundleId],
+						assetName,
+						resolve,
+						reject,
+						tryGetCachedAsset,
+						OnLoadJobFinished);
+				});
+
+				EnqueueJob(job);
+
+				return result;
+			}
+			else
+			{
+				return new Promise<T>((resolve, reject) => 
+				{
+					reject(new ApplicationException(string.Format("Bundle id {0} not found.", bundleId)));
+				});
+			}
+		}
+
+		private void EnqueueJob<T>(AssetBundleLoadJob<T> job) where T : UnityEngine.Object
+		{
+			Queue<AssetBundleLoadJob> queue = assetBundleDownloadQueue[job.BundleInfo.bundleId];
+
+			queue.Enqueue(job);
+
+			if (queue.Count == 1)
+			{
+				LoadNextJob(job.BundleInfo.bundleId);
+			}
+		}
+
+		private void LoadNextJob(string queueBundleId)
+		{
+			Queue<AssetBundleLoadJob> queue = assetBundleDownloadQueue[queueBundleId];
+
+			if (queue.Count > 0)
+			{
+				AssetBundleLoadJob job = queue.Dequeue();
+
+				object cachedAsset = job.TryGetCachedAsset();
+
+				if (cachedAsset != null)
+				{
+					job.Resolve(cachedAssets);
+				}
+				else
+				{
+					job.Load();
 				}
 			}
 		}
 
-		private void OnDownloadJobFinished(AssetBundleDownloadJob job)
+		private void OnLoadJobFinished(AssetBundleLoadJob job)
 		{
-			if (assetBundleDownloadQueue.ContainsKey(job.bundleInfo.bundleId))
+			if (assetBundleDownloadQueue.ContainsKey(job.BundleInfo.bundleId))
 			{
-				Queue<AssetBundleDownloadJob> queue = assetBundleDownloadQueue[job.bundleInfo.bundleId];
-				queue.Dequeue();
-
-				if (queue.Count > 0)
-				{
-					queue.Peek().Download();
-				}
+				LoadNextJob(job.BundleInfo.bundleId);
 			}
 		}
 	}

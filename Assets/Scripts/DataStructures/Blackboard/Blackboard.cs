@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace InstaDungeon
+namespace InstaDungeon.DataStructures
 {
 	public class Blackboard
 	{

@@ -1,20 +1,26 @@
 ﻿using AI.BehaviorTrees;
+using InstaDungeon.Components;
 
-public class IsLevelCompletedCondition : ConditionNode
+namespace InstaDungeon.BehaviorTreeNodes
 {
-	protected override NodeStates Tick(Tick tick)
+	public class IsLevelCompletedCondition : ConditionNode
 	{
-		CellTransform playerTransform = GameManager.Instance.player;
-		Cell playerCell = GameManager.GetCell(playerTransform.Position.x, playerTransform.Position.y);
+		protected override NodeStates Tick(Tick tick)
+		{
+			Entity player = GameManager.Player;
+			CellTransform playerTransform = player.GetComponent<CellTransform>();
 
-		if (playerCell != null && playerCell.TileInfo.TileType == TileType.Exit)
-		{
-			UnityEngine.Debug.Log("Level finished!!!");
-			return NodeStates.Success;
-		}
-		else
-		{
-			return NodeStates.Failure;
+			Cell playerCell = GameManager.GetCell(playerTransform.Position.x, playerTransform.Position.y);
+
+			if (playerCell != null && playerCell.TileInfo.TileType == TileType.Exit)
+			{
+				UnityEngine.Debug.Log("Level finished!!!");
+				return NodeStates.Success;
+			}
+			else
+			{
+				return NodeStates.Failure;
+			}
 		}
 	}
 }

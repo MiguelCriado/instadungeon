@@ -1,90 +1,94 @@
-﻿using System.Collections.Generic;
+﻿using InstaDungeon.Commands;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class MapManager
+namespace InstaDungeon
 {
-	public TileMap<Cell> Map { get { return map; } }
-
-	private TileMap<Cell> map;
-	private Dictionary<int, GameObject> entities;
-
-	public MapManager()
+	public class MapManager
 	{
-		entities = new Dictionary<int, GameObject>();
-	}
+		public TileMap<Cell> Map { get { return map; } }
 
-	public Cell this[int x, int y]
-	{
-		get { return map[x, y]; }
-	}
+		private TileMap<Cell> map;
+		private Dictionary<int, GameObject> entities;
 
-	public void Initialize(TileMap<TileInfo> blueprint)
-	{
-		map = blueprint.Convert((TileInfo info) =>
+		public MapManager()
 		{
-			Cell result = new Cell(info);
+			entities = new Dictionary<int, GameObject>();
+		}
+
+		public Cell this[int x, int y]
+		{
+			get { return map[x, y]; }
+		}
+
+		public void Initialize(TileMap<TileInfo> blueprint)
+		{
+			map = blueprint.Convert((TileInfo info) =>
+			{
+				Cell result = new Cell(info);
+				return result;
+			});
+
+			entities.Clear();
+		}
+
+		public bool IsCellFree(int2 cellPosition)
+		{
+			bool result = false;
+			Cell cell = map[cellPosition.x, cellPosition.y];
+
+			if (cell != null && cell.Entity == null && cell.Prop == null)
+			{
+				result = true;
+			}
+
 			return result;
-		});
-
-		entities.Clear();
-	}
-
-	public bool IsCellFree(int2 cellPosition)
-	{
-		bool result = false;
-		Cell cell = map[cellPosition.x, cellPosition.y];
-
-		if (cell != null && cell.Entity == null && cell.Prop == null)
-		{
-			result = true;
 		}
 
-		return result;
-	}
-
-	public bool Spawn(MoveActorCommand spawnCommand)
-	{
-		bool result = false;
-
-		GameObject entity = spawnCommand.ActorTransform.gameObject;
-
-		if (!entities.ContainsKey(entity.GetInstanceID()))
+		public bool Spawn(MoveActorCommand spawnCommand)
 		{
-			Cell spawnPoint = map[spawnCommand.Position.x, spawnCommand.Position.y];
+			bool result = false;
 
-			if (spawnPoint != null && spawnPoint.TileInfo.Walkable && spawnPoint.Entity == null)
+			GameObject entity = spawnCommand.ActorTransform.gameObject;
+
+			if (!entities.ContainsKey(entity.GetInstanceID()))
 			{
-				spawnPoint.Entity = spawnCommand.ActorTransform.gameObject;
-				entities.Add(entity.GetInstanceID(), entity);
-				spawnCommand.Execute();
-				result = true;
+				Cell spawnPoint = map[spawnCommand.Position.x, spawnCommand.Position.y];
+
+				if (spawnPoint != null && spawnPoint.TileInfo.Walkable && spawnPoint.Entity == null)
+				{
+					spawnPoint.Entity = spawnCommand.ActorTransform.gameObject;
+					entities.Add(entity.GetInstanceID(), entity);
+					spawnCommand.Execute();
+					result = true;
+				}
 			}
+
+			return result;
 		}
 
-		return result;
-	}
-
-	public bool MoveTo(MoveActorCommand moveCommand)
-	{
-		bool result = false;
-
-		GameObject entity = moveCommand.ActorTransform.gameObject;
-
-		if (entities.ContainsKey(entity.GetInstanceID()))
+		public bool MoveTo(MoveActorCommand moveCommand)
 		{
-			Cell currentPoint = map[moveCommand.ActorTransform.Position.x, moveCommand.ActorTransform.Position.y];
-			Cell movePoint = map[moveCommand.Position.x, moveCommand.Position.y];
+			bool result = false;
 
-			if (movePoint != null && movePoint.TileInfo.Walkable && movePoint.Entity == null
-				&& currentPoint != null && currentPoint.Entity == entity)
+			GameObject entity = moveCommand.ActorTransform.gameObject;
+
+			if (entities.ContainsKey(entity.GetInstanceID()))
 			{
-				currentPoint.Entity = null;
-				movePoint.Entity = entity;
-				moveCommand.Execute();
-				result = true;
-			}
-		}
+				Cell currentPoint = map[moveCommand.ActorTransform.Position.x, moveCommand.ActorTransform.Position.y];
+				Cell movePoint = map[moveCommand.Position.x, moveCommand.Position.y];
 
-		return result;
+				if (movePoint != null && movePoint.TileInfo.Walkable && movePoint.Entity == null
+					&& currentPoint != null && currentPoint.Entity == entity)
+				{
+					currentPoint.Entity = null;
+					movePoint.Entity = entity;
+					moveCommand.Execute();
+					result = true;
+				}
+			}
+
+			return result;
+		}
 	}
 }
