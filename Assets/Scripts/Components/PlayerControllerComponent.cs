@@ -1,80 +1,83 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(LocomotionComponent), typeof(TurnComponent))]
-public class PlayerControllerComponent : MonoBehaviour
+namespace InstaDungeon.Components
 {
-	[SerializeField]
-	private KeyCode up = KeyCode.UpArrow;
-	[SerializeField]
-	private KeyCode right = KeyCode.RightArrow;
-	[SerializeField]
-	private KeyCode down = KeyCode.DownArrow;
-	[SerializeField]
-	private KeyCode left = KeyCode.LeftArrow;
-
-	private LocomotionComponent locomotion;
-	private TurnComponent turn;
-
-	private UnityAction moveUp;
-	private UnityAction moveRight;
-	private UnityAction moveDown;
-	private UnityAction moveLeft;
-
-	void Awake()
+	[RequireComponent(typeof(LocomotionComponent), typeof(TurnComponent))]
+	public class PlayerControllerComponent : MonoBehaviour
 	{
-		locomotion = GetComponent<LocomotionComponent>();
-		turn = GetComponent<TurnComponent>();
+		[SerializeField]
+		private KeyCode up = KeyCode.UpArrow;
+		[SerializeField]
+		private KeyCode right = KeyCode.RightArrow;
+		[SerializeField]
+		private KeyCode down = KeyCode.DownArrow;
+		[SerializeField]
+		private KeyCode left = KeyCode.LeftArrow;
 
-		moveUp = () => { TryMove(0, 1); };
-		moveRight = () => { TryMove(1, 0); };
-		moveDown = () => { TryMove(0, -1); };
-		moveLeft = () => { TryMove(-1, 0); };
-	}
+		private LocomotionComponent locomotion;
+		private TurnComponent turn;
 
-	void Update()
-	{
-		if (turn.IsMyTurn)
+		private UnityAction moveUp;
+		private UnityAction moveRight;
+		private UnityAction moveDown;
+		private UnityAction moveLeft;
+
+		void Awake()
 		{
-			UnityAction action = GetInput();
+			locomotion = GetComponent<LocomotionComponent>();
+			turn = GetComponent<TurnComponent>();
 
-			if (action != null)
+			moveUp = () => { TryMove(0, 1); };
+			moveRight = () => { TryMove(1, 0); };
+			moveDown = () => { TryMove(0, -1); };
+			moveLeft = () => { TryMove(-1, 0); };
+		}
+
+		void Update()
+		{
+			if (turn.IsMyTurn)
 			{
-				action.Invoke();
+				UnityAction action = GetInput();
+
+				if (action != null)
+				{
+					action.Invoke();
+				}
 			}
 		}
-	}
 
-	private UnityAction GetInput()
-	{
-		if (Input.GetKeyDown(up))
+		private UnityAction GetInput()
 		{
-			return moveUp;
+			if (Input.GetKeyDown(up))
+			{
+				return moveUp;
+			}
+
+			if (Input.GetKeyDown(right))
+			{
+				return moveRight;
+			}
+
+			if (Input.GetKeyDown(down))
+			{
+				return moveDown;
+			}
+
+			if (Input.GetKeyDown(left))
+			{
+				return moveLeft;
+			}
+
+			return null;
 		}
 
-		if (Input.GetKeyDown(right))
+		private void TryMove(int x, int y)
 		{
-			return moveRight;
-		}
-
-		if (Input.GetKeyDown(down))
-		{
-			return moveDown;
-		}
-
-		if (Input.GetKeyDown(left))
-		{
-			return moveLeft;
-		}
-
-		return null;
-	}
-
-	private void TryMove(int x, int y)
-	{
-		if (locomotion.Move(x, y))
-		{
-			turn.TurnDone();
+			if (locomotion.Move(x, y))
+			{
+				turn.TurnDone();
+			}
 		}
 	}
 }

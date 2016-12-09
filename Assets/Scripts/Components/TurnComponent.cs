@@ -1,47 +1,50 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-public class TurnComponentEvent : UnityEvent<TurnComponent> { }
-
-public class TurnComponent : MonoBehaviour
+namespace InstaDungeon.Components
 {
-	public bool IsMyTurn { get { return token != null; } }
-	public TurnToken Token { get { return token; } }
-	public int Initiative { get { return initiative; } set { initiative = value; } }
+	public class TurnComponentEvent : UnityEvent<TurnComponent> { }
 
-	public TurnComponentEvent OnTurnGranted = new TurnComponentEvent();
-	public TurnComponentEvent OnTurnRevoked = new TurnComponentEvent();
-	public TurnComponentEvent OnTurnDone = new TurnComponentEvent();
-
-	private TurnToken token;
-	[SerializeField]
-	private int initiative;
-
-	public void GrantTurn(TurnToken token)
+	public class TurnComponent : MonoBehaviour
 	{
-		this.token = token;
+		public bool IsMyTurn { get { return token != null; } }
+		public TurnToken Token { get { return token; } }
+		public int Initiative { get { return initiative; } set { initiative = value; } }
 
-		if (OnTurnGranted != null)
+		public TurnComponentEvent OnTurnGranted = new TurnComponentEvent();
+		public TurnComponentEvent OnTurnRevoked = new TurnComponentEvent();
+		public TurnComponentEvent OnTurnDone = new TurnComponentEvent();
+
+		private TurnToken token;
+		[SerializeField]
+		private int initiative;
+
+		public void GrantTurn(TurnToken token)
 		{
-			OnTurnGranted.Invoke(this);
+			this.token = token;
+
+			if (OnTurnGranted != null)
+			{
+				OnTurnGranted.Invoke(this);
+			}
 		}
-	}
 
-	public void RevokeTurn(TurnToken token)
-	{
-		this.token = null;
-
-		if (OnTurnRevoked != null)
+		public void RevokeTurn(TurnToken token)
 		{
-			OnTurnRevoked.Invoke(this);
+			this.token = null;
+
+			if (OnTurnRevoked != null)
+			{
+				OnTurnRevoked.Invoke(this);
+			}
 		}
-	}
 
-	public void TurnDone()
-	{
-		if (OnTurnDone != null)
+		public void TurnDone()
 		{
-			OnTurnDone.Invoke(this);
+			if (OnTurnDone != null)
+			{
+				OnTurnDone.Invoke(this);
+			}
 		}
 	}
 }

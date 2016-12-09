@@ -1,23 +1,70 @@
-﻿using System.Collections.Generic;
+﻿using InstaDungeon.Components;
+using System.Collections.Generic;
 using UnityEngine;
-using UniqueId = System.Int32;
 
 namespace InstaDungeon
 {
+	[RequireComponent(typeof(EntityLoader))]
 	public class EntityManager : MonoBehaviour
 	{
-		private Dictionary<UniqueId, Entity> dynamicEntities;
+		public uint NextGuid { get { return nextGuid; } }
+
+		private Dictionary<uint, Entity> dynamicEntities;
+		private EntityLoader loader;
+		private uint nextGuid;
+		private Transform entitiesContainer;
 
 		void Awake()
 		{
-			dynamicEntities = new Dictionary<UniqueId, Entity>();
+			nextGuid = 0;
+			dynamicEntities = new Dictionary<uint, Entity>();
+			loader = GetComponent<EntityLoader>();
+			GameObject entitiesGO = GameObject.FindGameObjectWithTag("Entities");
+
+			if (entitiesGO == null)
+			{
+				GameObject world = GameObject.FindGameObjectWithTag("World");
+
+				if (world == null)
+				{
+					world = new GameObject("World");
+					world.tag = "World";
+				}
+
+				entitiesGO = new GameObject("Entities");
+				entitiesGO.tag = "Entities";
+				entitiesGO.transform.SetParent(world.transform);
+			}
+
+			entitiesContainer = entitiesGO.transform;
 		}
 
 		public Entity Spawn(string entityType)
 		{
-			Entity result = null;
+			Entity result = loader.Spawn(entityType, entitiesContainer);
+
+			if (result != null)
+			{
+				result.Init(nextGuid++);
+				dynamicEntities.Add(result.Guid, result);
+			}
 
 			return result;
+		}
+
+		public bool Recycle(uint entityGuid)
+		{
+			Entity entityToRecycle;
+
+			if (dynamicEntities.TryGetValue(entityGuid, out entityToRecycle))
+			{
+				loader.Dispose(entityToRecycle);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 	}
 }

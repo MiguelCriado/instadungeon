@@ -136,7 +136,6 @@ namespace InstaDungeon.Services
 		private Dictionary<string, Dictionary<string, WeakReference>> cachedAssets;
 		private Dictionary<string, Queue<AssetBundleLoadJob>> assetBundleDownloadQueue;
 
-		private MonoBehaviour monoBehaviourHelper;
 		private bool dirty;
 		private string[] assetBundleIdList;
 
@@ -145,11 +144,6 @@ namespace InstaDungeon.Services
 			assetBundles = new Dictionary<string, AssetBundleInfo>();
 			cachedAssets = new Dictionary<string, Dictionary<string, WeakReference>>();
 			assetBundleDownloadQueue = new Dictionary<string, Queue<AssetBundleLoadJob>>();
-
-			GameObject go = new GameObject("CloudAssetBundleService");
-			GameObject.DontDestroyOnLoad(go);
-			go.hideFlags |= HideFlags.HideInHierarchy;
-			monoBehaviourHelper = go.AddComponent<DummyMonoBehaviour>();
 		}
 
 		public override void RegisterBundle(string id, string url, int version)
@@ -396,7 +390,7 @@ namespace InstaDungeon.Services
 			{
 				return new Promise<T>((resolve, reject) => 
 				{
-					reject(new ApplicationException(string.Format("Bundle id {0} not found.")));
+					reject(new ApplicationException(string.Format("Bundle id {0} not found.", bundleId)));
 				});
 			}
 		}

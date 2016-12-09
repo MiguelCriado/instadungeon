@@ -1,15 +1,18 @@
 ﻿using UnityEngine;
 
-public class CellTransform : MonoBehaviour
+namespace InstaDungeon.Components
 {
-	public int2 Position { get { return position; } }
-
-	[SerializeField]
-	private int2 position;
-
-	public void MoveTo(int2 position)
+	public class CellTransform : MonoBehaviour
 	{
-		this.position = position;
-		transform.position = GameManager.CellToWorld(position);
+		public int2 Position { get { return position; } }
+
+		[SerializeField]
+		private int2 position;
+
+		public void MoveTo(int2 position)
+		{
+			this.position = position;
+			transform.position = GameManager.CellToWorld(position);
+		}
 	}
 }

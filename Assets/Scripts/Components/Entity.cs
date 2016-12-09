@@ -1,15 +1,18 @@
-﻿using InstaDungeon.Events;
+﻿using InstaDungeon.DataStructures;
+using InstaDungeon.Events;
 using UnityEngine;
 
-namespace InstaDungeon
+namespace InstaDungeon.Components
 {
 	public class Entity : MonoBehaviour
 	{
+		public uint Guid { get { return guid; } }
 		public Blackboard Blackboard { get { return blackboard; } }
 		public EventSystem Events { get { return events; } }
 
 		private Blackboard blackboard;
 		private EventSystem events;
+		private uint guid;
 
 		void Awake()
 		{
@@ -20,6 +23,11 @@ namespace InstaDungeon
 		void Update()
 		{
 			events.TickUpdate();
+		}
+
+		public void Init(uint guid)
+		{
+			this.guid = guid;
 		}
 	}
 }

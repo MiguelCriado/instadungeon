@@ -1,27 +1,32 @@
-﻿public class MoveActorCommand : Command
+﻿using InstaDungeon.Components;
+
+namespace InstaDungeon.Commands
 {
-	public CellTransform ActorTransform { get; private set; }
-	public int2 LastPosition { get; private set; }
-	public int2 Position { get; private set; }
-
-	public MoveActorCommand(CellTransform actorTransform, int2 position)
+	public class MoveActorCommand : Command
 	{
-		ActorTransform = actorTransform;
-		Position = position;
-	}
+		public CellTransform ActorTransform { get; private set; }
+		public int2 LastPosition { get; private set; }
+		public int2 Position { get; private set; }
 
-	public override void Execute()
-	{
-		base.Execute();
+		public MoveActorCommand(CellTransform actorTransform, int2 position)
+		{
+			ActorTransform = actorTransform;
+			Position = position;
+		}
 
-		LastPosition = ActorTransform.Position;
-		ActorTransform.MoveTo(Position);
-	}
+		public override void Execute()
+		{
+			base.Execute();
 
-	public override void Undo()
-	{
-		base.Undo();
+			LastPosition = ActorTransform.Position;
+			ActorTransform.MoveTo(Position);
+		}
 
-		ActorTransform.MoveTo(LastPosition);
+		public override void Undo()
+		{
+			base.Undo();
+
+			ActorTransform.MoveTo(LastPosition);
+		}
 	}
 }

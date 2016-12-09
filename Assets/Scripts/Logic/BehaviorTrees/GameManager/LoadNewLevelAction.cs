@@ -1,11 +1,14 @@
 ﻿using AI.BehaviorTrees;
 
-public class LoadNewLevelAction : ActionNode
+namespace InstaDungeon.BehaviorTreeNodes
 {
-	protected override NodeStates Tick(Tick tick)
+	public class LoadNewLevelAction : ActionNode
 	{
-		GameManager.LoadNewMap();
+		protected override NodeStates Tick(Tick tick)
+		{
+			GameManager.LoadNewMap();
 
-		return NodeStates.Success;
+			return NodeStates.Success;
+		}
 	}
 }
