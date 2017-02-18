@@ -53,6 +53,16 @@ namespace InstaDungeon
 			turnDone = true;
 		}
 
+		public void GrantControl()
+		{
+			token.GrantControl();
+		}
+
+		public void RevokeControl()
+		{
+			token.RevokeControl();
+		}
+
 		public void StartRound()
 		{
 			if (pendingActors.Count > 0)
@@ -77,13 +87,21 @@ namespace InstaDungeon
 			}
 		}
 
-		public void Update()
+		public void UpdateTurn()
 		{
 			if (running && turnDone)
 			{
 				turnDone = false;
 
 				NextTurn();
+			}
+		}
+
+		public void Update()
+		{
+			if (running)
+			{
+				token.RunBufferedAction();
 			}
 		}
 

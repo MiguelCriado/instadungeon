@@ -77,7 +77,7 @@ namespace InstaDungeon.TileMap
 
 		public Vector3 TileMapToWorldPosition(Vector2 tileMapPosition)
 		{
-			return tileMapPosition * tileScale;
+			return tileMapPosition * tileScale + Vector2.one * 0.5f;
 		}
 
 		public int2 WorldToTileMapPosition(Vector3 worldPosition)
