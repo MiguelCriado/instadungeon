@@ -1,26 +1,39 @@
-﻿using InstaDungeon.Commands;
+﻿using InstaDungeon.Actions;
 using UnityEngine;
 
 namespace InstaDungeon.Components
 {
-	[RequireComponent(typeof(CellTransform))]
+	[RequireComponent(typeof(Entity))]
 	public class LocomotionComponent : MonoBehaviour
 	{
-		private CellTransform cellTransform;
+		protected Entity entity;
+		protected ActionManager actionManager;
 
 		void Awake()
 		{
-			cellTransform = GetComponent<CellTransform>();
+			entity = GetComponent<Entity>();
+			actionManager = Locator.Get<ActionManager>();
 		}
 
-		public bool Move(int xStep, int yStep)
+		public bool IsValidMovement(int xStep, int yStep)
 		{
-			return Move(new int2(xStep, yStep));
+			return IsValidMovement(new int2(xStep, yStep));
 		}
 
-		public bool Move(int2 step)
+		public bool IsValidMovement(int2 step)
 		{
-			return GameManager.MoveActor(new MoveActorCommand(cellTransform, cellTransform.Position + step));
+			return MoveEntityAction.IsValid(entity, entity.CellTransform.Position + step);
+		}
+
+		public void Move(int xStep, int yStep, TurnToken token)
+		{
+			Move(new int2(xStep, yStep), token);
+		}
+
+		public void Move(int2 step, TurnToken token)
+		{
+			MoveEntityAction action = new MoveEntityAction(entity, entity.CellTransform.Position + step);
+			token.BufferAction(action);
 		}
 	}
 }

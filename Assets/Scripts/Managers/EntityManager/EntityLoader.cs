@@ -1,97 +1,53 @@
 ﻿using InstaDungeon.Components;
 using System.Collections.Generic;
-using System.IO;
-using UnityEditor;
 using UnityEngine;
 
 namespace InstaDungeon
 {
-	public class EntityLoader : MonoBehaviour
+	public class EntityLoader
 	{
-		private static readonly string BASE_PATH = "Assets/Prefabs/Entities/";
-
-		[Header("References")]
-		[SerializeField]
-		private Entity[] availableEntities;
-		[Header("Options")]
-		[SerializeField]
-		private bool loadAllEntities;
+		private static readonly string BasePath = "Prefabs/Entities/";
 
 		private Dictionary<string, Entity> prefabsMap;
 		private Dictionary<string, List<Entity>> entityPool;
 
-		void Awake()
+		public EntityLoader()
 		{
 			prefabsMap = new Dictionary<string, Entity>();
-
-			for (int i = 0; i < availableEntities.Length; i++)
-			{
-				prefabsMap.Add(availableEntities[i].name, availableEntities[i]);
-			}
 		}
 
 		public Entity Spawn(string entityName, Transform parent)
 		{
-			Entity result;
+			Entity result = null;
+			Entity prefab = LoadEntityPrefab(entityName);
 
-			if (prefabsMap.TryGetValue(entityName, out result))
+			if (prefab != null)
 			{
-				// TODO : get from pool
-				return Instantiate(result, parent) as Entity;
+				result = GameObject.Instantiate(prefab, parent);
 			}
-			else
-			{
-				Locator.Log.Error(string.Format("Entity \"{0}\" not found.", entityName));
-				return null;
-			}
+
+			return result;
 		}
 
 		public bool Dispose(Entity entity)
 		{
 			// TODO : store in pool
 
-			Destroy(entity.gameObject);
+			GameObject.Destroy(entity.gameObject);
 			return true;
 		}
 
-		private void LoadEntities()
+		protected Entity LoadEntityPrefab(string entityName)
 		{
-			List<Entity> entities = new List<Entity>();
+			Entity result;
 
-			if (loadAllEntities)
+			if (!prefabsMap.TryGetValue(entityName, out result))
 			{
-				entities = LoadEntitiesAtPath(BASE_PATH);
-			}
+				result = Resources.Load<Entity>(string.Format("{0}{1}", BasePath, entityName));
 
-			availableEntities = entities.ToArray();
-		}
-
-		private List<Entity> LoadEntitiesAtPath(string path, bool includeSubFolders = false)
-		{
-			List<Entity> result = new List<Entity>();
-
-			Object[] assets = AssetDatabase.LoadAllAssetsAtPath(path);
-
-			for (int i = 0; i < assets.Length; i++)
-			{
-				if (assets[i] is GameObject)
+				if (result == null)
 				{
-					Entity entity = ((GameObject)assets[i]).GetComponent<Entity>();
-
-					if (entity != null)
-					{
-						result.Add(entity);
-					}
-				}
-			}
-
-			if (includeSubFolders)
-			{
-				string[] subFolders = AssetDatabase.GetSubFolders(path);
-
-				for (int i = 0; i < subFolders.Length; i++)
-				{
-					result.AddRange(LoadEntitiesAtPath(Path.Combine(path, subFolders[i])));
+					Locator.Log.Error(string.Format("Entity \"{0}\" not found.", entityName));
 				}
 			}
 

@@ -11,7 +11,7 @@ namespace InstaDungeon.BehaviorTreeNodes
 			base.Open(tick);
 
 			manager = tick.Target as TurnManager;
-			manager.Update();
+			manager.UpdateTurn();
 		}
 
 		protected override NodeStates Tick(Tick tick)
@@ -24,6 +24,8 @@ namespace InstaDungeon.BehaviorTreeNodes
 			}
 			else
 			{
+				manager.Update();
+
 				return NodeStates.Running;
 			}
 		}

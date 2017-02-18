@@ -2,11 +2,11 @@
 using InstaDungeon.Events;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace InstaDungeon
 {
-	[RequireComponent(typeof(EntityLoader))]
-	public class EntityManager : MonoBehaviour
+	public class EntityManager : Manager
 	{
 		public uint NextGuid { get { return nextGuid; } }
 		public EventSystem Events { get { return events; } }
@@ -17,30 +17,13 @@ namespace InstaDungeon
 		private uint nextGuid;
 		private Transform entitiesContainer;
 
-		void Awake()
+		public EntityManager() : base()
 		{
 			nextGuid = 0;
 			events = new EventSystem();
 			dynamicEntities = new Dictionary<uint, Entity>();
-			loader = GetComponent<EntityLoader>();
-			GameObject entitiesGO = GameObject.FindGameObjectWithTag("Entities");
-
-			if (entitiesGO == null)
-			{
-				GameObject world = GameObject.FindGameObjectWithTag("World");
-
-				if (world == null)
-				{
-					world = new GameObject("World");
-					world.tag = "World";
-				}
-
-				entitiesGO = new GameObject("Entities");
-				entitiesGO.tag = "Entities";
-				entitiesGO.transform.SetParent(world.transform);
-			}
-
-			entitiesContainer = entitiesGO.transform;
+			loader = new EntityLoader();
+			CreateEntitiesContainer();
 		}
 
 		public Entity Spawn(string entityType)
@@ -73,17 +56,50 @@ namespace InstaDungeon
 			}
 		}
 
-		private void SubscribeToEvents(Entity entity)
+		protected void CreateEntitiesContainer()
+		{
+			GameObject entitiesGO = GameObject.FindGameObjectWithTag("Entities");
+
+			if (entitiesGO == null)
+			{
+				GameObject world = GameObject.FindGameObjectWithTag("World");
+
+				if (world == null)
+				{
+					world = GameObject.Find("World");
+				}
+
+				if (world == null)
+				{
+					world = new GameObject("World");
+					world.tag = "World";
+				}
+
+				entitiesGO = new GameObject("Entities");
+				entitiesGO.tag = "Entities";
+				entitiesGO.transform.SetParent(world.transform);
+			}
+
+			entitiesContainer = entitiesGO.transform;
+		}
+
+		protected override void OnSceneUnLoaded(Scene scene)
+		{
+			base.OnSceneUnLoaded(scene);
+			CreateEntitiesContainer();
+		}
+
+		protected void SubscribeToEvents(Entity entity)
 		{
 			entity.Events.AddListener(OnEntityMove, EntityMoveEvent.EVENT_TYPE);
 		}
 
-		private void UnsubscribeToEvents(Entity entity)
+		protected void UnsubscribeToEvents(Entity entity)
 		{
 			entity.Events.RemoveListener(OnEntityMove, EntityMoveEvent.EVENT_TYPE);
 		}
 
-		private void OnEntityMove(IEventData eventData)
+		protected void OnEntityMove(IEventData eventData)
 		{
 			events.TriggerEvent(eventData);
 		}

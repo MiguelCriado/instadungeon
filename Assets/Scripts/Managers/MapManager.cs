@@ -1,19 +1,19 @@
 ﻿using InstaDungeon.Commands;
+using InstaDungeon.Components;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace InstaDungeon
 {
-	public class MapManager
+	public class MapManager : Manager
 	{
 		public TileMap<Cell> Map { get { return map; } }
 
 		private TileMap<Cell> map;
-		private Dictionary<int, GameObject> entities;
+		private Dictionary<uint, Entity> entities;
 
-		public MapManager()
+		public MapManager() : base()
 		{
-			entities = new Dictionary<int, GameObject>();
+			entities = new Dictionary<uint, Entity>();
 		}
 
 		public Cell this[int x, int y]
@@ -32,6 +32,19 @@ namespace InstaDungeon
 			entities.Clear();
 		}
 
+		public bool CanCellBeOccupied(int2 cellPosition)
+		{
+			bool result = false;
+			Cell cell = map[cellPosition.x, cellPosition.y];
+
+			if (cell != null && cell.TileInfo.Walkable && cell.Entity == null)
+			{
+				result = true;
+			}
+
+			return result;
+		}
+
 		public bool IsCellFree(int2 cellPosition)
 		{
 			bool result = false;
@@ -45,20 +58,20 @@ namespace InstaDungeon
 			return result;
 		}
 
-		public bool Spawn(MoveActorCommand spawnCommand)
+		public bool Spawn(MoveEntityCommand spawnCommand)
 		{
 			bool result = false;
 
-			GameObject entity = spawnCommand.ActorTransform.gameObject;
+			Entity entity = spawnCommand.Entity;
 
-			if (!entities.ContainsKey(entity.GetInstanceID()))
+			if (!entities.ContainsKey(entity.Guid))
 			{
 				Cell spawnPoint = map[spawnCommand.Position.x, spawnCommand.Position.y];
 
 				if (spawnPoint != null && spawnPoint.TileInfo.Walkable && spawnPoint.Entity == null)
 				{
-					spawnPoint.Entity = spawnCommand.ActorTransform.gameObject;
-					entities.Add(entity.GetInstanceID(), entity);
+					spawnPoint.Entity = spawnCommand.Entity.gameObject;
+					entities.Add(entity.Guid, entity);
 					spawnCommand.Execute();
 					result = true;
 				}
@@ -67,23 +80,21 @@ namespace InstaDungeon
 			return result;
 		}
 
-		public bool MoveTo(MoveActorCommand moveCommand)
+		public bool MoveTo(Entity entity, int2 position)
 		{
 			bool result = false;
 
-			GameObject entity = moveCommand.ActorTransform.gameObject;
-
-			if (entities.ContainsKey(entity.GetInstanceID()))
+			if (entities.ContainsKey(entity.Guid))
 			{
-				Cell currentPoint = map[moveCommand.ActorTransform.Position.x, moveCommand.ActorTransform.Position.y];
-				Cell movePoint = map[moveCommand.Position.x, moveCommand.Position.y];
+				int2 currentEntityPosition = entity.CellTransform.Position;
+				Cell currentPoint = map[currentEntityPosition.x, currentEntityPosition.y];
+				Cell movePoint = map[position.x, position.y];
 
 				if (movePoint != null && movePoint.TileInfo.Walkable && movePoint.Entity == null
 					&& currentPoint != null && currentPoint.Entity == entity)
 				{
 					currentPoint.Entity = null;
-					movePoint.Entity = entity;
-					moveCommand.Execute();
+					movePoint.Entity = entity.gameObject;
 					result = true;
 				}
 			}

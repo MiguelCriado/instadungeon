@@ -8,7 +8,13 @@ namespace InstaDungeon
 	{
 		public bool overrideServices;
 
-		void Awake()
+		protected void Awake()
+		{
+			AddServices();
+			AddManagers();
+		}
+
+		protected void AddServices()
 		{
 			if (!Locator.Contains<Logger>() || overrideServices)
 			{
@@ -17,7 +23,7 @@ namespace InstaDungeon
 					return new ConsoleLogger(LogLevel.Debug);
 				});
 			}
-			
+
 			if (!Locator.Contains<AssetBundleService>() || overrideServices)
 			{
 				Locator.Provide<AssetBundleService>(() =>
@@ -25,6 +31,41 @@ namespace InstaDungeon
 					return new CloudAssetBundleService();
 				});
 			}
+		}
+
+		protected void AddManagers()
+		{
+			Locator.Provide<ActionManager>
+			(
+				() =>
+				{
+					return new ActionManager();
+				}
+			);
+
+			Locator.Provide<EntityManager>
+			(
+				() =>
+				{
+					return new EntityManager();
+				}
+			);
+
+			Locator.Provide<MapManager>
+			(
+				() =>
+				{
+					return new MapManager();
+				}
+			);
+
+			Locator.Provide<CommandManager>
+			(
+				() =>
+				{
+					return new CommandManager();
+				}
+			);
 		}
 	}
 }

@@ -10,6 +10,8 @@ namespace InstaDungeon
 	{
 		public static Entity Player { get { return Instance.player; } }
 		public static CameraManager Camera { get { return Instance.cameraManager; } }
+		public static MapManager MapManager { get { return Instance.mapManager; } }
+		public static ITileMapRenderer Renderer { get { return Instance.mapRenderer; } }
 
 		private EntityManager entityManager;
 		private TurnManager turnManager;
@@ -48,31 +50,10 @@ namespace InstaDungeon
 
 		public static void LoadNewMap()
 		{
+			Instance.turnManager.RevokeControl();
 			Instance.GenerateNewMap();
 			Instance.PreparePlayerForNewLevel();
-		}
-
-		public static bool MoveActor(MoveActorCommand moveCommand)
-		{
-			bool result = false;
-
-			if (Instance.mapManager.MoveTo(moveCommand))
-			{
-				moveCommand.Execute();
-				result = true;
-			}
-
-			return result;
-		}
-
-		public static Vector3 CellToWorld(int2 position)
-		{
-			return Instance.mapRenderer.SnappedTileMapToWorldPosition(position);
-		}
-
-		public static Cell GetCell(int x, int y)
-		{
-			return Instance.mapManager[x, y];
+			Instance.turnManager.GrantControl();
 		}
 
 		public void GenerateNewMap()
@@ -97,9 +78,7 @@ namespace InstaDungeon
 
 		private void PreparePlayerForNewLevel()
 		{
-			CellTransform playerCell = player.GetComponent<CellTransform>();
-
-			mapManager.Spawn(new MoveActorCommand(playerCell, mapManager.Map.SpawnPoint));
+			mapManager.Spawn(new MoveEntityCommand(player, mapManager.Map.SpawnPoint));
 
 			TurnComponent playerTurn = player.GetComponent<TurnComponent>();
 
@@ -134,7 +113,7 @@ namespace InstaDungeon
 
 		private void InitializeMapManager()
 		{
-			mapManager = new MapManager();
+			mapManager = Locator.Get<MapManager>();
 		}
 
 		private void InitializeTurnManager()
@@ -173,12 +152,7 @@ namespace InstaDungeon
 
 		private void InitializeEntityManager()
 		{
-			entityManager = FindObjectOfType<EntityManager>();
-
-			if (entityManager == null)
-			{
-				Locator.Log.Error("There must be an object of type EntityManager in the scene.");
-			}
+			entityManager = Locator.Get<EntityManager>();
 		}
 
 		private void InitializePlayerCharacter()

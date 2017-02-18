@@ -10,7 +10,7 @@ namespace InstaDungeon.BehaviorTreeNodes
 			Entity player = GameManager.Player;
 			CellTransform playerTransform = player.GetComponent<CellTransform>();
 
-			Cell playerCell = GameManager.GetCell(playerTransform.Position.x, playerTransform.Position.y);
+			Cell playerCell = GameManager.MapManager[playerTransform.Position.x, playerTransform.Position.y];
 
 			if (playerCell != null && playerCell.TileInfo.TileType == TileType.Exit)
 			{

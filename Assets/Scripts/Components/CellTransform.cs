@@ -12,7 +12,7 @@ namespace InstaDungeon.Components
 		public void MoveTo(int2 position)
 		{
 			this.position = position;
-			transform.position = GameManager.CellToWorld(position);
+			transform.position = GameManager.Renderer.SnappedTileMapToWorldPosition(position);
 		}
 	}
 }
