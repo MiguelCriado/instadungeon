@@ -19,6 +19,7 @@ namespace InstaDungeon
 		private ITileMapRenderer mapRenderer;
 		private MapGenerator mapGenerator;
 		private CameraManager cameraManager;
+		private VisibilityManager visibilityManager;
 
 		private BehaviorTree turnTree;
 		private Blackboard turnBlackboard;
@@ -44,8 +45,9 @@ namespace InstaDungeon
 			InitializeMapGenerator();
 			InitializeMapRenderer();
 			InitializeEntityManager();
-			InitializePlayerCharacter();
 			InitializeCameraManager();
+			InitializeVisibilityManager();
+			InitializePlayerCharacter();
 		}
 
 		public static void LoadNewMap()
@@ -78,7 +80,7 @@ namespace InstaDungeon
 
 		private void PreparePlayerForNewLevel()
 		{
-			mapManager.Spawn(new MoveEntityCommand(player, mapManager.Map.SpawnPoint));
+			mapManager.Relocate(new MoveEntityCommand(player, mapManager.Map.SpawnPoint));
 
 			TurnComponent playerTurn = player.GetComponent<TurnComponent>();
 
@@ -86,6 +88,8 @@ namespace InstaDungeon
 			{
 				turnManager.AddActor(playerTurn);
 			}
+
+			cameraManager.Target = player.transform;
 		}
 
 		private void StartUpTurnSystem()
@@ -155,25 +159,26 @@ namespace InstaDungeon
 			entityManager = Locator.Get<EntityManager>();
 		}
 
-		private void InitializePlayerCharacter()
+		private void InitializeVisibilityManager()
 		{
-			if (player == null)
-			{
-				player = entityManager.Spawn("Player");
-			}
+			visibilityManager = Locator.Get<VisibilityManager>();
 		}
 
 		private void InitializeCameraManager()
 		{
 			cameraManager = FindObjectOfType<CameraManager>();
 
-			if (cameraManager != null)
-			{
-				cameraManager.Target = player.transform;
-			}
-			else
+			if (cameraManager == null)
 			{
 				Locator.Log.Error("There must be an object of type EntityManager in the scene.");
+			}
+		}
+
+		private void InitializePlayerCharacter()
+		{
+			if (player == null)
+			{
+				player = entityManager.Spawn("Player");
 			}
 		}
 

@@ -3,10 +3,10 @@ using UnityEngine;
 
 public class RectangleInt
 {
-    public int2 position
-    {
-        get { return new int2(x, y); }
-    }
+    public int2 Position { get { return new int2(x, y); } }
+
+	public int2 Min { get { return Position; } }
+	public int2 Max { get { return new int2(x + width, y + height); } }
 
     public int x;
     public int y;

@@ -141,10 +141,10 @@ public class CavernousZoneGenerator : MonoBehaviour, IZoneGenerator
 
 		while (connectionsEnumerator.MoveNext())
 		{
-			fixedFloor.Add(connectionsEnumerator.Current.Key - zone.bounds.position);
+			fixedFloor.Add(connectionsEnumerator.Current.Key - zone.bounds.Position);
 		}
 
-		Dictionary<int2, TileType> zoneTiles = Generate(zone.bounds.width, zone.bounds.height, zone.bounds.position);
+		Dictionary<int2, TileType> zoneTiles = Generate(zone.bounds.width, zone.bounds.height, zone.bounds.Position);
 
 		var enumerator = zoneTiles.GetEnumerator();
 
@@ -574,7 +574,7 @@ public class CavernousZoneGenerator : MonoBehaviour, IZoneGenerator
             {
                 if (zoneArray[i, j] < FIXED_FLOOR)
                 {
-                    if (IsNearAFloorTile(i, j))
+                    if (IsNearAFloorTile(i, j, true))
                     {
                         zoneArray[i, j] = WALL;
                     }
@@ -592,19 +592,25 @@ public class CavernousZoneGenerator : MonoBehaviour, IZoneGenerator
     {
         bool result = false;
 
-        if ((!IsOutOfBounds(x-1, y) &&  zoneArray[x-1, y] >= FIXED_FLOOR)
-            || (!IsOutOfBounds(x + 1, y) && zoneArray[x + 1, y] >= FIXED_FLOOR)
-            || (!IsOutOfBounds(x, y - 1) && zoneArray[x, y - 1] >= FIXED_FLOOR)
-            || (!IsOutOfBounds(x, y + 1) && zoneArray[x, y + 1] >= FIXED_FLOOR))
+        if (	(!IsOutOfBounds(x - 1, y) && zoneArray[x - 1, y] >= FIXED_FLOOR)
+            ||	(!IsOutOfBounds(x + 1, y) && zoneArray[x + 1, y] >= FIXED_FLOOR)
+            ||	(!IsOutOfBounds(x, y - 1) && zoneArray[x, y - 1] >= FIXED_FLOOR)
+            ||	(!IsOutOfBounds(x, y + 1) && zoneArray[x, y + 1] >= FIXED_FLOOR))
         {
             result = true;
         }
 
-        if ((checkDiagonals && !result)
-            && (!IsOutOfBounds(x - 1, y + 1) && zoneArray[x - 1, y + 1] >= FIXED_FLOOR)
-            && (!IsOutOfBounds(x + 1, y + 1) && zoneArray[x + 1, y + 1] >= FIXED_FLOOR)
-            && (!IsOutOfBounds(x + 1, y - 1) && zoneArray[x + 1, y - 1] >= FIXED_FLOOR)
-            && (!IsOutOfBounds(x - 1, y - 1) && zoneArray[x - 1, y - 1] >= FIXED_FLOOR))
+        if
+		(
+			(checkDiagonals && !result)
+			&& 
+			(
+					(!IsOutOfBounds(x - 1, y + 1) && zoneArray[x - 1, y + 1] >= FIXED_FLOOR)
+				||	(!IsOutOfBounds(x + 1, y + 1) && zoneArray[x + 1, y + 1] >= FIXED_FLOOR)
+				||	(!IsOutOfBounds(x + 1, y - 1) && zoneArray[x + 1, y - 1] >= FIXED_FLOOR)
+				||	(!IsOutOfBounds(x - 1, y - 1) && zoneArray[x - 1, y - 1] >= FIXED_FLOOR)
+			)
+		)
         {
             result = true;
         }

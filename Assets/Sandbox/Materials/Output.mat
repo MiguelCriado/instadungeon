@@ -6,9 +6,9 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: PixelPerfect
+  m_Name: Output
   m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: PIXELSNAP_ON
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -18,13 +18,13 @@ Material:
     - first:
         name: _MainTex
       second:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 8400000, guid: fe09a1e6ed5a1d242b11cb2d8e5a68e1, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - first:
         name: PixelSnap
-      second: 1
+      second: 0
     m_Colors:
     - first:
         name: _Color

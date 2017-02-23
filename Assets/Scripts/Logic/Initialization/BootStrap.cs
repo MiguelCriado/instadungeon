@@ -66,6 +66,14 @@ namespace InstaDungeon
 					return new CommandManager();
 				}
 			);
+
+			Locator.Provide<VisibilityManager>
+			(
+				() =>
+				{
+					return new VisibilityManager();
+				}
+			);
 		}
 	}
 }
