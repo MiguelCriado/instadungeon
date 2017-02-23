@@ -1,5 +1,6 @@
 ﻿using InstaDungeon.Commands;
 using InstaDungeon.Components;
+using InstaDungeon.Events;
 using System.Collections.Generic;
 
 namespace InstaDungeon
@@ -58,22 +59,24 @@ namespace InstaDungeon
 			return result;
 		}
 
-		public bool Spawn(MoveEntityCommand spawnCommand)
+		public bool Relocate(MoveEntityCommand relocateCommand)
 		{
 			bool result = false;
 
-			Entity entity = spawnCommand.Entity;
+			Entity entity = relocateCommand.Entity;
 
 			if (!entities.ContainsKey(entity.Guid))
 			{
-				Cell spawnPoint = map[spawnCommand.Position.x, spawnCommand.Position.y];
+				Cell spawnPoint = map[relocateCommand.Position.x, relocateCommand.Position.y];
 
 				if (spawnPoint != null && spawnPoint.TileInfo.Walkable && spawnPoint.Entity == null)
 				{
-					spawnPoint.Entity = spawnCommand.Entity.gameObject;
+					spawnPoint.Entity = relocateCommand.Entity.gameObject;
 					entities.Add(entity.Guid, entity);
-					spawnCommand.Execute();
+					relocateCommand.Execute();
 					result = true;
+
+					entity.Events.TriggerEvent(new EntityRelocateEvent(entity.Guid, relocateCommand.LastPosition, relocateCommand.Position));
 				}
 			}
 

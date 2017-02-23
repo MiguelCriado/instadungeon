@@ -35,6 +35,8 @@ namespace InstaDungeon
 				result.Init(nextGuid++);
 				dynamicEntities.Add(result.Guid, result);
 				SubscribeToEvents(result);
+
+				events.TriggerEvent(new EntitySpawnEvent(result.Guid));
 			}
 
 			return result;
@@ -54,6 +56,14 @@ namespace InstaDungeon
 			{
 				return false;
 			}
+		}
+
+		public Entity Get(uint entityGuid)
+		{
+			Entity result;
+			dynamicEntities.TryGetValue(entityGuid, out result);
+
+			return result;
 		}
 
 		protected void CreateEntitiesContainer()
@@ -89,19 +99,30 @@ namespace InstaDungeon
 			CreateEntitiesContainer();
 		}
 
+		#region [Events]
+
 		protected void SubscribeToEvents(Entity entity)
 		{
-			entity.Events.AddListener(OnEntityMove, EntityMoveEvent.EVENT_TYPE);
+			entity.Events.AddListener(OnEntityMove, EntityStartMovementEvent.EVENT_TYPE);
+			entity.Events.AddListener(OnEntityRelocate, EntityRelocateEvent.EVENT_TYPE);
 		}
 
 		protected void UnsubscribeToEvents(Entity entity)
 		{
-			entity.Events.RemoveListener(OnEntityMove, EntityMoveEvent.EVENT_TYPE);
+			entity.Events.RemoveListener(OnEntityMove, EntityStartMovementEvent.EVENT_TYPE);
+			entity.Events.RemoveListener(OnEntityRelocate, EntityRelocateEvent.EVENT_TYPE);
 		}
 
 		protected void OnEntityMove(IEventData eventData)
 		{
 			events.TriggerEvent(eventData);
 		}
+
+		protected void OnEntityRelocate(IEventData eventData)
+		{
+			events.TriggerEvent(eventData);
+		}
+
+		#endregion
 	}
 }

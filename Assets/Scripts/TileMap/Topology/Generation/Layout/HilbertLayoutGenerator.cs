@@ -40,10 +40,10 @@ public class HilbertLayoutGenerator : MonoBehaviour, ILayoutGenerator {
     private Connections[,] layoutConnections;
 	private Layout layout;
 
-    public void Update()
-    {
-        PaintLayout();
-    }
+    // public void Update()
+    // {
+    //    PaintLayout();
+    // }
 
 	public Layout NewLayout()
 	{

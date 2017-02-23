@@ -40,14 +40,14 @@ public static class TileMapExtensions
 		{
 			zone = mapGraph.Nodes[i].Value;
 			GraphNode<Zone> mapZoneNode = mapGraph.Nodes.FindByValue(zone) as GraphNode<Zone>;
-			resultZone = resultLayout.FindZoneByPosition(zone.bounds.position);
+			resultZone = resultLayout.FindZoneByPosition(zone.bounds.Position);
 
 			var linkEnumerator = mapZoneNode.Neighbors.GetEnumerator();
 
 			while (linkEnumerator.MoveNext())
 			{
 				Zone mapConnectionZone = linkEnumerator.Current.Value;
-				Zone resultConnectionZone = resultLayout.FindZoneByPosition(mapConnectionZone.bounds.position);
+				Zone resultConnectionZone = resultLayout.FindZoneByPosition(mapConnectionZone.bounds.Position);
 
 				GraphNode<Zone> resultZoneNode = resultLayout.Zones.Nodes.FindByValue(resultZone) as GraphNode<Zone>;
 
@@ -63,7 +63,7 @@ public static class TileMapExtensions
 		for (int i = 0; i < mapGraph.Count; i++)
 		{
 			zone = mapGraph.Nodes[i].Value;
-			resultZone = resultLayout.FindZoneByPosition(zone.bounds.position);
+			resultZone = resultLayout.FindZoneByPosition(zone.bounds.Position);
 
 			int2 connectionPoint;
 			Zone connectionZone;
@@ -75,7 +75,7 @@ public static class TileMapExtensions
 				Zone currentMapZoneConnection = connectionsEnumerator.Current.Value;
 
 				connectionPoint = new int2(currentMapPoint.x, currentMapPoint.y);
-				connectionZone = resultLayout.FindZoneByPosition(currentMapZoneConnection.bounds.position);
+				connectionZone = resultLayout.FindZoneByPosition(currentMapZoneConnection.bounds.Position);
 
 				resultZone.AddConnectionPoint(connectionPoint, connectionZone);
 			}
@@ -83,8 +83,8 @@ public static class TileMapExtensions
 
 		// Set Initial & Final zones
 
-		resultLayout.InitialZone = resultLayout.FindZoneByPosition(map.Layout.InitialZone.bounds.position);
-		resultLayout.FinalZone = resultLayout.FindZoneByPosition(map.Layout.FinalZone.bounds.position);
+		resultLayout.InitialZone = resultLayout.FindZoneByPosition(map.Layout.InitialZone.bounds.Position);
+		resultLayout.FinalZone = resultLayout.FindZoneByPosition(map.Layout.FinalZone.bounds.Position);
 
 		// Set Spawn & Exit zones
 

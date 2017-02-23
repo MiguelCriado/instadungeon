@@ -1,18 +1,17 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class TileMap<T>
 {
 	public Layout Layout { get { return layout; } set { layout = value; } }
-	public int2 Min { get { return min; } }
-	public int2 Max { get { return max; } }
+	public RectangleInt Bounds { get { return bounds; } }
 	public int2 SpawnPoint { get; set; }
 	public int2 ExitPoint { get; set; }
 
 	private Dictionary<int2, T> tiles;
 	private Layout layout;
 
-	private int2 min = new int2(int.MaxValue, int.MaxValue);
-	private int2 max = new int2(int.MinValue, int.MinValue);
+	private RectangleInt bounds = new RectangleInt(int.MaxValue, int.MaxValue, int.MinValue, int.MinValue);
 
 	private int2 accessor = int2.zero;
 	private bool dirty;
@@ -24,6 +23,12 @@ public class TileMap<T>
         tiles = new Dictionary<int2, T>();
         layout = new Layout();
     }
+
+	public T this[int2 position]
+	{
+		get { return this[position.x, position.y]; }
+		set { this[position.x, position.y] = value; }
+	}
 
 	public T this[int x, int y]
 	{
@@ -48,17 +53,8 @@ public class TileMap<T>
 			else
 			{
 				tiles.Add(new int2(accessor.x, accessor.y), value);
+				UpdateBounds(accessor);
 				dirty = true;
-
-				if (accessor.x < min.x && accessor.y < min.y)
-				{
-					min = new int2(accessor.x, accessor.y);
-				}
-
-				if (accessor.x > max.x && accessor.y > max.y)
-				{
-					max = new int2(accessor.x, accessor.y);
-				}
 			}
 		}
 	}
@@ -120,4 +116,20 @@ public class TileMap<T>
     {
         return tiles.GetEnumerator();
     }
+
+	protected void UpdateBounds(int2 newTile)
+	{
+		int xMin = Mathf.Min(newTile.x, bounds.Min.x);
+		int xMax = Mathf.Max(newTile.x + 1, bounds.Max.x);
+		int yMin = Mathf.Min(newTile.y, bounds.Min.y);
+		int yMax = Mathf.Max(newTile.y + 1, bounds.Max.y);
+
+		if (xMin < bounds.Min.x 
+			|| xMax > bounds.Max.x
+			|| yMin < bounds.Min.y
+			|| yMax > bounds.Max.y)
+		{
+			bounds = new RectangleInt(xMin, yMin, xMax - xMin, yMax - yMin);
+		}
+	}
 }

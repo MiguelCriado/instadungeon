@@ -58,12 +58,12 @@ public class Zone : IEnumerable
 
     public int2 Map2Zone(int2 mapPosition)
     {
-        return mapPosition - bounds.position;
+        return mapPosition - bounds.Position;
     }
 
     public int2 Zone2Map(int2 zonePosition)
     {
-        return bounds.position + zonePosition;
+        return bounds.Position + zonePosition;
     }
 
     public override string ToString()

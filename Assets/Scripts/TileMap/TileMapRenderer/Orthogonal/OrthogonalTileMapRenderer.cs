@@ -10,12 +10,9 @@ namespace InstaDungeon.TileMap
 		public int2 ChunkSize { get { return chunkSize; } }
 		public Material Material { get { return material; } }
 
-		[SerializeField]
-		private float tileScale = 1f;
-		[SerializeField]
-		private int2 chunkSize;
-		[SerializeField]
-		private Material material;
+		[SerializeField] private float tileScale = 1f;
+		[SerializeField] private int2 chunkSize;
+		[SerializeField] private Material material;
 
 		private Dictionary<int2, OrthogonalChunkRenderer> chunks;
 		private Transform chunksContainer;
@@ -67,6 +64,16 @@ namespace InstaDungeon.TileMap
 			foreach(var chunkRenderer in chunks)
 			{
 				chunkRenderer.Value.FinishBuilding();
+			}
+		}
+
+		public void RefreshVisibility()
+		{
+			var enumerator = chunks.GetEnumerator();
+
+			while (enumerator.MoveNext())
+			{
+				enumerator.Current.Value.RefreshVisibility();
 			}
 		}
 

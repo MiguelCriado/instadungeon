@@ -1,6 +1,5 @@
 ﻿using InstaDungeon.Actions;
 using InstaDungeon.Components;
-using UnityEngine;
 using UnityEngine.Events;
 
 namespace InstaDungeon

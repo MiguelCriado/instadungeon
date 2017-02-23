@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 namespace InstaDungeon
@@ -6,27 +7,43 @@ namespace InstaDungeon
 	[System.Serializable]
 	public abstract class Manager
 	{
+		[System.Serializable]
 		protected class DummyMonoBehaviour : MonoBehaviour
 		{
 			public Manager Manager { get { return manager; } set { manager = value; } }
 
 			[SerializeField] protected Manager manager;
+
+			public UnityEvent OnUpdate = new UnityEvent();
+
+			protected void Update()
+			{
+				if (OnUpdate != null)
+				{
+					OnUpdate.Invoke();
+				}
+			}
 		}
 
 		protected DummyMonoBehaviour monoBehaviourHelper;
 
-		public Manager() : this(true)
+		public Manager() : this(true, false)
 		{
 			
 		}
 
-		public Manager(bool persistentBetweenScenes)
+		public Manager(bool persistentBetweenScenes, bool registerForUpdateTicks)
 		{
 			CreateGameObject();
 
 			if (persistentBetweenScenes)
 			{
 				SceneManager.sceneUnloaded += OnSceneUnLoaded;
+			}
+
+			if (registerForUpdateTicks)
+			{
+				monoBehaviourHelper.OnUpdate.AddListener(OnUpdate);
 			}
 		}
 
@@ -41,6 +58,11 @@ namespace InstaDungeon
 		protected virtual void OnSceneUnLoaded(Scene scene)
 		{
 			CreateGameObject();
+		}
+
+		protected virtual void OnUpdate()
+		{
+
 		}
 	}
 }

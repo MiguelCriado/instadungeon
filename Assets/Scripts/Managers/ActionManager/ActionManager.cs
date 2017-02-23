@@ -1,5 +1,4 @@
 ﻿using InstaDungeon.Actions;
-using InstaDungeon.UnityEvents;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,25 +6,10 @@ namespace InstaDungeon
 {
 	public class ActionManager : Manager
 	{
-		protected class UpdateHelper : MonoBehaviour
-		{
-			public FloatUnityEvent OnUpdate = new FloatUnityEvent();
-
-			protected void Update()
-			{
-				if (OnUpdate != null)
-				{
-					OnUpdate.Invoke(Time.deltaTime);
-				}
-			}
-		}
-
-		protected UpdateHelper updateHelper;
 		protected List<IAction> runningActions;
 
-		public ActionManager() : base()
+		public ActionManager() : base(true, true)
 		{
-			GetHelper().OnUpdate.AddListener(OnUpdate);
 			runningActions = new List<IAction>();
 		}
 
@@ -39,10 +23,10 @@ namespace InstaDungeon
 			}
 		}
 
-		protected void OnUpdate(float deltaTime)
+		protected override void OnUpdate()
 		{
 			CommitFinishedActions();
-			UpdateActions(deltaTime);
+			UpdateActions(Time.deltaTime);
 		}
 
 		protected void CommitFinishedActions()
@@ -69,16 +53,6 @@ namespace InstaDungeon
 			{
 				runningActions[i].Update(deltaTime);
 			}
-		}
-
-		protected UpdateHelper GetHelper()
-		{
-			if (updateHelper == null)
-			{
-				updateHelper = monoBehaviourHelper.gameObject.AddComponent<UpdateHelper>();
-			}
-
-			return updateHelper;
 		}
 	}
 }
