@@ -371,9 +371,9 @@ public class CavernousZoneGenerator : MonoBehaviour, IZoneGenerator
 				{
 					if (FloodFillIsle(i, j, FLOOR, cont) < 2)
 					{
-                        // Debug.Log ("Filling isle " + cont);
 						FloodFillIsle(i, j, cont, WALL);
-					} else
+					}
+					else
 					{
 						cont++;
 					}
@@ -382,12 +382,6 @@ public class CavernousZoneGenerator : MonoBehaviour, IZoneGenerator
                 {
                     FloodFillIsle(i, j, FIXED_FLOOR, cont);
                     cont++;
-                    /*if (FloodFillIsle(i, j, FIXED_FLOOR, cont) < 2) {
-                        // Debug.Log ("Filling isle " + cont);
-						FloodFillIsle(i, j, cont, WALL);
-					} else {
-						cont++;
-					}*/
                 }
 			}
 		}
@@ -480,7 +474,6 @@ public class CavernousZoneGenerator : MonoBehaviour, IZoneGenerator
             for (int i = 0; i < cavernList.Count - 1; i++)
 			{
                 nearest = FindNearestTile(tree, cavernList[i].cells);
-                // Debug.Log("Gonna connect " + nearest[0] + " with " + nearest[1]);
                 MakePath(nearest[0], nearest[1]);
             }
         }
@@ -538,7 +531,6 @@ public class CavernousZoneGenerator : MonoBehaviour, IZoneGenerator
             point[1] = cells[i].y;
 
             it = tree.NearestNeighbors(point, 1);
-            //Debug.Log("Nearest to " + cells[i] + " = " + it.Current);
 
             while (it.MoveNext())
             {
@@ -561,7 +553,6 @@ public class CavernousZoneGenerator : MonoBehaviour, IZoneGenerator
 
         for (int i = 0; i < biggestCavern.cells.Count; i++)
         {
-            //Debug.Log("Adding " + biggestCavern.cells[i] + " to the tree");
             tree.AddPoint(new double[] {biggestCavern.cells[i].x, biggestCavern.cells[i].y}, biggestCavern.cells[i]);
         }
     }

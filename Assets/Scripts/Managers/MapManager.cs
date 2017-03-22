@@ -71,7 +71,7 @@ namespace InstaDungeon
 
 				if (spawnPoint != null && spawnPoint.TileInfo.Walkable && spawnPoint.Entity == null)
 				{
-					spawnPoint.Entity = relocateCommand.Entity.gameObject;
+					spawnPoint.Entity = relocateCommand.Entity;
 					entities.Add(entity.Guid, entity);
 					relocateCommand.Execute();
 					result = true;
@@ -97,7 +97,7 @@ namespace InstaDungeon
 					&& currentPoint != null && currentPoint.Entity == entity)
 				{
 					currentPoint.Entity = null;
-					movePoint.Entity = entity.gameObject;
+					movePoint.Entity = entity;
 					result = true;
 				}
 			}
