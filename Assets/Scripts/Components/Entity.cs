@@ -1,4 +1,5 @@
-﻿using InstaDungeon.DataStructures;
+﻿using InstaDungeon.Configuration;
+using InstaDungeon.DataStructures;
 using InstaDungeon.Events;
 using UnityEngine;
 
@@ -12,9 +13,11 @@ namespace InstaDungeon.Components
 		public EventSystem Events { get { return events; } }
 		public CellTransform CellTransform { get { return cellTransform; } }
 
+		public EntityInfo Info { get { return info; } }
 		public bool BlocksLineOfSight { get { return blocksLineOfSight; } set { blocksLineOfSight = value; } }
 		public bool BlocksMovement { get { return blocksMovement; } set { blocksMovement = value; } }
 
+		[SerializeField] private EntityInfo info;
 		[SerializeField] private bool blocksLineOfSight;
 		[SerializeField] private bool blocksMovement;
 

@@ -3,39 +3,47 @@ using UnityEngine.Events;
 
 namespace InstaDungeon.Components
 {
-	[RequireComponent(typeof(LocomotionComponent), typeof(TurnComponent))]
-	public class PlayerControllerComponent : MonoBehaviour
+	[RequireComponent(typeof(TurnComponent), typeof(Actor))]
+	public class InputActorController : MonoBehaviour
 	{
 		protected static readonly float BufferedInputDecayTime = 0.5f;
 
-		[SerializeField] private KeyCode up = KeyCode.UpArrow;
-		[SerializeField] private KeyCode right = KeyCode.RightArrow;
-		[SerializeField] private KeyCode down = KeyCode.DownArrow;
-		[SerializeField] private KeyCode left = KeyCode.LeftArrow;
+		[SerializeField] private KeyCode up;
+		[SerializeField] private KeyCode right;
+		[SerializeField] private KeyCode down;
+		[SerializeField] private KeyCode left;
 
-		private LocomotionComponent locomotion;
 		private TurnComponent turn;
+		private Actor actor;
 
-		private UnityAction moveUp;
-		private UnityAction moveRight;
-		private UnityAction moveDown;
-		private UnityAction moveLeft;
+		private UnityAction upAction;
+		private UnityAction rightAction;
+		private UnityAction downAction;
+		private UnityAction leftAction;
 
 		private UnityAction bufferedInput;
 		private float bufferedeInputRemainingTime;
 
-		void Awake()
+		private void Reset()
 		{
-			locomotion = GetComponent<LocomotionComponent>();
-			turn = GetComponent<TurnComponent>();
-
-			moveUp = () => { TryMove(0, 1); };
-			moveRight = () => { TryMove(1, 0); };
-			moveDown = () => { TryMove(0, -1); };
-			moveLeft = () => { TryMove(-1, 0); };
+			up = KeyCode.UpArrow;
+			right = KeyCode.RightArrow;
+			down = KeyCode.DownArrow;
+			left = KeyCode.LeftArrow;
 		}
 
-		void Update()
+		private void Awake()
+		{
+			turn = GetComponent<TurnComponent>();
+			actor = GetComponent<Actor>();
+
+			upAction = () => { actor.Up(); };
+			rightAction = () => { actor.Right(); };
+			downAction = () => { actor.Down(); };
+			leftAction = () => { actor.Left(); };
+		}
+
+		private void Update()
 		{
 			BufferInput();
 
@@ -82,33 +90,25 @@ namespace InstaDungeon.Components
 		{
 			if (Input.GetKeyDown(up))
 			{
-				return moveUp;
+				return upAction;
 			}
 
 			if (Input.GetKeyDown(right))
 			{
-				return moveRight;
+				return rightAction;
 			}
 
 			if (Input.GetKeyDown(down))
 			{
-				return moveDown;
+				return downAction;
 			}
 
 			if (Input.GetKeyDown(left))
 			{
-				return moveLeft;
+				return leftAction;
 			}
 
 			return null;
-		}
-
-		private void TryMove(int x, int y)
-		{
-			if (locomotion.IsValidMovement(x, y))
-			{
-				locomotion.Move(new int2(x, y), turn.Token);
-			}
 		}
 	}
 }

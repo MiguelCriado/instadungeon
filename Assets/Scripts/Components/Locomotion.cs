@@ -4,7 +4,7 @@ using UnityEngine;
 namespace InstaDungeon.Components
 {
 	[RequireComponent(typeof(Entity))]
-	public class LocomotionComponent : MonoBehaviour
+	public class Locomotion : MonoBehaviour
 	{
 		protected Entity entity;
 		protected ActionManager actionManager;

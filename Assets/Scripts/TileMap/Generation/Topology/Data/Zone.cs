@@ -56,12 +56,12 @@ public class Zone : IEnumerable
         return bounds.ContactPoint(layoutZonePoint, out contactPoint);
     }
 
-    public int2 Map2Zone(int2 mapPosition)
+    public int2 MapToZone(int2 mapPosition)
     {
         return mapPosition - bounds.Position;
     }
 
-    public int2 Zone2Map(int2 zonePosition)
+    public int2 ZoneToMap(int2 zonePosition)
     {
         return bounds.Position + zonePosition;
     }

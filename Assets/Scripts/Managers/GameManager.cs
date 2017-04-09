@@ -60,21 +60,7 @@ namespace InstaDungeon
 
 		public void GenerateNewMap()
 		{
-			TileMap<TileType> blueprintMap = mapGenerator.GenerateBlueprint();
-
-			TileMap<TileInfo> tileInfoMap = blueprintMap.Convert((TileType cellType) =>
-			{
-				bool walkable = true;
-
-				if (cellType == TileType.Wall)
-				{
-					walkable = false;
-				}
-
-				return new TileInfo(cellType, walkable);
-			}); // TODO: work a way to avoid this conversion
-
-			mapManager.Initialize(tileInfoMap);
+			mapGenerator.GenerateNewMap();
 			mapRenderer.RenderMap(mapManager.Map);
 		}
 

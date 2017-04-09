@@ -5,12 +5,12 @@ using System.Collections.Generic;
 public class Cell
 {
 	public TileInfo TileInfo { get; set; }
-	public Entity Entity { get { return entity; } set { entity = value; } }
+	public Entity Actor { get { return actor; } set { actor = value; } }
 	public Entity Prop { get { return prop; } set { prop = value; } }
 	public List<Entity> Items { get { return items; } }
 	public VisibilityType Visibility { get { return visibility; } }
 
-	private Entity entity;
+	private Entity actor;
 	private Entity prop;
 	private List<Entity> items;
 	private VisibilityType visibility;
@@ -54,7 +54,7 @@ public class Cell
 		result |= 
 			(
 				TileInfo.BreaksLineOfSight
-				|| (entity != null && entity.BlocksLineOfSight)
+				|| (actor != null && actor.BlocksLineOfSight)
 				|| (prop != null && prop.BlocksLineOfSight)
 			);
 
@@ -70,5 +70,30 @@ public class Cell
 		}
 
 		return result;
+	}
+
+	public bool IsWalkable()
+	{
+		bool blocked = false;
+
+		blocked |=
+			(
+				!TileInfo.Walkable
+				|| (actor != null && actor.BlocksMovement)
+				|| (prop != null && prop.BlocksMovement)
+			);
+
+		if (blocked == false)
+		{
+			int i = 0;
+
+			while (blocked == false && i < items.Count)
+			{
+				blocked |= items[i].BlocksMovement;
+				i++;
+			}
+		}
+
+		return !blocked;
 	}
 }

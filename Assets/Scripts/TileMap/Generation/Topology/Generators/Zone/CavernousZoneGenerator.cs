@@ -122,17 +122,6 @@ public class CavernousZoneGenerator : MonoBehaviour, IZoneGenerator
 		return map;
 	}
 
-	public int2 PlaceStairs(Zone zone, TileMap<TileType> map)
-	{
-		TileType stairs = zone == map.Layout.InitialZone ? TileType.Entrance : TileType.Exit;
-		int2 stairsPosition = ZoneGeneratorUtils.FindPlaceForStairs(map, zone);
-
-		map[stairsPosition.x, stairsPosition.y] = stairs;
-		zone.tiles.Add(stairsPosition);
-
-		return stairsPosition;
-	}
-
 	private TileMap<TileType> Generate(Zone zone, TileMap<TileType> map)
 	{
 		fixedFloor = new List<int2>();
