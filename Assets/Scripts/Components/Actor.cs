@@ -66,7 +66,7 @@ namespace InstaDungeon.Components
 
 						if (interactable != null && interactable.IsValidInteraction(entity))
 						{
-							interactable.Interact(entity);
+							interactable.Interact(entity, turn.Token);
 							interactionFound = true;
 						}
 					}
@@ -77,7 +77,7 @@ namespace InstaDungeon.Components
 
 						if (interactable != null && interactable.IsValidInteraction(entity))
 						{
-							interactable.Interact(entity);
+							interactable.Interact(entity, turn.Token);
 							interactionFound = true;
 						}
 					}
@@ -92,7 +92,7 @@ namespace InstaDungeon.Components
 
 							if (interactable != null && interactable.IsValidInteraction(entity))
 							{
-								interactable.Interact(entity);
+								interactable.Interact(entity, turn.Token);
 								interactionFound = true;
 							}
 

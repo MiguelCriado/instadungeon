@@ -17,7 +17,7 @@ namespace InstaDungeon.Actions
 			Locator.Get<ActionManager>().AddAction(this);
 		}
 
-		public abstract void Update(float deltaTime);
+		public virtual void Update(float deltaTime) { }
 
 		public abstract void Commit();
 		
@@ -41,10 +41,16 @@ namespace InstaDungeon.Actions
 		public T Command { get { return command; } }
 
 		protected T command;
+		protected CommandManager commandManager;
+
+		public BaseAction()
+		{
+			commandManager = Locator.Get<CommandManager>();
+		}
 
 		public override void Commit()
 		{
-			Locator.Get<CommandManager>().RegisterCommand(Command);
+			commandManager.RegisterCommand(Command);
 			TryToNotify();
 		}
 	}

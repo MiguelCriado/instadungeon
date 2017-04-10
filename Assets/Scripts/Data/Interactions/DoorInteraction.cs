@@ -1,4 +1,5 @@
-﻿using InstaDungeon.Components;
+﻿using InstaDungeon.Actions;
+using InstaDungeon.Components;
 using InstaDungeon.Configuration;
 using UnityEngine;
 
@@ -23,27 +24,10 @@ namespace InstaDungeon
 			return result;
 		}
 
-		public override void Interact(Entity activeActor, Entity pasiveActor)
+		public override IAction Interact(Entity activeActor, Entity pasiveActor)
 		{
-			Inventory inventory = activeActor.GetComponent<Inventory>();
-
-			if (inventory != null)
-			{
-				if (inventory.Contains(requiredKey))
-				{
-					inventory.Remove(requiredKey);
-
-					pasiveActor.BlocksLineOfSight = false;
-					pasiveActor.BlocksMovement = false;
-
-					Animator animator = pasiveActor.GetComponent<Animator>();
-
-					if (animator != null)
-					{
-						animator.SetBool("IsOpen", true);
-					}
-				}
-			}
+			OpenDoorAction result = new OpenDoorAction(activeActor, pasiveActor, requiredKey);
+			return result;
 		}
 	}
 }

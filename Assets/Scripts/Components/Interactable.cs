@@ -8,10 +8,12 @@ namespace InstaDungeon.Components
 		[SerializeField] protected Interaction interaction;
 
 		private Entity entity;
+		private ActionManager actionManager;
 
 		private void Awake()
 		{
 			entity = GetComponent<Entity>();
+			actionManager = Locator.Get<ActionManager>();
 		}
 
 		public bool IsValidInteraction(Entity actor)
@@ -19,9 +21,9 @@ namespace InstaDungeon.Components
 			return interaction.IsValidInteraction(actor, entity);
 		}
 
-		public void Interact(Entity actor)
+		public void Interact(Entity actor, TurnToken token)
 		{
-			interaction.Interact(actor, entity);
+			token.BufferAction(interaction.Interact(actor, entity));
 		}
 	}
 }
