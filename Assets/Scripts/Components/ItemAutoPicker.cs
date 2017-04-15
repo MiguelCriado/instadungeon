@@ -1,4 +1,5 @@
-﻿using InstaDungeon.Events;
+﻿using InstaDungeon.Configuration;
+using InstaDungeon.Events;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,12 +11,14 @@ namespace InstaDungeon.Components
 		private Entity entity;
 		private Inventory inventory;
 		private MapManager mapManager;
+		private ItemInteraction itemInteraction;
 
 		private void Awake()
 		{
 			entity = GetComponent<Entity>();
 			inventory = GetComponent<Inventory>();
 			mapManager = Locator.Get<MapManager>();
+			itemInteraction = GetComponent<ItemInteraction>();
 		}
 
 		private void Start()
@@ -51,6 +54,8 @@ namespace InstaDungeon.Components
 									inventory.Add(itemToRemove.Info);
 									Locator.Get<EntityManager>().Recycle(items[i].Guid);
 
+									AddItemAnimation(itemToRemove.Info);
+
 									// TODO : add item picked event
 								}
 							}
@@ -62,6 +67,14 @@ namespace InstaDungeon.Components
 						}
 					}
 				}
+			}
+		}
+
+		private void AddItemAnimation(ItemInfo item)
+		{
+			if (itemInteraction != null)
+			{
+				itemInteraction.AddItem(item);
 			}
 		}
 	}

@@ -15,10 +15,22 @@ namespace InstaDungeon.Actions
 		{
 			base.Act();
 
-			// TODO: add animations
-			// TODO: trigger events
+			ItemInteraction itemInteraction = command.Door.GetComponent<ItemInteraction>();
 
-			ActionDone();
+			if (itemInteraction != null)
+			{
+				itemInteraction.AddItem(command.RequiredKey)
+					.Done
+					(
+						() => ActionDone()
+					);
+			}
+			else
+			{
+				ActionDone();
+			}
+
+			// TODO: trigger events
 		}
 	}
 }
