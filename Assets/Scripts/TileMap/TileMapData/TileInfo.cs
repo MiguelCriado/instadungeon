@@ -2,10 +2,7 @@
 {
 	Space,
 	Floor,
-	Wall,
-	Door, 
-	Entrance, 
-	Exit
+	Wall
 }
 
 public class TileInfo

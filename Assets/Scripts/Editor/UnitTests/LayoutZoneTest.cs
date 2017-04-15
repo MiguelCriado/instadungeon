@@ -40,7 +40,7 @@ public class LayoutZoneTest
     {
         Zone zone = new Zone();
         zone.bounds = new RectangleInt(5, 5, 10, 10);
-        Assert.True(zone.Map2Zone(new int2(5, 5)) == new int2(0, 0));
+        Assert.True(zone.MapToZone(new int2(5, 5)) == new int2(0, 0));
     }
 
     [Test]
@@ -48,6 +48,6 @@ public class LayoutZoneTest
     {
         Zone zone = new Zone();
         zone.bounds = new RectangleInt(5, 5, 10, 10);
-        Assert.True(zone.Zone2Map(new int2(0, 0)) == new int2(5, 5));
+        Assert.True(zone.ZoneToMap(new int2(0, 0)) == new int2(5, 5));
     }
 }

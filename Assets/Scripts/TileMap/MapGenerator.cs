@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using InstaDungeon;
+using System.Diagnostics;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -22,15 +23,10 @@ public class MapGenerator : MonoBehaviour
 	private IZoneGenerator shapeGenerator;
     private ILayoutGenerator layoutGenerator;
 
-	void Start ()
-	{
-		// GenerateNewMap();
-	}
-
-	public void GenerateNewMap()
+	public TileMap<Cell> GenerateNewMap()
 	{
 		TileMap<TileType> blueprint = GenerateBlueprint();
-		GenerateWorld(blueprint);
+		return GenerateWorld(blueprint);
 	}
 
     public TileMap<TileType> GenerateBlueprint()
@@ -60,11 +56,18 @@ public class MapGenerator : MonoBehaviour
 		return result;
 	}
 
-	private void GenerateWorld(TileMap<TileType> blueprint)
+	private TileMap<Cell> GenerateWorld(TileMap<TileType> blueprint)
 	{
-		Stopwatch sw = Stopwatch.StartNew();
+		TileMap<Cell> map = GenerateMap(blueprint);
+		MapManager mapManager = Locator.Get<MapManager>();
+		mapManager.Initialize(map);
+		AddEntities(map);
+		return map;
+	}
 
-		TileMap<Cell> actualMap = blueprint.Convert((TileType cellType) => 
+	private TileMap<Cell> GenerateMap(TileMap<TileType> blueprint)
+	{
+		TileMap<Cell> result = blueprint.Convert((TileType cellType) =>
 		{
 			bool walkable = true;
 
@@ -76,19 +79,17 @@ public class MapGenerator : MonoBehaviour
 			return new Cell(new TileInfo(cellType, walkable));
 		});
 
-		ITileMapRenderer tileMapRenderer = GetComponent<ITileMapRenderer>();
+		return result;
+	}
 
-		if (tileMapRenderer != null)
-		{
-			tileMapRenderer.RenderMap(actualMap);
+	private void AddEntities(TileMap<Cell> map)
+	{
+		MapManager mapManager = Locator.Get<MapManager>();
+		IPropGenerator propGenerator = new BasicPropGenerator();
 
-			sw.Stop();
-			UnityEngine.Debug.Log("Time to generate world: " + sw.ElapsedMilliseconds + "ms");
-		}
-		else
-		{
-			sw.Stop();
-			UnityEngine.Debug.Log("ITileMapRenderer not found");
-		}
+		propGenerator.AddStairs(mapManager);
+		propGenerator.AddDoors(mapManager);
+		propGenerator.AddKeys(mapManager);
+		// propGenerator.AddItems(mapManager);
 	}
 }

@@ -26,12 +26,7 @@
 				default:
 				case TileType.Space: break;
 				case TileType.Floor: result = tileSet.GetTile(9); break;
-				case TileType.Wall:
-					result = tileSet.GetTile("wall", GetNeighboursMask(map, position, TileType.Wall));
-					break;
-				case TileType.Door: result = tileSet.GetTile(1); break;
-				case TileType.Entrance: result = tileSet.GetTile(23); break;
-				case TileType.Exit: result = tileSet.GetTile(22); break;
+				case TileType.Wall: result = tileSet.GetTile("wall", GetNeighboursMask(map, position, TileType.Wall)); break;
 			}
 		}
 
@@ -69,7 +64,6 @@
 			case TileType.Space: result = 0; break;
 			case TileType.Floor: result = 1; break;
 			case TileType.Wall: result = 2; break;
-			case TileType.Door: result = 3; break;
 		}
 
 		return result;

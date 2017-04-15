@@ -2,10 +2,8 @@
 
 public class CameraHeightCorrector : MonoBehaviour
 {
-	[Range(1, 10), SerializeField]
-	private int zoom = 2;
-	[SerializeField]
-	private float pixelsPerUnit = 24;
+	[Range(1, 10), SerializeField] private int zoom = 2;
+	[SerializeField] private float pixelsPerUnit = 24;
 
 	private Camera targetCamera;
 	private int lastScreenHeight;
@@ -48,6 +46,6 @@ public class CameraHeightCorrector : MonoBehaviour
 
 	private void UpdateOrthographicSize()
 	{
-		targetCamera.orthographicSize = Screen.height / (pixelsPerUnit * zoom);
+		targetCamera.orthographicSize = (Screen.height / (pixelsPerUnit * zoom)) / 2;
 	}
 }

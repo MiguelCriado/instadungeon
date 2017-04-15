@@ -23,7 +23,7 @@ namespace InstaDungeon.Actions
 		public static bool IsValid(Entity entity, int2 destiny)
 		{
 			MapManager mapManager = Locator.Get<MapManager>();
-			return mapManager.CanCellBeOccupied(destiny);
+			return mapManager.CanCellBeOccupiedByActor(destiny);
 		}
 
 		public override void Act()
@@ -58,7 +58,7 @@ namespace InstaDungeon.Actions
 
 				if (elapsedMovementTime >= targetMovementTime)
 				{
-					Locator.Get<MapManager>().MoveTo(Command.Entity, Command.Position);
+					Locator.Get<MapManager>().MoveActorTo(Command.Entity, Command.Position);
 
 					Entity entity = command.Entity;
 					entity.Events.TriggerEvent(new EntityFinishMovementEvent(entity.Guid, originalPosition, command.Position));
