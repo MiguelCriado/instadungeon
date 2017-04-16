@@ -37,7 +37,7 @@ namespace InstaDungeon.Components
 			{
 				if (animator != null)
 				{
-					animator.SetInteger(FacingDirectionId, (int)direction);
+					animator.SetInteger(FacingDirectionId, (int)newDirection);
 				}
 
 				direction = newDirection;
