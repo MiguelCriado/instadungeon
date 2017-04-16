@@ -1,5 +1,4 @@
-﻿using System;
-using InstaDungeon.UnityEvents;
+﻿using InstaDungeon.UnityEvents;
 
 namespace InstaDungeon.Actions
 {

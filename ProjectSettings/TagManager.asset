@@ -9,7 +9,6 @@ TagManager:
   - World
   - Entities
   - Managers
-  - References
   layers:
   - Default
   - TransparentFX

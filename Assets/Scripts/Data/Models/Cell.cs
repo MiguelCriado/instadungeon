@@ -1,10 +1,12 @@
 ﻿using InstaDungeon;
 using InstaDungeon.Components;
+using InstaDungeon.Events;
 using System.Collections.Generic;
 
 public class Cell
 {
 	public TileInfo TileInfo { get; set; }
+	public EventSystem Events { get; private set; }
 	public Entity Actor { get { return actor; } set { actor = value; } }
 	public Entity Prop { get { return prop; } set { prop = value; } }
 	public List<Entity> Items { get { return items; } }
@@ -18,6 +20,7 @@ public class Cell
 	public Cell(TileInfo tileInfo)
 	{
 		TileInfo = tileInfo;
+		Events = new EventSystem();
 		items = new List<Entity>();
 		visibility = VisibilityType.Obscured;
 	}
@@ -34,16 +37,25 @@ public class Cell
 
 	public void RefreshVisibility(bool visible)
 	{
+		VisibilityType newVisibility = visibility;
+
 		if (visible == true)
 		{
-			visibility = VisibilityType.Visible;
+			newVisibility = VisibilityType.Visible;
 		}
 		else
 		{
 			if (visibility == VisibilityType.Visible)
 			{
-				visibility = VisibilityType.PreviouslySeen;
+				newVisibility = VisibilityType.PreviouslySeen;
 			}
+		}
+
+		if (newVisibility != visibility)
+		{
+			VisibilityType previousVisibility = visibility;
+			visibility = newVisibility;
+			Events.TriggerEvent(new CellVisibilityEventData(this, previousVisibility, visibility));
 		}
 	}
 

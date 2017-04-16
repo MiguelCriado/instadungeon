@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4735819895623072}
   - component: {fileID: 114531329133369350}
   - component: {fileID: 114031364933478176}
+  - component: {fileID: 114103428090877596}
   m_Layer: 0
   m_Name: Stairs Entrance
   m_TagString: Untagged
@@ -114,6 +115,17 @@ MonoBehaviour:
   info: {fileID: 11400000, guid: c0eec6b391a37ba40aa49ed5260bd87b, type: 2}
   blocksLineOfSight: 0
   blocksMovement: 1
+--- !u!114 &114103428090877596
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1041195461144220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0bba503ec1deaf4b87edc1e4f77284d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114531329133369350
 MonoBehaviour:
   m_ObjectHideFlags: 1
