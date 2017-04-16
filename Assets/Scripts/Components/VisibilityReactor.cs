@@ -22,6 +22,7 @@ namespace InstaDungeon.Components
 		private void Awake()
 		{
 			renderers = GetComponentsInChildren<SpriteRenderer>(true);
+			InitializeRenderers();
 			entity = GetComponent<Entity>();
 			mapManager = Locator.Get<MapManager>();
 			colorId = Shader.PropertyToID("_Color");
@@ -109,6 +110,21 @@ namespace InstaDungeon.Components
 		private void OnCellVisibilityChanges(IEventData eventData)
 		{
 			RefreshVisibility();
+		}
+
+		private void InitializeRenderers()
+		{
+			if (renderers != null)
+			{
+				Shader colorLerpShader = Shader.Find("Sprites/DefaultColorLerp");
+				int pixelSnapId = Shader.PropertyToID("PixelSnap");
+
+				for (int i = 0; i < renderers.Length; i++)
+				{
+					renderers[i].material.shader = colorLerpShader;
+					renderers[i].material.SetFloat(pixelSnapId, 1f);
+				}
+			}
 		}
 
 		private void RefreshVisibility()
