@@ -53,7 +53,7 @@ namespace InstaDungeon.Components
 			itemAvatar.transform.localPosition = Vector3.zero;
 			itemAvatar.color = new Color(itemAvatar.color.r, itemAvatar.color.g, itemAvatar.color.b, 0f);
 
-			Sequence sequence = DOTween.Sequence()
+			DOTween.Sequence()
 				.Append
 				(
 					itemAvatar.DOFade(1f, 0.3f)
@@ -71,13 +71,13 @@ namespace InstaDungeon.Components
 				.AppendInterval(0.3f)
 				.Append
 				(
-					itemAvatar.DOFade(0f, 0.5f)
+					itemAvatar.DOFade(0f, 0.5f).SetEase(Ease.InExpo)
 				)
 				.Join
 				(
 					itemAvatar.transform.DOLocalMoveY
 					(
-						-TargetLocalPosition.y,
+						-TargetLocalPosition.y + 0.5f,
 						0.5f
 					)
 					.SetEase(Ease.InExpo)

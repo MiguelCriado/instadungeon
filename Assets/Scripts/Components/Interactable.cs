@@ -8,12 +8,10 @@ namespace InstaDungeon.Components
 		[SerializeField] protected Interaction interaction;
 
 		private Entity entity;
-		private ActionManager actionManager;
 
 		private void Awake()
 		{
 			entity = GetComponent<Entity>();
-			actionManager = Locator.Get<ActionManager>();
 		}
 
 		public bool IsValidInteraction(Entity actor)

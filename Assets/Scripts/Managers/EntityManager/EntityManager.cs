@@ -103,22 +103,23 @@ namespace InstaDungeon
 
 		protected void SubscribeToEvents(Entity entity)
 		{
-			entity.Events.AddListener(OnEntityMove, EntityStartMovementEvent.EVENT_TYPE);
-			entity.Events.AddListener(OnEntityRelocate, EntityRelocateEvent.EVENT_TYPE);
+			entity.Events.AddListener(BroadcastEvent, EntityStartMovementEvent.EVENT_TYPE);
+			entity.Events.AddListener(BroadcastEvent, EntityFinishMovementEvent.EVENT_TYPE);
+			entity.Events.AddListener(BroadcastEvent, EntityRelocateEvent.EVENT_TYPE);
+
+			entity.Events.AddListener(BroadcastEvent, DoorOpenEvent.EVENT_TYPE);
 		}
 
 		protected void UnsubscribeToEvents(Entity entity)
 		{
-			entity.Events.RemoveListener(OnEntityMove, EntityStartMovementEvent.EVENT_TYPE);
-			entity.Events.RemoveListener(OnEntityRelocate, EntityRelocateEvent.EVENT_TYPE);
+			entity.Events.RemoveListener(BroadcastEvent, EntityStartMovementEvent.EVENT_TYPE);
+			entity.Events.RemoveListener(BroadcastEvent, EntityFinishMovementEvent.EVENT_TYPE);
+			entity.Events.RemoveListener(BroadcastEvent, EntityRelocateEvent.EVENT_TYPE);
+
+			entity.Events.RemoveListener(BroadcastEvent, DoorOpenEvent.EVENT_TYPE);
 		}
 
-		protected void OnEntityMove(IEventData eventData)
-		{
-			events.TriggerEvent(eventData);
-		}
-
-		protected void OnEntityRelocate(IEventData eventData)
+		protected void BroadcastEvent(IEventData eventData)
 		{
 			events.TriggerEvent(eventData);
 		}

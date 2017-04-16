@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4745197168647250}
   - component: {fileID: 114738274788092588}
   - component: {fileID: 114682226181380906}
+  - component: {fileID: 114071404537089860}
   m_Layer: 0
   m_Name: Stairs Exit
   m_TagString: Untagged
@@ -100,6 +101,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114071404537089860
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1574914782646984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0bba503ec1deaf4b87edc1e4f77284d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114682226181380906
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -141,7 +153,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 2100000, guid: 5839a62289e757341960d3c2d8e40c1b, type: 2}
+  - {fileID: 2100000, guid: dce561391d3d46d4e97545a98d2f444d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

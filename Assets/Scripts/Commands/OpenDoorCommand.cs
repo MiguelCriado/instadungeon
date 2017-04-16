@@ -1,5 +1,6 @@
 ﻿using InstaDungeon.Components;
 using InstaDungeon.Configuration;
+using InstaDungeon.Events;
 using UnityEngine;
 
 namespace InstaDungeon.Commands
@@ -32,6 +33,8 @@ namespace InstaDungeon.Commands
 				{
 					inventory.Remove(RequiredKey);
 
+					lastBlocksLineOfSight = Door.BlocksLineOfSight;
+					lastBlocksMovement = Door.BlocksMovement;
 					Door.BlocksLineOfSight = false;
 					Door.BlocksMovement = false;
 
@@ -41,6 +44,8 @@ namespace InstaDungeon.Commands
 					{
 						animator.SetBool("IsOpen", true);
 					}
+
+					Door.Events.TriggerEvent(new DoorOpenEvent(Door));
 				}
 			}
 		}

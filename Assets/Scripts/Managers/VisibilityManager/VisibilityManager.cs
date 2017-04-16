@@ -166,6 +166,11 @@ namespace InstaDungeon
 					entity.Events.AddListener(OnLightSourceStartMoving, EntityStartMovementEvent.EVENT_TYPE);
 					entity.Events.AddListener(OnLightSourceFinishMoving, EntityFinishMovementEvent.EVENT_TYPE);
 				}
+
+				if (entity.Info.NameId == "Door") // TODO: work a scriptableObject manager to access them via code
+				{
+					entity.Events.AddListener(OnDoorOpens, DoorOpenEvent.EVENT_TYPE);
+				}
 			}
 		}
 
@@ -207,6 +212,19 @@ namespace InstaDungeon
 			if (entity != null && movingLightCasters.ContainsKey(entity))
 			{
 				movingLightCasters.Remove(entity);
+			}
+		}
+
+		protected void OnDoorOpens(IEventData eventData)
+		{
+			DoorOpenEvent doorEvent = eventData as DoorOpenEvent;
+			Entity door = doorEvent.Door;
+			Cell cell = mapManager.Map[door.CellTransform.Position];
+
+			if (cell != null && cell.Visibility == VisibilityType.Visible)
+			{
+				Refresh();
+				GameManager.Renderer.RefreshVisibility(); // TODO: switch this to a reactive system using VisibilityRefreshedEvent 
 			}
 		}
 	}

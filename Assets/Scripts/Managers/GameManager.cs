@@ -66,7 +66,7 @@ namespace InstaDungeon
 
 		private void PreparePlayerForNewLevel()
 		{
-			mapManager.Relocate(new MoveEntityCommand(player, mapManager.Map.SpawnPoint));
+			mapManager.RelocateActor(new MoveEntityCommand(player, mapManager.Map.SpawnPoint));
 
 			TurnComponent playerTurn = player.GetComponent<TurnComponent>();
 

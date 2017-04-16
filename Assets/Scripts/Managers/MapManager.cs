@@ -58,6 +58,7 @@ namespace InstaDungeon
 				cell.Prop = prop;
 				props.Add(prop.Guid, prop);
 				prop.CellTransform.MoveTo(cellPosition);
+				prop.Events.TriggerEvent(new EntityAddToMapEvent(prop));
 				result = true;
 			}
 
@@ -82,6 +83,7 @@ namespace InstaDungeon
 				cell.Items.Add(item);
 				items.Add(item.Guid, item);
 				item.CellTransform.MoveTo(cellPosition);
+				item.Events.TriggerEvent(new EntityAddToMapEvent(item));
 				result = true;
 			}
 
@@ -141,7 +143,7 @@ namespace InstaDungeon
 			return result;
 		}
 
-		public bool Relocate(MoveEntityCommand relocateCommand)
+		public bool RelocateActor(MoveEntityCommand relocateCommand)
 		{
 			bool result = false;
 
