@@ -10,6 +10,7 @@ namespace InstaDungeon
 	{
 		public TileMap<Cell> Map { get { return map; } }
 
+		private EntityManager entityManager;
 		private TileMap<Cell> map;
 		private Dictionary<uint, Entity> actors;
 		private Dictionary<uint, Entity> props;
@@ -17,6 +18,7 @@ namespace InstaDungeon
 
 		public MapManager() : base()
 		{
+			entityManager = Locator.Get<EntityManager>();
 			actors = new Dictionary<uint, Entity>();
 			props = new Dictionary<uint, Entity>();
 			items = new Dictionary<uint, Entity>();
@@ -30,6 +32,10 @@ namespace InstaDungeon
 		public void Initialize(TileMap<Cell> map)
 		{
 			this.map = map;
+
+			// DisposeEntities(actors);
+			DisposeEntities(props);
+			DisposeEntities(items);
 
 			actors.Clear();
 			props.Clear();
@@ -187,6 +193,16 @@ namespace InstaDungeon
 			}
 
 			return result;
+		}
+
+		private void DisposeEntities(Dictionary<uint, Entity> entitySet)
+		{
+			var enumerator = entitySet.GetEnumerator();
+
+			while (enumerator.MoveNext())
+			{
+				entityManager.Recycle(enumerator.Current.Key);
+			}
 		}
 	}
 }

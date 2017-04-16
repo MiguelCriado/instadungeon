@@ -12,7 +12,13 @@ namespace InstaDungeon.BehaviorTreeNodes
 
 			Cell playerCell = GameManager.MapManager[playerTransform.Position.x, playerTransform.Position.y];
 
-			if (playerCell != null && playerCell.Prop != null && playerCell.Prop.name == "Stairs Exit")
+			if 
+			(
+				playerCell != null
+				&& playerCell.Prop != null
+				&& playerCell.Prop.Info != null
+				&& playerCell.Prop.Info.NameId == "Stairs Exit"
+			)
 			{
 				UnityEngine.Debug.Log("Level finished!!!");
 				return NodeStates.Success;

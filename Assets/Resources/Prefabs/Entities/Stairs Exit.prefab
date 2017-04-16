@@ -125,7 +125,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   info: {fileID: 11400000, guid: e74c1268402b81b428868bb126bfc2a2, type: 2}
   blocksLineOfSight: 0
-  blocksMovement: 1
+  blocksMovement: 0
 --- !u!114 &114738274788092588
 MonoBehaviour:
   m_ObjectHideFlags: 1

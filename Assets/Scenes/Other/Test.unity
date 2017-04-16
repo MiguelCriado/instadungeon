@@ -449,7 +449,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   layoutType: 0
   shapeType: 0
-  customSeed: 1
+  customSeed: 0
   levelSeed: -400129392
 --- !u!4 &1144452016
 Transform:
