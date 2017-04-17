@@ -19,10 +19,15 @@ namespace InstaDungeon.Components
 
 		private Cell currentCell;
 
+		private void Reset()
+		{
+			// renderers = GetComponentsInChildren<SpriteRenderer>(true);
+			// InitializeRenderers(renderers);
+		}
+
 		private void Awake()
 		{
 			renderers = GetComponentsInChildren<SpriteRenderer>(true);
-			InitializeRenderers();
 			entity = GetComponent<Entity>();
 			mapManager = Locator.Get<MapManager>();
 			colorId = Shader.PropertyToID("_Color");
@@ -112,7 +117,7 @@ namespace InstaDungeon.Components
 			RefreshVisibility();
 		}
 
-		private void InitializeRenderers()
+		private void InitializeRenderers(SpriteRenderer[] renderers)
 		{
 			if (renderers != null)
 			{
@@ -121,8 +126,8 @@ namespace InstaDungeon.Components
 
 				for (int i = 0; i < renderers.Length; i++)
 				{
-					renderers[i].material.shader = colorLerpShader;
-					renderers[i].material.SetFloat(pixelSnapId, 1f);
+					renderers[i].sharedMaterial.shader = colorLerpShader;
+					renderers[i].sharedMaterial.SetFloat(pixelSnapId, 1f);
 				}
 			}
 		}
