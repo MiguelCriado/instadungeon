@@ -1,75 +1,89 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System;
 
-public class AStarSearch
+public class AStarSearch<L, C> where C : IComparable<C>
 {
-    public Dictionary<Vector2Int, Vector2Int> cameFrom
-        = new Dictionary<Vector2Int, Vector2Int>();
-    public Dictionary<Vector2Int, int> costSoFar
-        = new Dictionary<Vector2Int, int>();
+	private IWeightedGraph<L, C> graph;
+	private IAStarHeuristic<L, C> defaultHeuristic;
+	private PriorityQueue<L, C> frontier;
+	private Dictionary<L, L> cameFrom;
+	private Dictionary<L, C> costSoFar;
 
-    // Note: a generic version of A* would abstract over Location and
-    // also Heuristic
-    static public int Heuristic(Vector2Int a, Vector2Int b)
-    {
-        return Math.Abs(a.x - b.x) + Math.Abs(a.y - b.y);
-    }
+	// Note: a generic version of A* would abstract over int2 and also Heuristic
+	// public static U Heuristic(T a, T b)
+	// {
+		// return Math.Abs(a.x - b.x) + Math.Abs(a.y - b.y);
+	// }
 
-    public AStarSearch(WeightedGraph<Vector2Int> graph, Vector2Int start, Vector2Int goal)
-    {
-        var frontier = new PriorityQueue<Vector2Int, int>();
-        frontier.Enqueue(start, 0);
+	public AStarSearch(IWeightedGraph<L, C> graph, IAStarHeuristic<L, C> heuristic)
+	{
+		this.graph = graph;
+		defaultHeuristic = heuristic;
+		frontier = new PriorityQueue<L, C>();
+		cameFrom = new Dictionary<L, L>();
+		costSoFar = new Dictionary<L, C>();
+	}
 
-        cameFrom.Add(start, start);
-        costSoFar.Add(start, 0);
+	public L[] Search(L start, L goal)
+	{
+		return Search(start, goal, defaultHeuristic);
+	}
 
-        while (frontier.Count() > 0)
-        {
-            var current = frontier.Dequeue();
+	public L[] Search(L start, L goal, IAStarHeuristic<L, C> heuristic)
+	{
+		L[] result;
+		frontier.Clear();
+		cameFrom.Clear();
+		costSoFar.Clear();
 
-            if (current.Equals(goal))
-            {
-                break;
-            }
-            
-            foreach (var next in graph.Neighbors(current))
-            {
-                int newCost = costSoFar[current] + graph.Cost(current, next);
-                if (!costSoFar.ContainsKey(next)
-                    || newCost < costSoFar[next])
-                {
-                    AddOrUpdate(costSoFar, next, newCost);
-                    int priority = newCost + Heuristic(next, goal);
-                    frontier.Enqueue(next, priority);
-                    AddOrUpdate(cameFrom, next, current);
-                }
-            }
-        }
-    }
+		frontier.Enqueue(start, default(C));
+		cameFrom.Add(start, start);
+		costSoFar.Add(start, default(C));
 
-    public void AddOrUpdate(Dictionary<Vector2Int, int> dict, Vector2Int key, int value)
-    {
-        if (dict.ContainsKey(key))
-        {
-            dict[key] = value;
-        }
-        else
-        {
-            dict.Add(key, value);
-        }
-    }
+		while (frontier.Count() > 0)
+		{
+			var current = frontier.Dequeue();
 
-    public void AddOrUpdate(Dictionary<Vector2Int, Vector2Int> dict, Vector2Int key, Vector2Int value)
-    {
-        if (dict.ContainsKey(key))
-        {
-            dict[key] = value;
-        }
-        else
-        {
-            dict.Add(key, value);
-        }
-    }
+			if (current.Equals(goal))
+			{
+				break;
+			}
+
+			foreach (var next in graph.Neighbors(current))
+			{
+				C newCost = heuristic.Sum(costSoFar[current], graph.Cost(current, next));
+
+				if (!costSoFar.ContainsKey(next) || newCost.CompareTo(costSoFar[next]) < 0)
+				{
+					AddOrUpdate(costSoFar, next, newCost);
+					C priority = heuristic.Sum(newCost, heuristic.Evaluate(next, goal));
+					frontier.Enqueue(next, priority);
+					AddOrUpdate(cameFrom, next, current);
+				}
+			}
+		}
+
+		result = new L[cameFrom.Count];
+		L currentLocation = goal;
+
+		for (int i = result.Length - 1; i >= 0; i--)
+		{
+			result[i] = currentLocation;
+			cameFrom.TryGetValue(currentLocation, out currentLocation);
+		}
+
+		return result;
+	}
+
+	private void AddOrUpdate<T, U>(Dictionary<T, U> dict, T key, U value)
+	{
+		if (dict.ContainsKey(key))
+		{
+			dict[key] = value;
+		}
+		else
+		{
+			dict.Add(key, value);
+		}
+	}
 }
