@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
+/// <summary>
+/// An A* generic pathfinding class. 
+/// </summary>
+/// <typeparam name="L">Location type</typeparam>
+/// <typeparam name="C">Cost type</typeparam>
 public class AStarSearch<L, C> where C : IComparable<C>
 {
 	private IWeightedGraph<L, C> graph;
@@ -8,12 +13,6 @@ public class AStarSearch<L, C> where C : IComparable<C>
 	private PriorityQueue<L, C> frontier;
 	private Dictionary<L, L> cameFrom;
 	private Dictionary<L, C> costSoFar;
-
-	// Note: a generic version of A* would abstract over int2 and also Heuristic
-	// public static U Heuristic(T a, T b)
-	// {
-		// return Math.Abs(a.x - b.x) + Math.Abs(a.y - b.y);
-	// }
 
 	public AStarSearch(IWeightedGraph<L, C> graph, IAStarHeuristic<L, C> heuristic)
 	{
@@ -49,16 +48,21 @@ public class AStarSearch<L, C> where C : IComparable<C>
 				break;
 			}
 
-			foreach (var next in graph.Neighbors(current))
+			var enumerator = graph.Neighbors(current).GetEnumerator();
+			L next;
+
+			while (enumerator.MoveNext())
 			{
+				next = enumerator.Current;
+
 				C newCost = heuristic.Sum(costSoFar[current], graph.Cost(current, next));
 
 				if (!costSoFar.ContainsKey(next) || newCost.CompareTo(costSoFar[next]) < 0)
 				{
-					AddOrUpdate(costSoFar, next, newCost);
+					costSoFar[next] = newCost;
 					C priority = heuristic.Sum(newCost, heuristic.Evaluate(next, goal));
 					frontier.Enqueue(next, priority);
-					AddOrUpdate(cameFrom, next, current);
+					cameFrom[next] = current;
 				}
 			}
 		}
@@ -73,17 +77,5 @@ public class AStarSearch<L, C> where C : IComparable<C>
 		}
 
 		return result;
-	}
-
-	private void AddOrUpdate<T, U>(Dictionary<T, U> dict, T key, U value)
-	{
-		if (dict.ContainsKey(key))
-		{
-			dict[key] = value;
-		}
-		else
-		{
-			dict.Add(key, value);
-		}
 	}
 }
