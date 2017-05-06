@@ -12,6 +12,7 @@ namespace InstaDungeon
 
 		private EntityManager entityManager;
 		private TileMap<Cell> map;
+		private AStarSearch<int2, int> pathfinder;
 		private Dictionary<uint, Entity> actors;
 		private Dictionary<uint, Entity> props;
 		private Dictionary<uint, Entity> items;
@@ -40,88 +41,11 @@ namespace InstaDungeon
 			actors.Clear();
 			props.Clear();
 			items.Clear();
+
+			pathfinder = new AStarSearch<int2, int>(new TileMapWeightedGraph(map), new ManhattanDistanceHeuristic());
 		}
 
-		public bool AddProp(Entity prop, int2 cellPosition)
-		{
-			bool result = false;
-			Cell cell = map[cellPosition];
-
-			if (props.ContainsKey(prop.Guid))
-			{
-				Debug.LogError(string.Format("Cannot add prop '{0}'. Prop already in map at position {1}.", prop.name, prop.CellTransform.Position), prop);
-			}
-			else if (cell == null)
-			{
-				Debug.LogError(string.Format("Cannot add prop '{0}'. CellPosition ({1}) is not valid.", prop, cellPosition), prop);
-			}
-			else if (cell.Prop != null)
-			{
-				Debug.LogError(string.Format("Cannot add prop '{0}'. Position already occupied by '{1}' (Guid = {2})", prop.name, cell.Prop.name, cell.Prop.Guid), cell.Prop);
-			}
-			else
-			{
-				cell.Prop = prop;
-				props.Add(prop.Guid, prop);
-				prop.CellTransform.MoveTo(cellPosition);
-				prop.Events.TriggerEvent(new EntityAddToMapEvent(prop));
-				result = true;
-			}
-
-			return result;
-		}
-
-		public bool AddItem(Entity item, int2 cellPosition)
-		{
-			bool result = false;
-			Cell cell = map[cellPosition];
-
-			if (items.ContainsKey(item.Guid))
-			{
-				Debug.LogError(string.Format("Cannot add item '{0}'. Item already in map at position {1}.", item.name, item.CellTransform.Position), item);
-			}
-			else if (cell == null)
-			{
-				Debug.LogError(string.Format("Cannot add item '{0}'. CellPosition ({1}) is not valid.", item, cellPosition), item);
-			}
-			else
-			{
-				cell.Items.Add(item);
-				items.Add(item.Guid, item);
-				item.CellTransform.MoveTo(cellPosition);
-				item.Events.TriggerEvent(new EntityAddToMapEvent(item));
-				result = true;
-			}
-
-			return result;
-		}
-
-		public bool RemoveItem(Entity item, int2 cellPosition)
-		{
-			bool result = false;
-			Cell cell = map[cellPosition];
-
-			if (!items.ContainsKey(item.Guid))
-			{
-				Debug.LogError(string.Format("Cannot remove item '{0}'. Item not found in map.", item.name), item);
-			}
-			else if (cell == null)
-			{
-				Debug.LogError(string.Format("Cannot remove item '{0}'. CellPosition ({1}) is not valid.", item, cellPosition), item);
-			}
-			else if (!cell.Items.Contains(item))
-			{
-				Debug.LogError(string.Format("Cannot remove item '{0}' from position '{1}'. The requested item is not there.", item, cellPosition), item);
-			}
-			else
-			{
-				cell.Items.Remove(item);
-				items.Remove(item.Guid);
-				result = true;
-			}
-
-			return result;
-		}
+		#region [Actors]
 
 		public bool CanCellBeOccupiedByActor(int2 cellPosition)
 		{
@@ -194,6 +118,106 @@ namespace InstaDungeon
 
 			return result;
 		}
+
+		#endregion
+
+		#region [Props]
+
+		public bool AddProp(Entity prop, int2 cellPosition)
+		{
+			bool result = false;
+			Cell cell = map[cellPosition];
+
+			if (props.ContainsKey(prop.Guid))
+			{
+				Debug.LogError(string.Format("Cannot add prop '{0}'. Prop already in map at position {1}.", prop.name, prop.CellTransform.Position), prop);
+			}
+			else if (cell == null)
+			{
+				Debug.LogError(string.Format("Cannot add prop '{0}'. CellPosition ({1}) is not valid.", prop, cellPosition), prop);
+			}
+			else if (cell.Prop != null)
+			{
+				Debug.LogError(string.Format("Cannot add prop '{0}'. Position already occupied by '{1}' (Guid = {2})", prop.name, cell.Prop.name, cell.Prop.Guid), cell.Prop);
+			}
+			else
+			{
+				cell.Prop = prop;
+				props.Add(prop.Guid, prop);
+				prop.CellTransform.MoveTo(cellPosition);
+				prop.Events.TriggerEvent(new EntityAddToMapEvent(prop));
+				result = true;
+			}
+
+			return result;
+		}
+
+		#endregion
+
+		#region [Items]
+
+		public bool AddItem(Entity item, int2 cellPosition)
+		{
+			bool result = false;
+			Cell cell = map[cellPosition];
+
+			if (items.ContainsKey(item.Guid))
+			{
+				Debug.LogError(string.Format("Cannot add item '{0}'. Item already in map at position {1}.", item.name, item.CellTransform.Position), item);
+			}
+			else if (cell == null)
+			{
+				Debug.LogError(string.Format("Cannot add item '{0}'. CellPosition ({1}) is not valid.", item, cellPosition), item);
+			}
+			else
+			{
+				cell.Items.Add(item);
+				items.Add(item.Guid, item);
+				item.CellTransform.MoveTo(cellPosition);
+				item.Events.TriggerEvent(new EntityAddToMapEvent(item));
+				result = true;
+			}
+
+			return result;
+		}
+
+		public bool RemoveItem(Entity item, int2 cellPosition)
+		{
+			bool result = false;
+			Cell cell = map[cellPosition];
+
+			if (!items.ContainsKey(item.Guid))
+			{
+				Debug.LogError(string.Format("Cannot remove item '{0}'. Item not found in map.", item.name), item);
+			}
+			else if (cell == null)
+			{
+				Debug.LogError(string.Format("Cannot remove item '{0}'. CellPosition ({1}) is not valid.", item, cellPosition), item);
+			}
+			else if (!cell.Items.Contains(item))
+			{
+				Debug.LogError(string.Format("Cannot remove item '{0}' from position '{1}'. The requested item is not there.", item, cellPosition), item);
+			}
+			else
+			{
+				cell.Items.Remove(item);
+				items.Remove(item.Guid);
+				result = true;
+			}
+
+			return result;
+		}
+
+		#endregion
+
+		#region [Pathfinding]
+
+		public int2[] GetPath(int2 start, int2 goal)
+		{
+			return pathfinder.Search(start, goal);
+		}
+
+		#endregion
 
 		private void DisposeEntities(Dictionary<uint, Entity> entitySet)
 		{
