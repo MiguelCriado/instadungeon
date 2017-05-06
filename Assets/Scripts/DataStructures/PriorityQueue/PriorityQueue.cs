@@ -70,6 +70,11 @@ public class PriorityQueue<T, E> where E : IComparable<E>
         return data.Count;
     }
 
+	public void Clear()
+	{
+		data.Clear();
+	}
+
     public override string ToString()
     {
         string s = "";
