@@ -21,8 +21,10 @@ namespace InstaDungeon.AI
 						new Sequence
 						(
 							new CanSeeEntityCondition(GameManager.Player),
+							new StoreLastKnownEntityPositionAction(GameManager.Player),
 							new ChaseEntityAction(GameManager.Player)
 						),
+						new GoToLastKnownPositionAction(),
 						new PassTurnActionNode()
 					)
 				);
