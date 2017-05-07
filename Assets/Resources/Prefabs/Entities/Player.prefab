@@ -21,12 +21,13 @@ GameObject:
   - component: {fileID: 4000013327510206}
   - component: {fileID: 114000010882005270}
   - component: {fileID: 114000013639029458}
+  - component: {fileID: 114666722644353654}
+  - component: {fileID: 114528323182132830}
   - component: {fileID: 114372371892992082}
   - component: {fileID: 114000012442893502}
   - component: {fileID: 114000013398795314}
   - component: {fileID: 114000011179468200}
   - component: {fileID: 114601559690697496}
-  - component: {fileID: 114528323182132830}
   - component: {fileID: 114342651818903662}
   - component: {fileID: 114313064313756688}
   m_Layer: 0
@@ -322,6 +323,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lightRadius: 10
+--- !u!114 &114666722644353654
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010063882004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e17f0c49bf89344e8dc094972f6e900, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 10
+  currentHealth: 10
 --- !u!212 &212000010064086600
 SpriteRenderer:
   m_ObjectHideFlags: 1
