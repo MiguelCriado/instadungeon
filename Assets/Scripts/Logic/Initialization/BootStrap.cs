@@ -74,6 +74,14 @@ namespace InstaDungeon
 					return new VisibilityManager();
 				}
 			);
+
+			Locator.Provide<TurnManager>
+			(
+				() => 
+				{
+					return new TurnManager();
+				}
+			);
 		}
 	}
 }

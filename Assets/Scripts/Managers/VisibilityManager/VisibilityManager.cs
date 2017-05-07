@@ -162,7 +162,7 @@ namespace InstaDungeon
 					RefreshVisibility(entity.CellTransform.Position);
 					GameManager.Renderer.RefreshVisibility();
 
-					entity.Events.AddListener(OnLightSourceRelocate, EntityRelocateEvent.EVENT_TYPE);
+					entity.Events.AddListener(OnLightSourceAddToMap, EntityAddToMapEvent.EVENT_TYPE);
 					entity.Events.AddListener(OnLightSourceStartMoving, EntityStartMovementEvent.EVENT_TYPE);
 					entity.Events.AddListener(OnLightSourceFinishMoving, EntityFinishMovementEvent.EVENT_TYPE);
 				}
@@ -174,10 +174,10 @@ namespace InstaDungeon
 			}
 		}
 
-		protected void OnLightSourceRelocate(IEventData eventData)
+		protected void OnLightSourceAddToMap(IEventData eventData)
 		{
-			EntityRelocateEvent relocateEvent = eventData as EntityRelocateEvent;
-			Entity entity = lightCasters.Find(x => x.Guid == relocateEvent.EntityId);
+			EntityAddToMapEvent addToMapEvent = eventData as EntityAddToMapEvent;
+			Entity entity = lightCasters.Find(x => x.Guid == addToMapEvent.Entity.Guid);
 
 			if (entity != null)
 			{

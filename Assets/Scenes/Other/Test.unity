@@ -382,10 +382,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  xMargin: 0.25
-  yMargin: 0.25
-  xSmooth: 1
-  ySmooth: 1
+  xMargin: 0
+  yMargin: 0
+  xSmooth: 2
+  ySmooth: 2
   maxXAndY: {x: Infinity, y: Infinity}
   minXAndY: {x: -Infinity, y: -Infinity}
 --- !u!1 &1030248325

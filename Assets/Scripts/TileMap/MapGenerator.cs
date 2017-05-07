@@ -85,11 +85,14 @@ public class MapGenerator : MonoBehaviour
 	private void AddEntities(TileMap<Cell> map)
 	{
 		MapManager mapManager = Locator.Get<MapManager>();
-		IPropGenerator propGenerator = new BasicPropGenerator();
 
+		IPropGenerator propGenerator = new BasicPropGenerator();
 		propGenerator.AddStairs(mapManager);
 		propGenerator.AddDoors(mapManager);
 		propGenerator.AddKeys(mapManager);
-		// propGenerator.AddItems(mapManager);
+		propGenerator.AddItems(mapManager);
+
+		IActorGenerator actorGenerator = new BasicActorGenerator();
+		actorGenerator.AddEnemies(mapManager);
 	}
 }

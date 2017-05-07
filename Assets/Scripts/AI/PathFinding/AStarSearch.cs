@@ -30,7 +30,7 @@ public class AStarSearch<L, C> where C : IComparable<C>
 
 	public L[] Search(L start, L goal, IAStarHeuristic<L, C> heuristic)
 	{
-		L[] result;
+		List<L> result;
 		frontier.Clear();
 		cameFrom.Clear();
 		costSoFar.Clear();
@@ -67,15 +67,21 @@ public class AStarSearch<L, C> where C : IComparable<C>
 			}
 		}
 
-		result = new L[cameFrom.Count];
+		result = new List<L>();
 		L currentLocation = goal;
+		bool pathNotFound = false;
 
-		for (int i = result.Length - 1; i >= 0; i--)
+		while (!pathNotFound && !currentLocation.Equals(start))
 		{
-			result[i] = currentLocation;
-			cameFrom.TryGetValue(currentLocation, out currentLocation);
+			result.Insert(0, currentLocation);
+
+			if (!cameFrom.TryGetValue(currentLocation, out currentLocation))
+			{
+				pathNotFound = true;
+				result.Clear();
+			}
 		}
 
-		return result;
+		return result.ToArray();
 	}
 }

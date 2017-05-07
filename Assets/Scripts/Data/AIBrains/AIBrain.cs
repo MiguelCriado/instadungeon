@@ -6,6 +6,7 @@ namespace InstaDungeon.AI
 {
 	public abstract class AIBrain : ScriptableObject
 	{
-		public abstract void Think(Entity context, Actor actor, Blackboard blackboard);
+		public abstract void CreateTree();
+		public abstract void Think(Entity target, Blackboard blackboard);
 	}
 }
