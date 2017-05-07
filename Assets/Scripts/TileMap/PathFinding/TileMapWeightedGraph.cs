@@ -5,6 +5,7 @@ namespace InstaDungeon
 	public class TileMapWeightedGraph : IWeightedGraph<int2, int>
 	{
 		private TileMap<Cell> map;
+		private int2 currentGoal;
 
 		public TileMapWeightedGraph(TileMap<Cell> map)
 		{
@@ -18,6 +19,11 @@ namespace InstaDungeon
 			new int2(-1, 0),
 			new int2(0, 1) 
         };
+
+		public void SetGoal(int2 goal)
+		{
+			currentGoal = goal;
+		}
 
 		public int Cost(int2 a, int2 b)
 		{
@@ -35,7 +41,8 @@ namespace InstaDungeon
 				nextPosition = id + Dirs[i];
 				next = map[nextPosition];
 
-				if (next != null && next.IsWalkable())
+				if (next != null 
+					&& (next.IsWalkable() || nextPosition == currentGoal))
 				{
 					yield return nextPosition;
 				}

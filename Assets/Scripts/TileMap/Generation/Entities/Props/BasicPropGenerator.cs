@@ -1,6 +1,4 @@
 ﻿using InstaDungeon.Components;
-using System;
-using System.Collections.Generic;
 using Random = UnityEngine.Random;
 
 namespace InstaDungeon
@@ -103,7 +101,7 @@ namespace InstaDungeon
 
 		public void AddItems(MapManager manager)
 		{
-			throw new NotImplementedException();
+			// TODO: actually add items
 		}
 
 		private Direction GetDoorDirection(int2 doorPosition, int2 nextTile)

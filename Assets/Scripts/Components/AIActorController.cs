@@ -11,22 +11,37 @@ namespace InstaDungeon.Components
 
 		private Entity entity;
 		private TurnComponent turn;
-		private Actor actor;
 		private Blackboard blackboard;
 
 		private void Awake()
 		{
 			entity = GetComponent<Entity>();
 			turn = GetComponent<TurnComponent>();
-			actor = GetComponent<Actor>();
 			blackboard = new Blackboard();
+		}
+
+		private void Start()
+		{
+			brain.CreateTree();
+		}
+
+		private void OnEnable()
+		{
+			TurnManager turnManager = Locator.Get<TurnManager>();
+			turnManager.AddActor(turn);
+		}
+
+		private void OnDisable()
+		{
+			TurnManager turnManager = Locator.Get<TurnManager>();
+			turnManager.RemoveActor(turn);
 		}
 
 		private void Update()
 		{
 			if (turn.EntityCanAct)
 			{
-				brain.Think(entity, actor, blackboard);
+				brain.Think(entity, blackboard);
 			}
 		}
 	}

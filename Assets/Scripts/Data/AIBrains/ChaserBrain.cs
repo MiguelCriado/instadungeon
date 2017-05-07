@@ -1,4 +1,5 @@
 ﻿using AI.BehaviorTrees;
+using InstaDungeon.BehaviorTreeNodes;
 using InstaDungeon.Components;
 using UnityEngine;
 
@@ -7,9 +8,32 @@ namespace InstaDungeon.AI
 	[CreateAssetMenu(menuName = "InstaDungeon/AI Brains/ChaserBrain", fileName = "new ChaserBrain", order = 1000)]
 	public class ChaserBrain : AIBrain
 	{
-		public override void Think(Entity context, Actor actor, Blackboard blackboard)
+		private static BehaviorTree Tree;
+
+		public override void CreateTree()
 		{
-			// TODO: chase the player
+			if (Tree == null)
+			{
+				Tree = new BehaviorTree
+				(
+					new Priority
+					(
+						new Sequence
+						(
+							new CanSeeEntityCondition(GameManager.Player),
+							new StoreLastKnownEntityPositionAction(GameManager.Player),
+							new ChaseEntityAction(GameManager.Player)
+						),
+						new GoToLastKnownPositionAction(),
+						new PassTurnActionNode()
+					)
+				);
+			}
+		}
+
+		public override void Think(Entity target, Blackboard blackboard)
+		{
+			Tree.Tick(target, blackboard);
 		}
 	}
 }

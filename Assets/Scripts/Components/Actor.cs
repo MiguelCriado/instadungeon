@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using InstaDungeon.Actions;
+using UnityEngine;
 
 namespace InstaDungeon.Components
 {
@@ -46,6 +47,14 @@ namespace InstaDungeon.Components
 		public void Left()
 		{
 			ProcessCommand(left);
+		}
+
+		public void PassTurn()
+		{
+			if (turn.EntityCanAct)
+			{
+				turn.Token.BufferAction(new PassTurnAction());
+			}
 		}
 
 		private void ProcessCommand(int2 actionDirection)

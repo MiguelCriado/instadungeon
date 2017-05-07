@@ -53,20 +53,29 @@ namespace InstaDungeon
 		public static void LoadNewMap()
 		{
 			Instance.turnManager.RevokeControl();
+			Instance.TakePlayerFromMap();
 			Instance.GenerateNewMap();
 			Instance.PreparePlayerForNewLevel();
 			Instance.turnManager.GrantControl();
 		}
 
-		public void GenerateNewMap()
+		private void GenerateNewMap()
 		{
 			mapGenerator.GenerateNewMap();
 			mapRenderer.RenderMap(mapManager.Map);
 		}
 
+		private void TakePlayerFromMap()
+		{
+			if (mapManager.Contains(player))
+			{
+				mapManager.RemoveActor(player, player.CellTransform.Position);
+			}
+		}
+
 		private void PreparePlayerForNewLevel()
 		{
-			mapManager.RelocateActor(new MoveEntityCommand(player, mapManager.Map.SpawnPoint));
+			mapManager.AddActor(player, mapManager.Map.SpawnPoint);
 
 			TurnComponent playerTurn = player.GetComponent<TurnComponent>();
 
@@ -108,7 +117,7 @@ namespace InstaDungeon
 
 		private void InitializeTurnManager()
 		{
-			turnManager = new TurnManager();
+			turnManager = Locator.Get<TurnManager>();
 		}
 
 		private void InitializeMapGenerator()

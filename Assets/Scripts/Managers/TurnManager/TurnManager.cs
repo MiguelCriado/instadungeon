@@ -45,6 +45,12 @@ namespace InstaDungeon
 			}
 		}
 
+		public void RemoveActor(TurnComponent actor)
+		{
+			actors.Remove(actor);
+			pendingActors.Remove(actor);
+		}
+
 		public void Init()
 		{
 			token.Round = 0;
@@ -109,14 +115,13 @@ namespace InstaDungeon
 		{
 			if (actors.Count > token.Turn + 1)
 			{
-				actors[token.Turn].RevokeTurn(token);
-
 				if (OnTurnFinished != null)
 				{
 					OnTurnFinished.Invoke(token);
 				}
 
 				token.Turn++;
+				turnDone = false;
 				GrantTurn(actors[token.Turn]);
 			}
 			else
@@ -146,6 +151,7 @@ namespace InstaDungeon
 
 		private void CurrentTurnDone(TurnComponent component)
 		{
+			actors[token.Turn].RevokeTurn(token);
 			actors[token.Turn].OnTurnDone.RemoveListener(CurrentTurnDone);
 			turnDone = true;
 		}

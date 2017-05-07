@@ -1,5 +1,4 @@
-﻿using InstaDungeon.Commands;
-using InstaDungeon.Components;
+﻿using InstaDungeon.Components;
 using InstaDungeon.Events;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,6 +15,7 @@ namespace InstaDungeon
 		private Dictionary<uint, Entity> actors;
 		private Dictionary<uint, Entity> props;
 		private Dictionary<uint, Entity> items;
+		private TileMapWeightedGraph weightedGraph;
 
 		public MapManager() : base()
 		{
@@ -34,7 +34,7 @@ namespace InstaDungeon
 		{
 			this.map = map;
 
-			// DisposeEntities(actors);
+			DisposeEntities(actors);
 			DisposeEntities(props);
 			DisposeEntities(items);
 
@@ -42,8 +42,18 @@ namespace InstaDungeon
 			props.Clear();
 			items.Clear();
 
-			pathfinder = new AStarSearch<int2, int>(new TileMapWeightedGraph(map), new ManhattanDistanceHeuristic());
+			weightedGraph = new TileMapWeightedGraph(map);
+			pathfinder = new AStarSearch<int2, int>(weightedGraph, new ManhattanDistanceHeuristic());
 		}
+
+		#region [Common]
+
+		public bool Contains(Entity entity)
+		{
+			return actors.ContainsKey(entity.Guid) || props.ContainsKey(entity.Guid) || items.ContainsKey(entity.Guid);
+		}
+
+		#endregion
 
 		#region [Actors]
 
@@ -73,45 +83,77 @@ namespace InstaDungeon
 			return result;
 		}
 
-		public bool RelocateActor(MoveEntityCommand relocateCommand)
+		public bool AddActor(Entity actor, int2 cellPosition)
 		{
 			bool result = false;
+			Cell cell = map[cellPosition];
 
-			Entity entity = relocateCommand.Entity;
-
-			if (!actors.ContainsKey(entity.Guid))
+			if (actors.ContainsKey(actor.Guid))
 			{
-				Cell spawnPoint = map[relocateCommand.Position.x, relocateCommand.Position.y];
-
-				if (spawnPoint != null && spawnPoint.TileInfo.Walkable && spawnPoint.Actor == null)
-				{
-					spawnPoint.Actor = relocateCommand.Entity;
-					actors.Add(entity.Guid, entity);
-					relocateCommand.Execute();
-					result = true;
-
-					entity.Events.TriggerEvent(new EntityRelocateEvent(entity.Guid, relocateCommand.LastPosition, relocateCommand.Position));
-				}
+				Debug.LogError(string.Format("Cannot add actor '{0}'. Actor already in map at position {1}.", actor.name, actor.CellTransform.Position), actor);
+			}
+			else if (cell == null)
+			{
+				Debug.LogError(string.Format("Cannot add actor '{0}'. CellPosition ({1}) is not valid.", actor, cellPosition), actor);
+			}
+			else if (cell.Actor != null)
+			{
+				Debug.LogError(string.Format("Cannot add actor '{0}'. CellPosition ({1}) already occupied by actor '{2}'", actor.name, cellPosition, cell.Actor.name), actor);
+			}
+			else
+			{
+				cell.Actor = actor;
+				actors.Add(actor.Guid, actor);
+				actor.CellTransform.MoveTo(cellPosition);
+				actor.Events.TriggerEvent(new EntityAddToMapEvent(actor));
+				result = true;
 			}
 
 			return result;
 		}
 
-		public bool MoveActorTo(Entity entity, int2 position)
+		public bool RemoveActor(Entity actor, int2 cellPosition)
+		{
+			bool result = false;
+			Cell cell = map[cellPosition];
+
+			if (!actors.ContainsKey(actor.Guid))
+			{
+				Debug.LogError(string.Format("Cannot remove actor '{0}'. Actor not found in map.", actor.name), actor);
+			}
+			else if (cell == null)
+			{
+				Debug.LogError(string.Format("Cannot remove actor '{0}'. CellPosition ({1}) is not valid.", actor, cellPosition), actor);
+			}
+			else if (cell.Actor != actor)
+			{
+				Debug.LogError(string.Format("Cannot remove actor '{0}' from position '{1}'. The requested actor is not there.", actor, cellPosition), actor);
+			}
+			else
+			{
+				cell.Actor = null;
+				actors.Remove(actor.Guid);
+				result = true;
+			}
+
+			return result;
+		}
+
+		public bool MoveActorTo(Entity actor, int2 position)
 		{
 			bool result = false;
 
-			if (actors.ContainsKey(entity.Guid))
+			if (actors.ContainsKey(actor.Guid))
 			{
-				int2 currentEntityPosition = entity.CellTransform.Position;
+				int2 currentEntityPosition = actor.CellTransform.Position;
 				Cell currentPoint = map[currentEntityPosition.x, currentEntityPosition.y];
 				Cell movePoint = map[position.x, position.y];
 
 				if (movePoint != null && movePoint.TileInfo.Walkable && movePoint.Actor == null
-					&& currentPoint != null && currentPoint.Actor == entity)
+					&& currentPoint != null && currentPoint.Actor == actor)
 				{
 					currentPoint.Actor = null;
-					movePoint.Actor = entity;
+					movePoint.Actor = actor;
 					result = true;
 				}
 			}
@@ -214,6 +256,7 @@ namespace InstaDungeon
 
 		public int2[] GetPath(int2 start, int2 goal)
 		{
+			weightedGraph.SetGoal(goal);
 			return pathfinder.Search(start, goal);
 		}
 
