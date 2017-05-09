@@ -1,38 +1,63 @@
 ﻿using InstaDungeon.Configuration;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace InstaDungeon.Components
 {
+	public enum InventorySlotType
+	{
+		None,
+		Bag,
+		Head,
+		Body,
+		MainHand,
+		OffHand
+	}
+
 	public class Inventory : MonoBehaviour
 	{
-		public int Capacity { get { return capacity; } }
-		public int AvailableSlotsCount { get { return capacity - items.Count; } }
+		public int BagCapacity { get { return bagCapacity; } }
+		public int AvailableSlotsCount { get { return bagCapacity - items.Count; } }
 
-		[SerializeField] private int capacity;
-		[SerializeField] private List<ItemInfo> items;
+		[SerializeField] private int bagCapacity;
+		[SerializeField] private Dictionary<InventorySlotType, List<ItemInfo>> items;
 
-		public bool Add(ItemInfo item)
+		private List<ItemInfo> bagCache;
+
+		private void Awake()
+		{
+			items = new Dictionary<InventorySlotType, List<ItemInfo>>();
+
+			foreach (var value in Enum.GetValues(typeof(InventorySlotType)))
+			{
+				items[(InventorySlotType)value] = new List<ItemInfo>();
+			}
+
+			bagCache = items[InventorySlotType.Bag];
+		}
+
+		public bool AddToBag(ItemInfo item)
 		{
 			bool result = false;
 
-			if (items.Count < capacity)
+			if (bagCache.Count < bagCapacity)
 			{
-				items.Add(item);
+				bagCache.Add(item);
 				result = true;
 			}
 
 			return result;
 		}
 
-		public bool Contains(ItemInfo item)
+		public bool BagContains(ItemInfo item)
 		{
-			return items.Contains(item);
+			return bagCache.Contains(item);
 		}
 
-		public bool Remove(ItemInfo item)
+		public bool RemoveFromBag(ItemInfo item)
 		{
-			return items.Remove(item);
+			return bagCache.Remove(item);
 		}
 	}
 }

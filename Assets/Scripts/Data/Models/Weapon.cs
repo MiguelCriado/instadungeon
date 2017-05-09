@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using InstaDungeon.Configuration;
+using UnityEngine;
 
 namespace InstaDungeon.Models
 {

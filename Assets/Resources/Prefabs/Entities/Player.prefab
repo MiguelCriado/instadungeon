@@ -309,8 +309,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79061ad719d200b4aa7c503e46afc746, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  capacity: 10
-  items: []
+  bagCapacity: 10
 --- !u!114 &114601559690697496
 MonoBehaviour:
   m_ObjectHideFlags: 1

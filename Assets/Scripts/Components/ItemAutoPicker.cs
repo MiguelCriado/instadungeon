@@ -51,7 +51,7 @@ namespace InstaDungeon.Components
 
 								if (itemToRemove != null && itemToRemove.Info != null)
 								{
-									inventory.Add(itemToRemove.Info);
+									inventory.AddToBag(itemToRemove.Info);
 									Locator.Get<EntityManager>().Recycle(items[i].Guid);
 
 									AddItemAnimation(itemToRemove.Info);

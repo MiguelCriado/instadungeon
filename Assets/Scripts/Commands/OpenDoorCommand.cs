@@ -29,9 +29,9 @@ namespace InstaDungeon.Commands
 
 			if (inventory != null)
 			{
-				if (inventory.Contains(RequiredKey))
+				if (inventory.BagContains(RequiredKey))
 				{
-					inventory.Remove(RequiredKey);
+					inventory.RemoveFromBag(RequiredKey);
 
 					lastBlocksLineOfSight = Door.BlocksLineOfSight;
 					lastBlocksMovement = Door.BlocksMovement;
@@ -68,7 +68,7 @@ namespace InstaDungeon.Commands
 				Door.BlocksLineOfSight = lastBlocksLineOfSight;
 				Door.BlocksMovement = lastBlocksMovement;
 
-				inventory.Add(RequiredKey);
+				inventory.AddToBag(RequiredKey);
 			}
 		}
 	}
