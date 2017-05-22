@@ -1,7 +1,6 @@
 ﻿using InstaDungeon.Commands;
 using InstaDungeon.Components;
 using InstaDungeon.Configuration;
-using InstaDungeon.Events;
 
 namespace InstaDungeon.Actions
 {
@@ -21,10 +20,10 @@ namespace InstaDungeon.Actions
 			if (itemInteraction != null)
 			{
 				itemInteraction.AddItem(command.RequiredKey)
-					.Done
-					(
-						() => { ActionDone(); }
-					);
+				.Done
+				(
+					() => { ActionDone(); }
+				);
 			}
 			else
 			{

@@ -1,5 +1,4 @@
-﻿using InstaDungeon.Components;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace InstaDungeon.Configuration
 {
@@ -15,13 +14,11 @@ namespace InstaDungeon.Configuration
 	public class WeaponInfo : ItemInfo
 	{
 		public WeaponType WeaponType { get { return weaponType; } }
-		public InventorySlotType InventorySlot { get { return inventorySlot; } }
 		public int BaseRange { get { return baseRange; } }
 		public int BaseMinDamage { get { return baseMinDamage; } }
 		public int BaseMaxDamage { get { return baseMaxDamage; } }
 
 		[SerializeField] private WeaponType weaponType;
-		[SerializeField] private InventorySlotType inventorySlot;
 		[SerializeField] private int baseRange;
 		[SerializeField] private int baseMinDamage;
 		[SerializeField] private int baseMaxDamage;
@@ -30,7 +27,6 @@ namespace InstaDungeon.Configuration
 		{
 			base.Reset();
 			weaponType = WeaponType.None;
-			inventorySlot = InventorySlotType.None;
 			baseRange = 1;
 			baseMinDamage = 1;
 			baseMaxDamage = 1;

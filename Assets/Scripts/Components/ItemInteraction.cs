@@ -54,38 +54,38 @@ namespace InstaDungeon.Components
 			itemAvatar.color = new Color(itemAvatar.color.r, itemAvatar.color.g, itemAvatar.color.b, 0f);
 
 			DOTween.Sequence()
-				.Append
+			.Append
+			(
+				itemAvatar.DOFade(1f, 0.3f)
+			)
+			.Join
+			(
+				itemAvatar.transform.DOLocalJump
 				(
-					itemAvatar.DOFade(1f, 0.3f)
+					Vector3.zero,
+					0.5f,
+					1,
+					0.5f
 				)
-				.Join
+			)
+			.AppendInterval(0.3f)
+			.Append
+			(
+				itemAvatar.DOFade(0f, 0.5f).SetEase(Ease.InExpo)
+			)
+			.Join
+			(
+				itemAvatar.transform.DOLocalMoveY
 				(
-					itemAvatar.transform.DOLocalJump
-					(
-						Vector3.zero,
-						0.5f,
-						1,
-						0.5f
-					)
+					-TargetLocalPosition.y + 0.5f,
+					0.5f
 				)
-				.AppendInterval(0.3f)
-				.Append
-				(
-					itemAvatar.DOFade(0f, 0.5f).SetEase(Ease.InExpo)
-				)
-				.Join
-				(
-					itemAvatar.transform.DOLocalMoveY
-					(
-						-TargetLocalPosition.y + 0.5f,
-						0.5f
-					)
-					.SetEase(Ease.InExpo)
-				)
-				.OnComplete
-				(
-					() => result.Resolve()
-				);
+				.SetEase(Ease.InExpo)
+			)
+			.OnComplete
+			(
+				() => result.Resolve()
+			);
 
 			return result;
 		}

@@ -1,6 +1,7 @@
 ﻿using InstaDungeon.Components;
 using InstaDungeon.Configuration;
 using InstaDungeon.Events;
+using InstaDungeon.Models;
 using UnityEngine;
 
 namespace InstaDungeon.Commands
@@ -13,6 +14,7 @@ namespace InstaDungeon.Commands
 
 		private bool lastBlocksLineOfSight;
 		private bool lastBlocksMovement;
+		private Item usedKey;
 
 		public OpenDoorCommand(Entity actor, Entity door, ItemInfo requiredKey)
 		{
@@ -31,7 +33,8 @@ namespace InstaDungeon.Commands
 			{
 				if (inventory.BagContains(RequiredKey))
 				{
-					inventory.RemoveFromBag(RequiredKey);
+					usedKey = inventory.RemoveFromBag(RequiredKey);
+					Locator.Get<EntityManager>().Recycle(usedKey.GetComponent<Entity>().Guid);
 
 					lastBlocksLineOfSight = Door.BlocksLineOfSight;
 					lastBlocksMovement = Door.BlocksMovement;
@@ -68,7 +71,7 @@ namespace InstaDungeon.Commands
 				Door.BlocksLineOfSight = lastBlocksLineOfSight;
 				Door.BlocksMovement = lastBlocksMovement;
 
-				inventory.AddToBag(RequiredKey);
+				inventory.AddToBag(usedKey);
 			}
 		}
 	}
