@@ -15,7 +15,7 @@ namespace InstaDungeon.Actions
 		{
 			base.Act();
 
-			ItemInteraction itemInteraction = command.Door.GetComponent<ItemInteraction>();
+			ItemInteractor itemInteraction = command.Door.GetComponent<ItemInteractor>();
 
 			if (itemInteraction != null)
 			{

@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 114581534341753850}
   - component: {fileID: 114256316040267180}
   m_Layer: 0
-  m_Name: Weapon Fist
+  m_Name: Weapon Claw
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -127,7 +127,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fd3d7e13c921de479e45d8e69f266c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  info: {fileID: 11400000, guid: 60256f34f17b6964fa161b603b86451a, type: 2}
+  info: {fileID: 11400000, guid: 3c7f236b348bd2740a5ce7a91f5cbb9c, type: 2}
   blocksLineOfSight: 0
   blocksMovement: 1
 --- !u!114 &114256316040267180
@@ -152,8 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c88d1c38a35fa14488446e27ae20ce6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: Fist
-  weaponInfo: {fileID: 11400000, guid: 7177c23f56fe6cc4d9ac71357270d4c5, type: 2}
+  itemName: Claw
+  weaponInfo: {fileID: 11400000, guid: 304dab3f20a40d94fbdedfd81884eb9d, type: 2}
   additionalRange: 0
   additionalMinDamage: 0
   additionalMaxDamage: 0

@@ -11,14 +11,14 @@ namespace InstaDungeon.Components
 		private Entity entity;
 		private Inventory inventory;
 		private MapManager mapManager;
-		private ItemInteraction itemInteraction;
+		private ItemInteractor itemInteraction;
 
 		private void Awake()
 		{
 			entity = GetComponent<Entity>();
 			inventory = GetComponent<Inventory>();
 			mapManager = Locator.Get<MapManager>();
-			itemInteraction = GetComponent<ItemInteraction>();
+			itemInteraction = GetComponent<ItemInteractor>();
 		}
 
 		private void Start()

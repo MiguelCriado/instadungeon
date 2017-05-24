@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace InstaDungeon.Components
 {
-	public class ItemInteraction : MonoBehaviour
+	public class ItemInteractor : MonoBehaviour
 	{
 		private static readonly string ReferencesName = "References";
 		private static readonly string TargetName = "Item Interactions";

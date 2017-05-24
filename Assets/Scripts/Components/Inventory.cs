@@ -53,6 +53,11 @@ namespace InstaDungeon.Components
 
 		#region [Equipment Operations]
 
+		public Item GetEquippedItem(InventorySlotType slot)
+		{
+			return equipment[slot];
+		}
+
 		public bool EquipItem(Item item, InventorySlotType slot)
 		{
 			bool result = false;

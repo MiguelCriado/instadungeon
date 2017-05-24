@@ -19,7 +19,7 @@ namespace InstaDungeon.BehaviorTreeNodes
 
 			int2[] path = mapManager.GetPath(chaser.CellTransform.Position, entityToChase.CellTransform.Position);
 
-			if (path.Length > 1)
+			if (path.Length > 0)
 			{
 				Actor chaserActor = chaser.GetComponent<Actor>();
 				int2 nextStep = path[0];

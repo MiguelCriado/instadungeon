@@ -34,20 +34,33 @@ namespace InstaDungeon.Components
 			currentHealth = maxHealth;
 		}
 
-		public int Attack(Weapon weapon)
+		public int SimulateAttack(Weapon weapon)
 		{
 			int weaponDamage = weapon.GetRandomDamage();
 			int totalDamage = weaponDamage - CalculateDefense();
-			int damageDealt = Mathf.Max(0, totalDamage);
+			
+			return totalDamage;
+		}
 
-			currentHealth = Mathf.Max(0, currentHealth - damageDealt);
+		public int Attack(Weapon weapon)
+		{
+			int totalDamage = SimulateAttack(weapon);
+			Hurt(totalDamage);
+
+			return totalDamage;
+		}
+
+		public int Hurt(int amount)
+		{
+			int effectiveDamage = Mathf.Max(0, amount);
+			currentHealth = Mathf.Max(0, currentHealth - effectiveDamage);
 
 			if (currentHealth <= 0)
 			{
 				// TODO: notify entity death
 			}
 
-			return totalDamage;
+			return effectiveDamage;
 		}
 
 		public int Heal(int amount)
