@@ -22,11 +22,16 @@ namespace InstaDungeon.Actions
 				itemInteraction.AddItem(command.RequiredKey)
 				.Done
 				(
-					() => { ActionDone(); }
+					() => 
+					{
+						command.Execute();
+						ActionDone();
+					}
 				);
 			}
 			else
 			{
+				command.Execute();
 				ActionDone();
 			}
 

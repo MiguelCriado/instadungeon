@@ -43,6 +43,13 @@ namespace InstaDungeon.Actions
 					0.2f
 				)
 				.SetEase(Ease.InOutSine)
+				.OnComplete
+				(
+					() =>
+					{
+						command.Execute();
+					}
+				)
 			)
 			// TODO add hit feedback
 			.Append
