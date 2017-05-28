@@ -63,6 +63,8 @@ namespace InstaDungeon.Actions
 					Entity entity = command.Entity;
 					entity.Events.TriggerEvent(new EntityFinishMovementEvent(entity.Guid, originalPosition, command.Position));
 
+					command.Execute();
+
 					ActionDone();
 				}
 			}

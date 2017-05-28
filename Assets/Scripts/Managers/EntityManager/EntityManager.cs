@@ -23,7 +23,7 @@ namespace InstaDungeon
 			events = new EventSystem();
 			dynamicEntities = new Dictionary<uint, Entity>();
 			loader = new EntityLoader();
-			CreateEntitiesContainer();
+			entitiesContainer = GetSceneContainer("World", "Entities");
 		}
 
 		public Entity Spawn(string entityType)
@@ -48,7 +48,9 @@ namespace InstaDungeon
 
 			if (dynamicEntities.TryGetValue(entityGuid, out entityToRecycle))
 			{
+				entityToRecycle.Events.TriggerEvent(new EntityDisposeEvent(entityToRecycle));
 				UnsubscribeToEvents(entityToRecycle);
+
 				loader.Dispose(entityToRecycle);
 				return true;
 			}
@@ -66,57 +68,45 @@ namespace InstaDungeon
 			return result;
 		}
 
-		protected void CreateEntitiesContainer()
-		{
-			GameObject entitiesGO = GameObject.FindGameObjectWithTag("Entities");
-
-			if (entitiesGO == null)
-			{
-				GameObject world = GameObject.FindGameObjectWithTag("World");
-
-				if (world == null)
-				{
-					world = GameObject.Find("World");
-				}
-
-				if (world == null)
-				{
-					world = new GameObject("World");
-					world.tag = "World";
-				}
-
-				entitiesGO = new GameObject("Entities");
-				entitiesGO.tag = "Entities";
-				entitiesGO.transform.SetParent(world.transform);
-			}
-
-			entitiesContainer = entitiesGO.transform;
-		}
-
 		protected override void OnSceneUnLoaded(Scene scene)
 		{
 			base.OnSceneUnLoaded(scene);
-			CreateEntitiesContainer();
+			entitiesContainer = GetSceneContainer("World", "Entities");
 		}
 
 		#region [Events]
 
 		protected void SubscribeToEvents(Entity entity)
 		{
-			entity.Events.AddListener(BroadcastEvent, EntityStartMovementEvent.EVENT_TYPE);
-			entity.Events.AddListener(BroadcastEvent, EntityFinishMovementEvent.EVENT_TYPE);
-			entity.Events.AddListener(BroadcastEvent, EntityRelocateEvent.EVENT_TYPE);
+			entity.Events.AddListener(HandleEvent, EntitySpawnEvent.EVENT_TYPE);
+			entity.Events.AddListener(HandleEvent, EntityDisposeEvent.EVENT_TYPE);
 
-			entity.Events.AddListener(BroadcastEvent, DoorOpenEvent.EVENT_TYPE);
+			entity.Events.AddListener(HandleEvent, EntityAddToMapEvent.EVENT_TYPE);
+			entity.Events.AddListener(HandleEvent, EntityStartMovementEvent.EVENT_TYPE);
+			entity.Events.AddListener(HandleEvent, EntityFinishMovementEvent.EVENT_TYPE);
+			entity.Events.AddListener(HandleEvent, EntityRelocateEvent.EVENT_TYPE);
+
+			entity.Events.AddListener(HandleEvent, DoorOpenEvent.EVENT_TYPE);
 		}
 
 		protected void UnsubscribeToEvents(Entity entity)
 		{
-			entity.Events.RemoveListener(BroadcastEvent, EntityStartMovementEvent.EVENT_TYPE);
-			entity.Events.RemoveListener(BroadcastEvent, EntityFinishMovementEvent.EVENT_TYPE);
-			entity.Events.RemoveListener(BroadcastEvent, EntityRelocateEvent.EVENT_TYPE);
+			entity.Events.RemoveListener(HandleEvent, EntitySpawnEvent.EVENT_TYPE);
+			entity.Events.RemoveListener(HandleEvent, EntityDisposeEvent.EVENT_TYPE);
 
-			entity.Events.RemoveListener(BroadcastEvent, DoorOpenEvent.EVENT_TYPE);
+			entity.Events.RemoveListener(HandleEvent, EntityAddToMapEvent.EVENT_TYPE);
+			entity.Events.RemoveListener(HandleEvent, EntityStartMovementEvent.EVENT_TYPE);
+			entity.Events.RemoveListener(HandleEvent, EntityFinishMovementEvent.EVENT_TYPE);
+			entity.Events.RemoveListener(HandleEvent, EntityRelocateEvent.EVENT_TYPE);
+
+			entity.Events.RemoveListener(HandleEvent, DoorOpenEvent.EVENT_TYPE);
+		}
+
+		protected void HandleEvent(IEventData eventData)
+		{
+			// TODO handle
+
+			BroadcastEvent(eventData);
 		}
 
 		protected void BroadcastEvent(IEventData eventData)

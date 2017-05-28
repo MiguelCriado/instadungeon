@@ -14,7 +14,6 @@ namespace InstaDungeon
 		public void RegisterCommand(Command command)
 		{
 			commandSequence.Add(command);
-			command.Execute();
 		}
 
 		public Command Undo()

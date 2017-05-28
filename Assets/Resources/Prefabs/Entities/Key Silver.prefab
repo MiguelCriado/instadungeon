@@ -52,7 +52,7 @@ GameObject:
   - component: {fileID: 4906254888892954}
   - component: {fileID: 114012027066964072}
   - component: {fileID: 114007328954116990}
-  - component: {fileID: 114929036005438222}
+  - component: {fileID: 114558137474137408}
   - component: {fileID: 114488749401323588}
   m_Layer: 0
   m_Name: Key Silver
@@ -141,7 +141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0bba503ec1deaf4b87edc1e4f77284d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114929036005438222
+--- !u!114 &114558137474137408
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -149,10 +149,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1740144372161032}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4a39fac5365f57409a6e6a160f3331b, type: 3}
+  m_Script: {fileID: 11500000, guid: b94c444fbb37bab4abb8db47d7758877, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  info: {fileID: 11400000, guid: afaa8aa7165291d449704bf7485ec956, type: 2}
+  itemName: Silver Key
+  keyInfo: {fileID: 11400000, guid: 83192b83480bb034daf94a8f9a9f0456, type: 2}
 --- !u!212 &212168561968666316
 SpriteRenderer:
   m_ObjectHideFlags: 1

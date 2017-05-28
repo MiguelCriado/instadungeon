@@ -64,5 +64,39 @@ namespace InstaDungeon
 		{
 
 		}
+
+		protected Transform GetSceneContainer(params string[] containerPath)
+		{
+			GameObject pathGO = null;
+
+			if (containerPath.Length > 0)
+			{
+				pathGO = System.Array.Find(SceneManager.GetActiveScene().GetRootGameObjects(), x => string.Compare(containerPath[0], x.name) == 0);
+				
+				if (pathGO == null)
+				{
+					pathGO = new GameObject(containerPath[0]);
+				}
+
+				for (int i = 1; i < containerPath.Length; i++)
+				{
+					Transform childTransform = pathGO.transform.Find(containerPath[i]);
+
+					if (childTransform == null)
+					{
+						Transform parent = pathGO.transform;
+
+						pathGO = new GameObject(containerPath[i]);
+						pathGO.transform.SetParent(parent);
+					}
+					else
+					{
+						pathGO = childTransform.gameObject;
+					}
+				}
+			}
+
+			return pathGO.transform;
+		}
 	}
 }

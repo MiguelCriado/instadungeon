@@ -5,8 +5,10 @@ namespace InstaDungeon.Components
 {
 	public class TurnComponentEvent : UnityEvent<TurnComponent> { }
 
+	[RequireComponent(typeof(Entity))]
 	public class TurnComponent : MonoBehaviour
 	{
+		public Entity Entity { get { return entity; } }
 		public bool IsMyTurn { get { return token != null; } }
 		public bool EntityCanAct { get { return IsMyTurn && token.EntityHasControl; } }
 		public TurnToken Token { get { return token; } }
@@ -20,9 +22,14 @@ namespace InstaDungeon.Components
 		[SerializeField] private int initiative;
 		[SerializeField] private int numActions;
 
+		private Entity entity;
 		private TurnToken token;
+		private int completedTurnActions;
 
-		protected int completedTurnActions;
+		private void Awake()
+		{
+			entity = GetComponent<Entity>();
+		}
 
 		public void GrantTurn(TurnToken token)
 		{

@@ -12,7 +12,7 @@ namespace InstaDungeon.Actions
 		public override void Act()
 		{
 			base.Act();
-
+			command.Execute();
 			ActionDone();
 
 			// TODO: trigger events
