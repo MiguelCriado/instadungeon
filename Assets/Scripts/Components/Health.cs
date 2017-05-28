@@ -1,8 +1,10 @@
-﻿using InstaDungeon.Models;
+﻿using InstaDungeon.Events;
+using InstaDungeon.Models;
 using UnityEngine;
 
 namespace InstaDungeon.Components
 {
+	[RequireComponent(typeof(Entity))]
 	public class Health : MonoBehaviour
 	{
 		public int MaxHealth { get { return maxHealth; } }
@@ -11,6 +13,7 @@ namespace InstaDungeon.Components
 		[SerializeField] private int maxHealth;
 		[SerializeField] private int currentHealth;
 
+		private Entity entity;
 		private Inventory inventory;
 
 		private void Reset()
@@ -31,6 +34,7 @@ namespace InstaDungeon.Components
 
 		public void Initialize()
 		{
+			entity = GetComponent<Entity>();
 			currentHealth = maxHealth;
 		}
 
@@ -57,7 +61,7 @@ namespace InstaDungeon.Components
 
 			if (currentHealth <= 0)
 			{
-				// TODO: notify entity death
+				entity.Events.TriggerEvent(new EntityDieEvent(this));
 			}
 
 			return effectiveDamage;

@@ -1,4 +1,5 @@
 ﻿using InstaDungeon.Components;
+using InstaDungeon.Events;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -32,7 +33,10 @@ namespace InstaDungeon
 
 		public void AddActor(TurnComponent actor)
 		{
-			pendingActors.Add(actor);
+			if (!actors.Contains(actor) && !pendingActors.Contains(actor))
+			{
+				pendingActors.Add(actor);
+			}
 		}
 
 		public void AddActor(GameObject actor)
@@ -42,13 +46,33 @@ namespace InstaDungeon
 			if (actorsTurn != null)
 			{
 				AddActor(actorsTurn);
+				SubscribeEvents(actorsTurn);
 			}
 		}
 
 		public void RemoveActor(TurnComponent actor)
 		{
+			if (token.Target == actor)
+			{
+				CurrentTurnDone(actor);
+			}
+
+			int actorIndex = actors.IndexOf(actor);
+
+			if 
+			(
+				actorIndex != -1 
+				&& actorIndex <= token.Turn 
+				&& actorIndex < actors.Count - 1
+			)
+			{
+				token.Turn--;
+			}
+
 			actors.Remove(actor);
 			pendingActors.Remove(actor);
+
+			UnsubscribeEvents(actor);
 		}
 
 		public void Init()
@@ -154,6 +178,26 @@ namespace InstaDungeon
 			actors[token.Turn].RevokeTurn(token);
 			actors[token.Turn].OnTurnDone.RemoveListener(CurrentTurnDone);
 			turnDone = true;
+		}
+
+		#region [Events Reaction]
+
+		private void OnActorDisposed(IEventData eventData)
+		{
+			EntityDisposeEvent disposeEvent = eventData as EntityDisposeEvent;
+			RemoveActor(disposeEvent.Entity.GetComponent<TurnComponent>());
+		}
+
+		#endregion
+
+		private void SubscribeEvents(TurnComponent actor)
+		{
+			actor.Entity.Events.AddListener(OnActorDisposed, EntityDisposeEvent.EVENT_TYPE);
+		}
+
+		private void UnsubscribeEvents(TurnComponent actor)
+		{
+			actor.Entity.Events.AddListener(OnActorDisposed, EntityDisposeEvent.EVENT_TYPE);
 		}
 	}
 }

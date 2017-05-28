@@ -30,8 +30,11 @@ namespace InstaDungeon.Actions
 			Entity attacker = command.Attacker;
 			Entity defender = command.Defender;
 
-			Vector3 originalPosition = attacker.transform.position;
+			Vector3 attackerOriginalPosition = attacker.transform.position;
 			Vector3 hitPosition = Vector3.Lerp(attacker.transform.position, defender.transform.position, 0.6f);
+
+			Vector3 defenderDisplacement = (defender.transform.position - attacker.transform.position) * 0.4f;
+			Vector3 defenderOriginalPosition = defender.transform.position;
 
 			Sequence attackSequence = DOTween.Sequence();
 			attackSequence
@@ -47,19 +50,55 @@ namespace InstaDungeon.Actions
 				(
 					() =>
 					{
+						Locator.Get<ParticleSystemManager>().Spawn("Hit FX", defender.transform.position + Vector3.up * 1/3f);
+
 						command.Execute();
 					}
 				)
 			)
-			// TODO add hit feedback
-			.Append
+			.AppendCallback
+			(
+				() => 
+				{
+					if (defender != null)
+					{
+						defender.transform.DOMove
+						(
+							defender.transform.position + defenderDisplacement,
+							0.2f
+						)
+						.SetEase(Ease.OutExpo);
+					}
+				}
+			)
+			.Join
 			(
 				attacker.transform.DOMove
 				(
-					originalPosition,
+					attackerOriginalPosition,
 					0.3f
 				)
 				.SetEase(Ease.OutExpo)
+			)
+			.InsertCallback
+			(
+				0.4f,
+				() => 
+				{
+					if (defender != null)
+					{
+						defender.transform.DOMove
+						(
+							defenderOriginalPosition,
+							0.3f
+						)
+						.SetEase(Ease.InOutSine);
+					}
+				}
+			)
+			.AppendInterval
+			(
+				0.1f
 			)
 			.OnComplete
 			(

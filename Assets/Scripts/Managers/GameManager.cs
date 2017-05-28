@@ -20,6 +20,7 @@ namespace InstaDungeon
 		private MapGenerator mapGenerator;
 		private CameraManager cameraManager;
 		private VisibilityManager visibilityManager;
+		private ParticleSystemManager particleSystemManager;
 
 		private BehaviorTree turnTree;
 		private Blackboard turnBlackboard;
@@ -47,6 +48,7 @@ namespace InstaDungeon
 			InitializeEntityManager();
 			InitializeCameraManager();
 			InitializeVisibilityManager();
+			InitializeParticleSystemManager();
 			InitializePlayerCharacter();
 		}
 
@@ -157,6 +159,11 @@ namespace InstaDungeon
 		private void InitializeVisibilityManager()
 		{
 			visibilityManager = Locator.Get<VisibilityManager>();
+		}
+
+		private void InitializeParticleSystemManager()
+		{
+			particleSystemManager = Locator.Get<ParticleSystemManager>();
 		}
 
 		private void InitializeCameraManager()

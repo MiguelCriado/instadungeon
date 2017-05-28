@@ -82,6 +82,14 @@ namespace InstaDungeon
 					return new TurnManager();
 				}
 			);
+
+			Locator.Provide<ParticleSystemManager>
+			(
+				() =>
+				{
+					return new ParticleSystemManager();
+				}
+			);
 		}
 	}
 }
