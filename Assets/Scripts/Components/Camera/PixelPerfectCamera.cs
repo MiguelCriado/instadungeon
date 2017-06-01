@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.Profiling;
 
 public class PixelPerfectCamera : MonoBehaviour
 {
@@ -9,8 +8,7 @@ public class PixelPerfectCamera : MonoBehaviour
 
 	private Camera targetCamera;
 	private int lastScreenHeight;
-	[SerializeField] private RenderTexture renderTexture;
-	[SerializeField] private RenderTexture nativeRenderTexture;
+	private RenderTexture renderTexture;
 
 	private void OnValidate()
 	{
@@ -41,10 +39,12 @@ public class PixelPerfectCamera : MonoBehaviour
 	{
 		targetCamera.targetTexture = null;
 
-		Profiler.BeginSample("Blitz Operations");
-		Graphics.Blit(renderTexture, nativeRenderTexture);
-		Graphics.Blit(nativeRenderTexture, null as RenderTexture);
-		Profiler.EndSample();
+		RenderTexture rt = RenderTexture.GetTemporary(Screen.width, Screen.height);
+		rt.filterMode = FilterMode.Point;
+
+		Graphics.Blit(renderTexture, rt);
+		Graphics.Blit(rt, null as RenderTexture);
+		RenderTexture.ReleaseTemporary(rt);
 	}
 
 	private void Initialize()
@@ -81,8 +81,5 @@ public class PixelPerfectCamera : MonoBehaviour
 
 		renderTexture = new RenderTexture(Mathf.RoundToInt(targetHeight * screenRatio), targetHeight, 24, RenderTextureFormat.ARGB32);
 		renderTexture.filterMode = FilterMode.Point;
-
-		nativeRenderTexture = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.ARGB32);
-		nativeRenderTexture.filterMode = FilterMode.Point;
 	}
 }

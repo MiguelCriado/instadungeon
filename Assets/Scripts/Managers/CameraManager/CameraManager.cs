@@ -1,68 +1,52 @@
-﻿using UnityEngine;
+﻿using InstaDungeon.Components;
+using RSG;
+using UnityEngine;
 
 namespace InstaDungeon
 {
-	public class CameraManager : MonoBehaviour
+	public class CameraManager : Manager
 	{
-		public Transform Target { get { return target; } set { target = value; }  }
+		private CameraController camera;
 
-		[Header("References")]
-		[SerializeField]
-		private Transform target;        // Reference to the target's transform.
-		[Header("Configuration")]
-		[SerializeField]
-		private float xMargin = 1f;      // Distance in the x axis the target can move before the camera follows.
-		[SerializeField]
-		private float yMargin = 1f;      // Distance in the y axis the target can move before the camera follows.
-		[SerializeField]
-		private float xSmooth = 8f;      // How smoothly the camera catches up with it's target movement in the x axis.
-		[SerializeField]
-		private float ySmooth = 8f;      // How smoothly the camera catches up with it's target movement in the y axis.
-		[SerializeField]
-		private Vector2 maxXAndY;        // The maximum x and y coordinates the camera can have.
-		[SerializeField]
-		private Vector2 minXAndY;        // The minimum x and y coordinates the camera can have.
-
-		void Update()
+		public CameraManager() : base()
 		{
-			TrackTarget();
-		}
+			camera = GameObject.FindObjectOfType<CameraController>();
 
-		private void TrackTarget()
-		{
-			if (target != null)
+			if (camera == null)
 			{
-				Vector3 cameraPosition = transform.position;
-				Vector3 targetPosition = target.position;
+				Camera mainCamera = Camera.main;
 
-				float targetX = cameraPosition.x;
-				float targetY = cameraPosition.y;
-
-				if (CheckXMargin(cameraPosition, targetPosition))
+				if (mainCamera == null)
 				{
-					targetX = Mathf.Lerp(cameraPosition.x, targetPosition.x, xSmooth * Time.deltaTime);
+					mainCamera = GameObject.FindObjectOfType<Camera>();
 				}
 
-				if (CheckYMargin(cameraPosition, targetPosition))
-				{
-					targetY = Mathf.Lerp(cameraPosition.y, targetPosition.y, ySmooth * Time.deltaTime);
-				}
-
-				targetX = Mathf.Clamp(targetX, minXAndY.x, maxXAndY.x);
-				targetY = Mathf.Clamp(targetY, minXAndY.y, maxXAndY.y);
-
-				transform.position = new Vector3(targetX, targetY, transform.position.z);
+				camera = mainCamera.gameObject.AddComponent<CameraController>();
 			}
 		}
 
-		private bool CheckXMargin(Vector3 cameraPosition, Vector3 targetPosition)
+		#region [Public API]
+
+		public void SetTarget(Transform target)
 		{
-			return Mathf.Abs(cameraPosition.x - targetPosition.x) > xMargin;
+			camera.Target = target;
 		}
 
-		private bool CheckYMargin(Vector3 cameraPosition, Vector3 targetPosition)
+		public void MoveTo(Vector2 position)
 		{
-			return Mathf.Abs(transform.position.y - target.position.y) > yMargin;
+			camera.MoveTo(position);
 		}
+
+		public IPromise FadeIn(float duration)
+		{
+			return camera.FadeIn(duration);
+		}
+
+		public IPromise FadeOut(float duration)
+		{
+			return camera.FadeOut(duration);
+		}
+
+		#endregion
 	}
 }

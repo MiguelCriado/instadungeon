@@ -20,7 +20,6 @@ namespace InstaDungeon.Components
 
 		private void OnEntityDies(IEventData eventData)
 		{
-			EntityDieEvent deathEvent = eventData as EntityDieEvent;
 			Locator.Get<ParticleSystemManager>().Spawn("Puff FX", transform.position + Vector3.up * 0.25f);
 			Locator.Get<MapManager>().RemoveActor(entity, entity.CellTransform.Position);
 			Locator.Get<EntityManager>().Recycle(entity.Guid);
