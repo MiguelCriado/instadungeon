@@ -90,6 +90,14 @@ namespace InstaDungeon
 					return new ParticleSystemManager();
 				}
 			);
+
+			Locator.Provide<CameraManager>
+			(
+				() =>
+				{
+					return new CameraManager();
+				}
+			);
 		}
 	}
 }

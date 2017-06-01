@@ -91,28 +91,6 @@ NavMeshSettings:
     cellSize: 0.16666666
     accuratePlacement: 0
   m_NavMeshData: {fileID: 0}
---- !u!84 &231414486
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_Width: 640
-  m_Height: 480
-  m_AntiAliasing: 1
-  m_DepthFormat: 2
-  m_ColorFormat: 0
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_TextureSettings:
-    m_FilterMode: 0
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapMode: 1
 --- !u!1 &259887375
 GameObject:
   m_ObjectHideFlags: 0
@@ -335,28 +313,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f888f09bd10028c4fa4ecafed36248f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!84 &489985734
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_Width: 320
-  m_Height: 240
-  m_AntiAliasing: 1
-  m_DepthFormat: 2
-  m_ColorFormat: 0
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_TextureSettings:
-    m_FilterMode: 0
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapMode: 1
 --- !u!1 &576293356
 GameObject:
   m_ObjectHideFlags: 0
@@ -536,13 +492,12 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 816749042}
+  - component: {fileID: 816749045}
   - component: {fileID: 816749043}
   - component: {fileID: 816749041}
   - component: {fileID: 816749040}
   - component: {fileID: 816749039}
   - component: {fileID: 816749038}
-  - component: {fileID: 816749044}
-  - component: {fileID: 816749045}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -632,9 +587,7 @@ MonoBehaviour:
   targetHeight: 240
   zoom: 1
   pixelsPerUnit: 24
-  renderTexture: {fileID: 489985734}
-  nativeRenderTexture: {fileID: 231414486}
---- !u!114 &816749044
+--- !u!114 &816749045
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -642,29 +595,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 816749037}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95372743ceda5ee47b41679f7ec84ab2, type: 3}
+  m_Script: {fileID: 11500000, guid: c9c88c3b411e39045a06ad2d19bd7733, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
+  TransitionMaterial: {fileID: 2100000, guid: 7624d611bd330e44b80ef65275598a16, type: 2}
   xMargin: 0
   yMargin: 0
   xSmooth: 2
   ySmooth: 2
   maxXAndY: {x: Infinity, y: Infinity}
   minXAndY: {x: -Infinity, y: -Infinity}
---- !u!114 &816749045
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 816749037}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a65f574d94aa2d4ea8546b7c0121fdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  zoom: 2
-  pixelsPerUnit: 24
 --- !u!1 &821436794
 GameObject:
   m_ObjectHideFlags: 0

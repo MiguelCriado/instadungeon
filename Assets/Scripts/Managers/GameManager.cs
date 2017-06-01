@@ -1,6 +1,5 @@
 ﻿using AI.BehaviorTrees;
 using InstaDungeon.BehaviorTreeNodes;
-using InstaDungeon.Commands;
 using InstaDungeon.Components;
 using UnityEngine;
 
@@ -9,22 +8,24 @@ namespace InstaDungeon
 	public class GameManager : Singleton<GameManager>
 	{
 		public static Entity Player { get { return Instance.player; } }
-		public static CameraManager Camera { get { return Instance.cameraManager; } }
 		public static MapManager MapManager { get { return Instance.mapManager; } }
 		public static ITileMapRenderer Renderer { get { return Instance.mapRenderer; } }
 
+		private CameraManager cameraManager;
 		private EntityManager entityManager;
 		private TurnManager turnManager;
 		private MapManager mapManager;
 		private ITileMapRenderer mapRenderer;
 		private MapGenerator mapGenerator;
-		private CameraManager cameraManager;
 		private VisibilityManager visibilityManager;
 		private ParticleSystemManager particleSystemManager;
 
 		private BehaviorTree turnTree;
 		private Blackboard turnBlackboard;
 
+		private bool isPaused;
+		private int floorNumber;
+		
 		private Entity player;
 
 		void Start()
@@ -36,7 +37,10 @@ namespace InstaDungeon
 
 		void Update()
 		{
-			turnTree.Tick(turnManager, turnBlackboard);
+			if (!isPaused)
+			{
+				turnTree.Tick(turnManager, turnBlackboard);
+			}
 		}
 
 		public void Initialize()
@@ -50,15 +54,51 @@ namespace InstaDungeon
 			InitializeVisibilityManager();
 			InitializeParticleSystemManager();
 			InitializePlayerCharacter();
+			isPaused = false;
+			floorNumber = 0;
 		}
 
 		public static void LoadNewMap()
 		{
-			Instance.turnManager.RevokeControl();
-			Instance.TakePlayerFromMap();
-			Instance.GenerateNewMap();
-			Instance.PreparePlayerForNewLevel();
-			Instance.turnManager.GrantControl();
+			Instance.LoadNewMapInternal();
+		}
+
+		private void LoadNewMapInternal()
+		{
+			isPaused = true;
+			float fadeOutTime = floorNumber > 0 ? 0.5f : 0f;
+
+			turnManager.RevokeControl();
+
+			cameraManager.FadeOut(fadeOutTime)
+			.Catch
+			(
+				(System.Exception e) => 
+				{
+					throw e;
+				}
+			)
+			.Then
+			(
+				() =>
+				{
+					TakePlayerFromMap();
+					GenerateNewMap();
+					PreparePlayerForNewLevel();
+					PrepareCameraForNewLevel();
+				
+					return cameraManager.FadeIn(0.5f);
+				}
+			)
+			.Done
+			(
+				() => 
+				{
+					turnManager.GrantControl();
+					isPaused = false;
+					floorNumber++;
+				}
+			);
 		}
 
 		private void GenerateNewMap()
@@ -85,8 +125,12 @@ namespace InstaDungeon
 			{
 				turnManager.AddActor(playerTurn);
 			}
+		}
 
-			cameraManager.Target = player.transform;
+		private void PrepareCameraForNewLevel()
+		{
+			cameraManager.SetTarget(player.transform);
+			cameraManager.MoveTo(player.transform.position);
 		}
 
 		private void StartUpTurnSystem()
@@ -104,7 +148,6 @@ namespace InstaDungeon
 						),
 						new LoadNewLevelAction()
 					)
-
 				);
 
 			turnManager.Init();
@@ -168,12 +211,7 @@ namespace InstaDungeon
 
 		private void InitializeCameraManager()
 		{
-			cameraManager = FindObjectOfType<CameraManager>();
-
-			if (cameraManager == null)
-			{
-				Locator.Log.Error("There must be an object of type EntityManager in the scene.");
-			}
+			cameraManager = Locator.Get<CameraManager>();
 		}
 
 		private void InitializePlayerCharacter()
