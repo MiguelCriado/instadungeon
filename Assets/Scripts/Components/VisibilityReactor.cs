@@ -14,7 +14,6 @@ namespace InstaDungeon.Components
 		private Entity entity;
 		private MapManager mapManager;
 		private SpriteRenderer[] renderers;
-		private int colorId;
 		private int lerpAmountId;
 
 		private Cell currentCell;
@@ -30,8 +29,7 @@ namespace InstaDungeon.Components
 			renderers = GetComponentsInChildren<SpriteRenderer>(true);
 			entity = GetComponent<Entity>();
 			mapManager = Locator.Get<MapManager>();
-			colorId = Shader.PropertyToID("_Color");
-			lerpAmountId = Shader.PropertyToID("_Amount");
+			lerpAmountId = Shader.PropertyToID("_LerpAmount");
 		}
 
 		private void OnEnable()
@@ -155,7 +153,6 @@ namespace InstaDungeon.Components
 				case VisibilityType.Visible: lerpAmount = VisibleAmount; break;
 			}
 
-			renderer.material.SetColor(colorId, LerpColor);
 			renderer.material.SetFloat(lerpAmountId, lerpAmount);
 		}
 	}
