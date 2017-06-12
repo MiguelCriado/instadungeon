@@ -15,12 +15,9 @@ namespace InstaDungeon.Events
 			Door = door;
 		}
 
-		public override IEventData Copy()
+		public override BaseEventData CopySpecificData()
 		{
-			DoorOpenEvent result = new DoorOpenEvent(Door);
-			result.TimeStamp = TimeStamp;
-
-			return result;
+			return new DoorOpenEvent(Door);
 		}
 	}
 }

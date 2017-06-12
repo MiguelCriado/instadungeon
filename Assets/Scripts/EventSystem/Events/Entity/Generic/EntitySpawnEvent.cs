@@ -13,12 +13,9 @@
 			EntityId = entityId;
 		}
 
-		public override IEventData Copy()
+		public override BaseEventData CopySpecificData()
 		{
-			EntitySpawnEvent result = new EntitySpawnEvent(EntityId);
-			result.TimeStamp = TimeStamp;
-
-			return result;
+			return new EntitySpawnEvent(EntityId);
 		}
 	}
 }

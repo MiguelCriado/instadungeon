@@ -7,6 +7,7 @@ namespace InstaDungeon.Components
 	[RequireComponent(typeof(Entity))]
 	public class Health : MonoBehaviour
 	{
+		public Entity Entity { get { return entity; } }
 		public int MaxHealth { get { return maxHealth; } }
 		public int CurrentHealth { get { return currentHealth; } }
 
@@ -56,12 +57,14 @@ namespace InstaDungeon.Components
 
 		public int Hurt(int amount)
 		{
+			int previousHealth = currentHealth;
 			int effectiveDamage = Mathf.Max(0, amount);
 			currentHealth = Mathf.Max(0, currentHealth - effectiveDamage);
+			entity.Events.TriggerEvent(new EntityHealthChangeEvent(entity, this, previousHealth, currentHealth));
 
 			if (currentHealth <= 0)
 			{
-				entity.Events.TriggerEvent(new EntityDieEvent(this));
+				entity.Events.TriggerEvent(new EntityDieEvent(entity, this));
 			}
 
 			return effectiveDamage;
@@ -69,8 +72,10 @@ namespace InstaDungeon.Components
 
 		public int Heal(int amount)
 		{
+			int previousHealth = currentHealth;
 			int effectiveHeal = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
 			currentHealth += effectiveHeal;
+			entity.Events.TriggerEvent(new EntityHealthChangeEvent(entity, this, previousHealth, currentHealth));
 
 			return effectiveHeal;
 		}

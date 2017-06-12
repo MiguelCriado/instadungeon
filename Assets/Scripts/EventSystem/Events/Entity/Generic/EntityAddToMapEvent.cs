@@ -15,12 +15,9 @@ namespace InstaDungeon.Events
 			Entity = entity;
 		}
 
-		public override IEventData Copy()
+		public override BaseEventData CopySpecificData()
 		{
-			EntityAddToMapEvent result = new EntityAddToMapEvent(Entity);
-			result.TimeStamp = TimeStamp;
-
-			return result;
+			return new EntityAddToMapEvent(Entity);
 		}
 	}
 }

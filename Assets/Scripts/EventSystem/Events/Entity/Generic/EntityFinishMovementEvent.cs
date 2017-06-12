@@ -17,12 +17,9 @@
 			CurrentPosition = currentPosition;
 		}
 
-		public override IEventData Copy()
+		public override BaseEventData CopySpecificData()
 		{
-			EntityFinishMovementEvent result = new EntityFinishMovementEvent(EntityId, PreviousPosition, CurrentPosition);
-			result.TimeStamp = TimeStamp;
-
-			return result;
+			return new EntityFinishMovementEvent(EntityId, PreviousPosition, CurrentPosition);
 		}
 	}
 }

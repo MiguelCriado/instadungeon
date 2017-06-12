@@ -15,12 +15,9 @@ namespace InstaDungeon.Events
 			ParticleSystemController = particleSystemController;
 		}
 
-		public override IEventData Copy()
+		public override BaseEventData CopySpecificData()
 		{
-			ParticleSystemEndsPlayingEvent result = new ParticleSystemEndsPlayingEvent(ParticleSystemController);
-			result.TimeStamp = TimeStamp;
-
-			return result;
+			return new ParticleSystemEndsPlayingEvent(ParticleSystemController);
 		}
 	}
 }

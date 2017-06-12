@@ -13,6 +13,13 @@ namespace InstaDungeon.Events
 			TimeStamp = Time.realtimeSinceStartup;
 		}
 
-		public abstract IEventData Copy();
+		public IEventData Copy()
+		{
+			BaseEventData result = CopySpecificData();
+			result.TimeStamp = TimeStamp;
+			return result;
+		}
+
+		public abstract BaseEventData CopySpecificData();
 	}
 }

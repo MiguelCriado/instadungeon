@@ -15,12 +15,9 @@ namespace InstaDungeon.Events
 			Entity = entity;
 		}
 
-		public override IEventData Copy()
+		public override BaseEventData CopySpecificData()
 		{
-			EntityDisposeEvent result = new EntityDisposeEvent(Entity);
-			result.TimeStamp = TimeStamp;
-
-			return result;
+			return new EntityDisposeEvent(Entity);
 		}
 	}
 }

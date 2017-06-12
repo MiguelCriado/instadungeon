@@ -17,12 +17,26 @@ namespace InstaDungeon
 		private Dictionary<uint, Entity> items;
 		private TileMapWeightedGraph weightedGraph;
 
+		private List<Entity> cachedActors;
+		private List<Entity> cachedProps;
+		private List<Entity> cachedItems;
+		private bool actorsDirty;
+		private bool propsDirty;
+		private bool itemsDirty;
+
 		public MapManager() : base()
 		{
 			entityManager = Locator.Get<EntityManager>();
 			actors = new Dictionary<uint, Entity>();
 			props = new Dictionary<uint, Entity>();
 			items = new Dictionary<uint, Entity>();
+
+			cachedActors = new List<Entity>();
+			cachedProps = new List<Entity>();
+			cachedItems = new List<Entity>();
+			actorsDirty = true;
+			propsDirty = true;
+			itemsDirty = true;
 		}
 
 		public Cell this[int x, int y]
@@ -56,6 +70,24 @@ namespace InstaDungeon
 		#endregion
 
 		#region [Actors]
+
+		public List<Entity> GetActors()
+		{
+			if (actorsDirty)
+			{
+				cachedActors.Clear();
+				var enumerator = actors.GetEnumerator();
+
+				while (enumerator.MoveNext())
+				{
+					cachedActors.Add(enumerator.Current.Value);
+				}
+
+				actorsDirty = false;
+			}
+
+			return cachedActors;
+		}
 
 		public bool CanCellBeOccupiedByActor(int2 cellPosition)
 		{
@@ -107,6 +139,7 @@ namespace InstaDungeon
 				actor.CellTransform.MoveTo(cellPosition);
 				actor.Events.TriggerEvent(new EntityAddToMapEvent(actor));
 				result = true;
+				actorsDirty = true;
 			}
 
 			return result;
@@ -134,6 +167,7 @@ namespace InstaDungeon
 				cell.Actor = null;
 				actors.Remove(actor.Guid);
 				result = true;
+				actorsDirty = true;
 			}
 
 			return result;

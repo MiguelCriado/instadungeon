@@ -17,12 +17,9 @@
 			CurrentVisibility = currentVisibility;
 		}
 
-		public override IEventData Copy()
+		public override BaseEventData CopySpecificData()
 		{
-			CellVisibilityEventData result = new CellVisibilityEventData(Cell, PreviousVisibility, CurrentVisibility);
-			result.TimeStamp = TimeStamp;
-
-			return result;
+			return new CellVisibilityEventData(Cell, PreviousVisibility, CurrentVisibility);
 		}
 	}
 }

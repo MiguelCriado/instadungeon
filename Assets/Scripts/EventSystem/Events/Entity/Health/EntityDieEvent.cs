@@ -8,19 +8,18 @@ namespace InstaDungeon.Events
 
 		public override uint EventType { get { return EVENT_TYPE; } }
 		public override string Name { get { return "Entity Die Event"; } }
+		public Entity Entity { get; private set; }
 		public Health Health { get; private set; }
 
-		public EntityDieEvent(Health health)
+		public EntityDieEvent(Entity entity, Health health)
 		{
+			Entity = entity;
 			Health = health;
 		}
 
-		public override IEventData Copy()
+		public override BaseEventData CopySpecificData()
 		{
-			EntityDieEvent result = new EntityDieEvent(Health);
-			result.TimeStamp = TimeStamp;
-
-			return result;
+			return new EntityDieEvent(Entity, Health);
 		}
 	}
 }

@@ -17,6 +17,7 @@ namespace InstaDungeon.Components
 		private int lerpAmountId;
 
 		private Cell currentCell;
+		private VisibilityType lastVisibility;
 
 		private void Reset()
 		{
@@ -30,6 +31,7 @@ namespace InstaDungeon.Components
 			entity = GetComponent<Entity>();
 			mapManager = Locator.Get<MapManager>();
 			lerpAmountId = Shader.PropertyToID("_LerpAmount");
+			lastVisibility = VisibilityType.Obscured;
 		}
 
 		private void OnEnable()
@@ -138,6 +140,9 @@ namespace InstaDungeon.Components
 				{
 					UpdateRenderer(renderers[i], currentCell.Visibility);
 				}
+
+				entity.Events.TriggerEvent(new EntityVisibilityChangeEvent(entity, lastVisibility, currentCell.Visibility));
+				lastVisibility = currentCell.Visibility;
 			}
 		}
 
