@@ -8,9 +8,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0981391122fbac4894ec710580cd25a, type: 3}
+  m_Script: {fileID: 11500000, guid: 68faffcca16857c4fbfd97269855b017, type: 3}
   m_Name: Silver Key
   m_EditorClassIdentifier: 
-  id: 1868976513
+  id: 110615240
   nameId: Silver Key
-  avatar: {fileID: 21300008, guid: 1b234880b7ed76147b8956af04102289, type: 3}
+  avatar: {fileID: 21300008, guid: f884dd141ab296c4daf96371b6ceaf54, type: 3}
+  inventorySlot: 1

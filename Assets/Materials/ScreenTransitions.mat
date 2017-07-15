@@ -7,10 +7,11 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: ScreenTransitions
-  m_Shader: {fileID: 4800000, guid: fabca918ca89c6c42b211ec3299e2998, type: 3}
+  m_Shader: {fileID: 4800000, guid: c6a362c977f3e564f9e877d6969e7edc, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
@@ -22,7 +23,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TransitionTex:
-        m_Texture: {fileID: 2800000, guid: fbe6e80cd9587334fb840031de89c672, type: 3}
+        m_Texture: {fileID: 2800000, guid: 53ce799b8010b0c4e8d4c1cd5a1b3091, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TransitionTexture:

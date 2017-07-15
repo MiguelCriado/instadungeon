@@ -50,10 +50,10 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4906254888892954}
-  - component: {fileID: 114012027066964072}
-  - component: {fileID: 114007328954116990}
-  - component: {fileID: 114558137474137408}
-  - component: {fileID: 114488749401323588}
+  - component: {fileID: 114335317707620574}
+  - component: {fileID: 114214866140061498}
+  - component: {fileID: 114429405052644402}
+  - component: {fileID: 114721770532953700}
   m_Layer: 0
   m_Name: Key Silver
   m_TagString: Untagged
@@ -102,7 +102,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114007328954116990
+--- !u!114 &114214866140061498
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -110,13 +110,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1740144372161032}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6fd3d7e13c921de479e45d8e69f266c6, type: 3}
+  m_Script: {fileID: 11500000, guid: 2a1e49f010f05b9458176095c1a7f63d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  info: {fileID: 11400000, guid: 6b81d9041fdc59b4190722d5131d7781, type: 2}
+  info: {fileID: 11400000, guid: 3ccea60d94ecbd6428ffaa76e3af3979, type: 2}
   blocksLineOfSight: 0
   blocksMovement: 0
---- !u!114 &114012027066964072
+--- !u!114 &114335317707620574
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -124,13 +124,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1740144372161032}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a1d5de7f54b1c14c8b1ee667c5d8d7a, type: 3}
+  m_Script: {fileID: 11500000, guid: da90a8b3ff9c83743b79e89581da30c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   position:
     x: 0
     y: 0
---- !u!114 &114488749401323588
+--- !u!114 &114429405052644402
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -138,22 +138,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 1740144372161032}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0bba503ec1deaf4b87edc1e4f77284d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &114558137474137408
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1740144372161032}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b94c444fbb37bab4abb8db47d7758877, type: 3}
+  m_Script: {fileID: 11500000, guid: 5fd4f345198da10439dd03f4810e297d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: Silver Key
-  keyInfo: {fileID: 11400000, guid: 83192b83480bb034daf94a8f9a9f0456, type: 2}
+  keyInfo: {fileID: 11400000, guid: eaa820335633c7d45a7f1ede42cc247a, type: 2}
+--- !u!114 &114721770532953700
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1740144372161032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 276f0c2324108d744951cf6ba7111b46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!212 &212168561968666316
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -167,7 +167,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 2100000, guid: dce561391d3d46d4e97545a98d2f444d, type: 2}
+  - {fileID: 2100000, guid: 8c71927e14de37f4fbaf8e26bb9973a7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -184,8 +184,14 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 535093101
+  m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300008, guid: 1b234880b7ed76147b8956af04102289, type: 3}
+  m_Sprite: {fileID: 21300008, guid: f884dd141ab296c4daf96371b6ceaf54, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1

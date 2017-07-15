@@ -7,10 +7,11 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: SpriteColorLerp
-  m_Shader: {fileID: 4800000, guid: c6bd43ef619a25c488d9900256f8332d, type: 3}
+  m_Shader: {fileID: 4800000, guid: 1a2d0b3d171d8a84b9ad0842831650d1, type: 3}
   m_ShaderKeywords: ETC1_EXTERNAL_ALPHA PIXELSNAP_ON _EMISSION
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []

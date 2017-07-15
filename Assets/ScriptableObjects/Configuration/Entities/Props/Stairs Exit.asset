@@ -8,8 +8,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d145fd9cbe5bb4443880319e1f9afc7a, type: 3}
+  m_Script: {fileID: 11500000, guid: 9b360f2d6d6f6ff42a7e12adb1d4485f, type: 3}
   m_Name: Stairs Exit
   m_EditorClassIdentifier: 
-  id: 509044513
+  id: 4163299819
   nameId: Stairs Exit

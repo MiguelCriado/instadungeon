@@ -19,10 +19,10 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4090674494462474}
-  - component: {fileID: 114021757896813396}
-  - component: {fileID: 114238248239539602}
-  - component: {fileID: 114581534341753850}
-  - component: {fileID: 114256316040267180}
+  - component: {fileID: 114140695179418792}
+  - component: {fileID: 114032856048387172}
+  - component: {fileID: 114004525287775996}
+  - component: {fileID: 114160895292553906}
   m_Layer: 0
   m_Name: Weapon Fist
   m_TagString: Untagged
@@ -102,7 +102,7 @@ Transform:
   m_Father: {fileID: 4090674494462474}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114021757896813396
+--- !u!114 &114004525287775996
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -110,13 +110,43 @@ MonoBehaviour:
   m_GameObject: {fileID: 1292002239252992}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a1d5de7f54b1c14c8b1ee667c5d8d7a, type: 3}
+  m_Script: {fileID: 11500000, guid: fa5e4bcf5db45344b8561f1260b25d2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: Fist
+  weaponInfo: {fileID: 11400000, guid: ff4df83ff3ac0b649a6d466a79552b29, type: 2}
+  additionalRange: 0
+  additionalMinDamage: 0
+  additionalMaxDamage: 0
+--- !u!114 &114032856048387172
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1292002239252992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a1e49f010f05b9458176095c1a7f63d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  info: {fileID: 11400000, guid: 9a11e83716c7edc4bb264c760c33a8ca, type: 2}
+  blocksLineOfSight: 0
+  blocksMovement: 0
+--- !u!114 &114140695179418792
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1292002239252992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da90a8b3ff9c83743b79e89581da30c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   position:
     x: 0
     y: 0
---- !u!114 &114238248239539602
+--- !u!114 &114160895292553906
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -124,39 +154,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1292002239252992}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6fd3d7e13c921de479e45d8e69f266c6, type: 3}
+  m_Script: {fileID: 11500000, guid: 276f0c2324108d744951cf6ba7111b46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  info: {fileID: 11400000, guid: 60256f34f17b6964fa161b603b86451a, type: 2}
-  blocksLineOfSight: 0
-  blocksMovement: 1
---- !u!114 &114256316040267180
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1292002239252992}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0bba503ec1deaf4b87edc1e4f77284d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &114581534341753850
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1292002239252992}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c88d1c38a35fa14488446e27ae20ce6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemName: Fist
-  weaponInfo: {fileID: 11400000, guid: 7177c23f56fe6cc4d9ac71357270d4c5, type: 2}
-  additionalRange: 0
-  additionalMinDamage: 0
-  additionalMaxDamage: 0
 --- !u!212 &212616495996618862
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -187,8 +187,14 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 535093101
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 0
