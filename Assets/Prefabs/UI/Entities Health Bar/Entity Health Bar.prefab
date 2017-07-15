@@ -36,10 +36,10 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224577316012104940}
-  - component: {fileID: 114684763407812494}
   - component: {fileID: 223447170216776562}
-  - component: {fileID: 114178860625575396}
   - component: {fileID: 225341140348759526}
+  - component: {fileID: 114541019056700082}
+  - component: {fileID: 114961046226215084}
   m_Layer: 0
   m_Name: Entity Health Bar
   m_TagString: Untagged
@@ -112,20 +112,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &114178860625575396
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1071323446231816}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 146e77c3c0591764ba6fd13d197a290f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  worldCamera: {fileID: 0}
-  target: {fileID: 0}
-  offset: {x: 0, y: 0}
 --- !u!114 &114307260554876702
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -201,6 +187,20 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114541019056700082
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1071323446231816}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81fcb6a4a1bced34fae2fb21546dfb89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  worldCamera: {fileID: 0}
+  target: {fileID: 0}
+  offset: {x: 0, y: 24}
 --- !u!114 &114602558487952174
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -255,7 +255,7 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114684763407812494
+--- !u!114 &114961046226215084
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -263,7 +263,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1071323446231816}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64bfe9f1045133945aff3c256cdcfe7c, type: 3}
+  m_Script: {fileID: 11500000, guid: eddfeb8087efdeb42b5eda25956a7832, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   slider: {fileID: 114307260554876702}
