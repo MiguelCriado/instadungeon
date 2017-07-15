@@ -484,7 +484,7 @@ MonoBehaviour:
   spacing: 0
   margin: 0
   loadTileSet: 1
-  tilesetPath: DungeonSand
+  tilesetPath: TileSets\DungeonSand.tsx
 --- !u!1 &330430122
 GameObject:
   m_ObjectHideFlags: 0
@@ -1210,7 +1210,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 095ab07f3a0c99c4f910637006618bb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthControllerPrefab: {fileID: 0}
+  healthControllerPrefab: {fileID: 114961046226215084, guid: 6bbfcf48cbce28141b1e0201ef44b2fa,
+    type: 2}
 --- !u!1 &965907304
 GameObject:
   m_ObjectHideFlags: 0
@@ -1219,10 +1220,10 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 965907305}
-  - component: {fileID: 965907309}
-  - component: {fileID: 965907308}
   - component: {fileID: 965907307}
   - component: {fileID: 965907306}
+  - component: {fileID: 965907309}
+  - component: {fileID: 965907308}
   m_Layer: 0
   m_Name: FPS Counter
   m_TagString: Untagged
@@ -1292,23 +1293,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 965907304}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e61dcb53774974eb4b49bc495dc75a90, type: 3}
+  m_Script: {fileID: 11500000, guid: 7c1b94fe6f83ff543a3825189bed3dc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   highestFPSLabel: {fileID: 259887377}
   averageFPSLabel: {fileID: 576293358}
   lowestFPSLabel: {fileID: 2049473993}
-  coloring:
-  - color: {r: 0.4852941, g: 0.91480726, b: 1, a: 1}
-    minimumFPS: 60
-  - color: {r: 0.42241386, g: 1, b: 0.375, a: 1}
-    minimumFPS: 45
-  - color: {r: 0.99158216, g: 1, b: 0.3897059, a: 1}
-    minimumFPS: 30
-  - color: {r: 1, g: 0.50811356, b: 0.28676468, a: 1}
-    minimumFPS: 15
-  - color: {r: 1, g: 0.2352941, b: 0.2352941, a: 1}
-    minimumFPS: 0
+  coloring: []
 --- !u!114 &965907309
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1317,7 +1308,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 965907304}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 053b1bd97e26b411683ebae896d68266, type: 3}
+  m_Script: {fileID: 11500000, guid: 4227a922674c6b4409d287c127e10fb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   frameRange: 60
@@ -1441,10 +1432,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 778a45392dcdd9149a6db7c01238e5e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  height: 3
-  width: 3
-  zoneWidth: 17
-  zoneHeight: 17
+  height: 2
+  width: 2
+  zoneWidth: 15
+  zoneHeight: 15
 --- !u!114 &1144452018
 MonoBehaviour:
   m_ObjectHideFlags: 0
