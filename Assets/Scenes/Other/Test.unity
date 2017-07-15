@@ -464,7 +464,7 @@ MonoBehaviour:
   chunkSize:
     x: 10
     y: 10
-  material: {fileID: 0}
+  material: {fileID: 2100000, guid: 25b713a257f6bab4f89463574d86358b, type: 2}
 --- !u!114 &271026169
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1017,7 +1017,7 @@ Camera:
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 0
-  m_AllowMSAA: 1
+  m_AllowMSAA: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
