@@ -24,28 +24,28 @@ namespace InstaDungeon
 
 		public void AddDoors(MapManager manager)
 		{
-			EntityManager entityManager = Locator.Get<EntityManager>();
-			TileMap<Cell> map = manager.Map;
-			Zone finalZone = map.Layout.FinalZone;
-			var finalZoneConnections = finalZone.connections.GetEnumerator();
+			//EntityManager entityManager = Locator.Get<EntityManager>();
+			//TileMap<Cell> map = manager.Map;
+			//Zone finalZone = map.Layout.FinalZone;
+			//var finalZoneConnections = finalZone.connections.GetEnumerator();
 
-			while (finalZoneConnections.MoveNext())
-			{
-				var currentZone = finalZoneConnections.Current;
-				var currentZoneConnections = currentZone.Value.connections.GetEnumerator();
+			//while (finalZoneConnections.MoveNext())
+			//{
+			//	var currentZone = finalZoneConnections.Current;
+			//	var currentZoneConnections = currentZone.Value.connections.GetEnumerator();
 
-				while (currentZoneConnections.MoveNext())
-				{
-					if (currentZoneConnections.Current.Value == finalZone)
-					{
-						Entity door = entityManager.Spawn("Door");
-						manager.AddProp(door, currentZoneConnections.Current.Key);
+			//	while (currentZoneConnections.MoveNext())
+			//	{
+			//		if (currentZoneConnections.Current.Value == finalZone)
+			//		{
+			//			Entity door = entityManager.Spawn("Door");
+			//			manager.AddProp(door, currentZoneConnections.Current.Key);
 
-						FaceDirectionComponent faceDirection = door.GetComponent<FaceDirectionComponent>();
-						faceDirection.Direction = GetDoorDirection(currentZoneConnections.Current.Key, currentZone.Key);
-					}
-				}
-			}
+			//			FaceDirectionComponent faceDirection = door.GetComponent<FaceDirectionComponent>();
+			//			faceDirection.Direction = GetDoorDirection(currentZoneConnections.Current.Key, currentZone.Key);
+			//		}
+			//	}
+			//}
 		}
 
 		public void AddKeys(MapManager manager)

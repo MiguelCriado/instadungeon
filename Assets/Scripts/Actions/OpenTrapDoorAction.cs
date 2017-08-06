@@ -4,22 +4,22 @@ using InstaDungeon.Configuration;
 
 namespace InstaDungeon.Actions
 {
-	public class OpenDoorAction : BaseAction<OpenDoorCommand>
+	public class OpenTrapDoorAction : BaseAction<OpenTrapDoorCommand>
 	{
-		public OpenDoorAction(Entity actor, Entity door, ItemInfo requiredKey)
+		public OpenTrapDoorAction(Entity actor, Entity trapDoor, ItemInfo requiredItem)
 		{
-			command = new OpenDoorCommand(actor, door, requiredKey);
+			command = new OpenTrapDoorCommand(actor, trapDoor, requiredItem);
 		}
 
 		public override void Act()
 		{
 			base.Act();
 
-			ItemInteractor itemInteractor = command.Door.GetComponent<ItemInteractor>();
+			ItemInteractor itemInteractor = command.TrapDoor.GetComponent<ItemInteractor>();
 
 			if (itemInteractor != null)
 			{
-				itemInteractor.AddItem(command.RequiredKey)
+				itemInteractor.AddItem(command.RequiredItem)
 				.Done(() =>
 				{
 					command.Execute();
