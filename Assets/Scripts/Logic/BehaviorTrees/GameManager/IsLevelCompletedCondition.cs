@@ -7,6 +7,7 @@ namespace InstaDungeon.BehaviorTreeNodes
 	{
 		protected override NodeStates Tick(Tick tick)
 		{
+			NodeStates result = NodeStates.Failure;
 			Entity player = GameManager.Player;
 			CellTransform playerTransform = player.CellTransform;
 
@@ -20,13 +21,16 @@ namespace InstaDungeon.BehaviorTreeNodes
 				&& playerCell.Prop.Info.NameId == "Stairs Exit"
 			)
 			{
-				UnityEngine.Debug.Log("Level finished!!!");
-				return NodeStates.Success;
+				TrapDoor trapDoor = playerCell.Prop.GetComponent<TrapDoor>();
+
+				if (trapDoor != null && trapDoor.IsOpen)
+				{
+					UnityEngine.Debug.Log("Level finished!!!");
+					result = NodeStates.Success;
+				}
 			}
-			else
-			{
-				return NodeStates.Failure;
-			}
+
+			return result;
 		}
 	}
 }
