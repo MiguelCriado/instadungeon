@@ -5,9 +5,30 @@ namespace InstaDungeon
 {
 	public class BasicActorGenerator : IActorGenerator
 	{
+		private EntityManager entityManager;
+
+		public BasicActorGenerator()
+		{
+			entityManager = Locator.Get<EntityManager>(); ;
+		}
+
 		public void AddEnemies(MapManager manager)
 		{
-			EntityManager entityManager = Locator.Get<EntityManager>();
+			for (int i = 0; i < 3; i++)
+			{
+				Entity enemy = entityManager.Spawn("Green Slime");
+				manager.AddActor(enemy, GetSpawnLocation(manager));
+
+				if (i == 0)
+				{
+					enemy.GetComponent<LootDropper>().AddDrop("Key Silver", 0, true);
+				}
+			}
+		}
+		
+		private int2 GetSpawnLocation(MapManager manager)
+		{
+			int2 result = new int2();
 			TileMap<Cell> map = manager.Map;
 
 			NodeList<Zone> zoneNodeList = map.Layout.Zones.Nodes;
@@ -46,8 +67,7 @@ namespace InstaDungeon
 							&& selectedCell.Items.Count == 0
 						)
 						{
-							Entity enemy = entityManager.Spawn("Green Slime");
-							manager.AddActor(enemy, tileEnumerator.Current);
+							result = tileEnumerator.Current;
 
 							positionFound = true;
 						}
@@ -56,6 +76,8 @@ namespace InstaDungeon
 					tileCount++;
 				}
 			}
+
+			return result;
 		}
 	}
 }

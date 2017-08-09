@@ -2,6 +2,7 @@
 using InstaDungeon.Models;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 namespace InstaDungeon.Components
 {
@@ -54,6 +55,8 @@ namespace InstaDungeon.Components
 		private void Awake()
 		{
 			entity = GetComponent<Entity>();
+			entityManager = Locator.Get<EntityManager>();
+			mapManager = Locator.Get<MapManager>();
 		}
 
 		private void Start()
@@ -110,11 +113,11 @@ namespace InstaDungeon.Components
 
 			if (entityToDrop != null)
 			{
-				if (entity.GetComponent<Item>() != null)
+				if (entityToDrop.GetComponent<Item>() != null)
 				{
 					mapManager.AddItem(entityToDrop, dropSpot);
 				}
-				else if (entity.GetComponent<Actor>() != null)
+				else if (entityToDrop.GetComponent<Actor>() != null)
 				{
 					mapManager.AddActor(entityToDrop, dropSpot);
 				}
@@ -122,6 +125,18 @@ namespace InstaDungeon.Components
 				{
 					mapManager.AddProp(entityToDrop, dropSpot);
 				}
+
+				DOTween.Sequence()
+				.Append
+				(
+					entityToDrop.transform.DOLocalMoveY(entityToDrop.transform.localPosition.y + 1f, 0.3f)
+					.SetEase(Ease.OutBack)
+				)
+				.Append
+				(
+					entityToDrop.transform.DOLocalMoveY(entityToDrop.transform.localPosition.y, 0.4f)
+					.SetEase(Ease.OutBounce)
+				);
 			}
 		}
 
