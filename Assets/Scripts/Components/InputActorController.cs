@@ -88,24 +88,27 @@ namespace InstaDungeon.Components
 
 		private UnityAction GetInput()
 		{
-			if (Input.GetKeyDown(up))
+			if (GameManager.GameState == GameState.Running)
 			{
-				return upAction;
-			}
+				if (Input.GetKeyDown(up))
+				{
+					return upAction;
+				}
 
-			if (Input.GetKeyDown(right))
-			{
-				return rightAction;
-			}
+				if (Input.GetKeyDown(right))
+				{
+					return rightAction;
+				}
 
-			if (Input.GetKeyDown(down))
-			{
-				return downAction;
-			}
+				if (Input.GetKeyDown(down))
+				{
+					return downAction;
+				}
 
-			if (Input.GetKeyDown(left))
-			{
-				return leftAction;
+				if (Input.GetKeyDown(left))
+				{
+					return leftAction;
+				}
 			}
 
 			return null;

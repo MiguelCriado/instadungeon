@@ -181,7 +181,8 @@ namespace InstaDungeon
 			(
 				new Priority
 				(
-
+					new IsGameOverCondition(),
+					new IsGamePausedCondition(),
 					new Sequence
 					(
 						new Inverter(new IsLevelCompletedCondition()),
