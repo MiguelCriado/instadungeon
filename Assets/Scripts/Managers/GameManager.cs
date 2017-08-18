@@ -132,7 +132,7 @@ namespace InstaDungeon
 			{
 				turnManager.GrantControl();
 				SetState(GameState.Running);
-				floorNumber++;
+				this.floorNumber++;
 			});
 		}
 
