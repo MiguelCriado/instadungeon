@@ -7,7 +7,7 @@ namespace InstaDungeon.Actions
 {
 	public class MoveEntityAction : BaseAction<MoveEntityCommand>
 	{
-		protected readonly static float MovementSpeed = 7f;
+		protected readonly static float MovementSpeed = 10f;
 
 		protected float targetMovementTime;
 		protected float elapsedMovementTime;

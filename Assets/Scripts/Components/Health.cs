@@ -36,7 +36,14 @@ namespace InstaDungeon.Components
 		public void Initialize()
 		{
 			entity = GetComponent<Entity>();
+			ResetComponent();
+		}
+
+		public void ResetComponent()
+		{
+			int previousHealth = currentHealth;
 			currentHealth = maxHealth;
+			entity.Events.TriggerEvent(new EntityHealthChangeEvent(entity, this, previousHealth, currentHealth));
 		}
 
 		public int SimulateAttack(Weapon weapon)
