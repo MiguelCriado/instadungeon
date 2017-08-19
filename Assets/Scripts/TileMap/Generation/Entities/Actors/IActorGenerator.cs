@@ -2,6 +2,6 @@
 {
 	public interface IActorGenerator
 	{
-		void AddEnemies(MapManager manager);
+		void AddEnemies(MapManager manager, int level);
 	}
 }

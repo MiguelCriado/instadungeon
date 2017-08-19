@@ -12,7 +12,7 @@ namespace InstaDungeon
 			entityManager = Locator.Get<EntityManager>(); ;
 		}
 
-		public void AddEnemies(MapManager manager)
+		public void AddEnemies(MapManager manager, int level)
 		{
 			for (int i = 0; i < 3; i++)
 			{

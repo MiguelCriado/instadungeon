@@ -6,7 +6,7 @@ namespace InstaDungeon.Components
 	[RequireComponent(typeof(Entity))]
 	public class VisibilityReactor : MonoBehaviour
 	{
-		private static readonly Color32 LerpColor = new Color32(26, 21, 32, 255);
+		// private static readonly Color32 LerpColor = new Color32(26, 21, 32, 255);
 		private static readonly float ObscuredAmount = 1f;
 		private static readonly float PreviouslySeenAmount = 0.5f;
 		private static readonly float VisibleAmount = 0f;

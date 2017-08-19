@@ -5,7 +5,7 @@ namespace InstaDungeon
 {
 	public class BasicPropGenerator : IPropGenerator
 	{
-		public void AddStairs(MapManager manager)
+		public void AddStairs(MapManager manager, int level)
 		{
 			EntityManager entityManager = Locator.Get<EntityManager>();
 			TileMap<Cell> map = manager.Map;
@@ -22,7 +22,7 @@ namespace InstaDungeon
 			map.SpawnPoint = entrancePosition;
 		}
 
-		public void AddDoors(MapManager manager)
+		public void AddDoors(MapManager manager, int level)
 		{
 			//EntityManager entityManager = Locator.Get<EntityManager>();
 			//TileMap<Cell> map = manager.Map;
@@ -48,7 +48,7 @@ namespace InstaDungeon
 			//}
 		}
 
-		public void AddKeys(MapManager manager)
+		public void AddKeys(MapManager manager, int level)
 		{
 			//EntityManager entityManager = Locator.Get<EntityManager>();
 			//TileMap<Cell> map = manager.Map;
@@ -99,7 +99,7 @@ namespace InstaDungeon
 			//}
 		}
 
-		public void AddItems(MapManager manager)
+		public void AddItems(MapManager manager, int level)
 		{
 			// TODO: actually add items
 		}

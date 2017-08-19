@@ -2,6 +2,7 @@
 using InstaDungeon.BehaviorTreeNodes;
 using InstaDungeon.Components;
 using InstaDungeon.Events;
+using InstaDungeon.MapGeneration;
 using UnityEngine;
 
 namespace InstaDungeon
@@ -98,7 +99,6 @@ namespace InstaDungeon
 
 		private void OnPlayerDead(IEventData eventData)
 		{
-			EntityDieEvent deathEvent = eventData as EntityDieEvent;
 			SetState(GameState.GameOver);
 		}
 
@@ -122,7 +122,7 @@ namespace InstaDungeon
 			.Then(() =>
 			{
 				TakePlayerFromMap();
-				GenerateNewMap(); // TODO take floor number
+				GenerateNewMap(floorNumber);
 				PreparePlayerForNewLevel();
 				PrepareCameraForNewLevel();
 				
@@ -141,9 +141,9 @@ namespace InstaDungeon
 			LoadNewMapInternal(floorNumber);
 		}
 
-		private void GenerateNewMap()
+		private void GenerateNewMap(int level)
 		{
-			mapGenerator.GenerateNewMap();
+			mapGenerator.GenerateNewMap(floorNumber);
 			mapRenderer.RenderMap(mapManager.Map);
 		}
 
