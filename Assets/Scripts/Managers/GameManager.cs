@@ -27,7 +27,7 @@ namespace InstaDungeon
 		private TurnManager turnManager;
 		private MapManager mapManager;
 		private ITileMapRenderer mapRenderer;
-		private MapGenerator mapGenerator;
+		private MapGenerationManager mapGenerationManager;
 		private VisibilityManager visibilityManager;
 		private ParticleSystemManager particleSystemManager;
 
@@ -65,7 +65,7 @@ namespace InstaDungeon
 			gameState = GameState.Loading;
 			InitializeMapManager();
 			InitializeTurnManager();
-			InitializeMapGenerator();
+			InitializeMapGenerationManager();
 			InitializeMapRenderer();
 			InitializeEntityManager();
 			InitializeCameraManager();
@@ -98,7 +98,6 @@ namespace InstaDungeon
 
 		private void OnPlayerDead(IEventData eventData)
 		{
-			EntityDieEvent deathEvent = eventData as EntityDieEvent;
 			SetState(GameState.GameOver);
 		}
 
@@ -122,7 +121,7 @@ namespace InstaDungeon
 			.Then(() =>
 			{
 				TakePlayerFromMap();
-				GenerateNewMap(); // TODO take floor number
+				GenerateNewMap(floorNumber);
 				PreparePlayerForNewLevel();
 				PrepareCameraForNewLevel();
 				
@@ -141,9 +140,9 @@ namespace InstaDungeon
 			LoadNewMapInternal(floorNumber);
 		}
 
-		private void GenerateNewMap()
+		private void GenerateNewMap(int level)
 		{
-			mapGenerator.GenerateNewMap();
+			mapGenerationManager.GenerateNewMap(floorNumber);
 			mapRenderer.RenderMap(mapManager.Map);
 		}
 
@@ -209,14 +208,9 @@ namespace InstaDungeon
 			turnManager = Locator.Get<TurnManager>();
 		}
 
-		private void InitializeMapGenerator()
+		private void InitializeMapGenerationManager()
 		{
-			mapGenerator = GetComponentInChildren<MapGenerator>();
-
-			if (mapGenerator == null)
-			{
-				Locator.Log.Error("There must be an object of type MapGenerator as a child of " + gameObject.name);
-			}
+			mapGenerationManager = Locator.Get<MapGenerationManager>();
 		}
 
 		private void InitializeMapRenderer()

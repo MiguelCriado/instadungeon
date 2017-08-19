@@ -199,6 +199,24 @@ namespace InstaDungeon
 
 		#region [Props]
 
+		public List<Entity> GetProps()
+		{
+			if (propsDirty)
+			{
+				cachedProps.Clear();
+				var enumerator = props.GetEnumerator();
+
+				while (enumerator.MoveNext())
+				{
+					cachedProps.Add(enumerator.Current.Value);
+				}
+
+				propsDirty = false;
+			}
+
+			return cachedProps;
+		}
+
 		public bool AddProp(Entity prop, int2 cellPosition)
 		{
 			bool result = false;
@@ -231,6 +249,24 @@ namespace InstaDungeon
 		#endregion
 
 		#region [Items]
+
+		public List<Entity> GetItems()
+		{
+			if (itemsDirty)
+			{
+				cachedItems.Clear();
+				var enumerator = items.GetEnumerator();
+
+				while (enumerator.MoveNext())
+				{
+					cachedItems.Add(enumerator.Current.Value);
+				}
+
+				itemsDirty = false;
+			}
+
+			return cachedItems;
+		}
 
 		public bool AddItem(Entity item, int2 cellPosition)
 		{

@@ -1,98 +1,80 @@
-﻿using InstaDungeon;
-using System.Diagnostics;
-using UnityEngine;
-using Random = UnityEngine.Random;
-
-public class MapGenerator : MonoBehaviour
+﻿namespace InstaDungeon.MapGeneration
 {
-    public enum LayoutType
-    {
-        Hilbert
-    }
-    
-    public enum ShapeType
-    {
-        Cavernous
-    }
-
-    public LayoutType layoutType;
-    public ShapeType shapeType;
-    public bool customSeed = false;
-    public int levelSeed;
-
-	private IZoneGenerator shapeGenerator;
-    private ILayoutGenerator layoutGenerator;
-
-	public TileMap<Cell> GenerateNewMap()
+	public class MapGenerator
 	{
-		TileMap<TileType> blueprint = GenerateBlueprint();
-		return GenerateWorld(blueprint);
-	}
+		public IZoneGenerator ZoneGenerator { get; set; }
+		public ILayoutGenerator LayoutGenerator { get; set; }
 
-    public TileMap<TileType> GenerateBlueprint()
-    {
-		TileMap<TileType> result = null;
-
-        layoutGenerator = GetComponent<ILayoutGenerator>();
-        shapeGenerator = GetComponent<IZoneGenerator>();
-
-        if (layoutGenerator != null && shapeGenerator != null)
-        {
-            Stopwatch sw = Stopwatch.StartNew();
-
-            if (!customSeed)
-            {
-				int seed = System.Guid.NewGuid().GetHashCode() ^ System.DateTime.UtcNow.Millisecond;
-				Random.InitState(seed);
-
-                levelSeed = seed;
-            }
-
-            result = ZoneConnector.BuildMap(layoutGenerator, shapeGenerator, levelSeed);
-
-            UnityEngine.Debug.Log("Time to generate blueprint Map: " + sw.ElapsedMilliseconds + "ms");
-        }
-
-		return result;
-	}
-
-	private TileMap<Cell> GenerateWorld(TileMap<TileType> blueprint)
-	{
-		TileMap<Cell> map = GenerateMap(blueprint);
-		MapManager mapManager = Locator.Get<MapManager>();
-		mapManager.Initialize(map);
-		AddEntities(map);
-		return map;
-	}
-
-	private TileMap<Cell> GenerateMap(TileMap<TileType> blueprint)
-	{
-		TileMap<Cell> result = blueprint.Convert((TileType cellType) =>
+		public MapGenerator(IZoneGenerator zoneGenerator, ILayoutGenerator layoutGenerator)
 		{
-			bool walkable = true;
+			this.ZoneGenerator = zoneGenerator;
+			this.LayoutGenerator = layoutGenerator;
+		}
 
-			if (cellType == TileType.Wall)
+		#region [Public API]
+
+		public TileMap<Cell> GenerateNewMap(int level, int levelSeed)
+		{
+			TileMap<TileType> blueprint = GenerateBlueprint(level, levelSeed);
+			return GenerateWorld(blueprint, level);
+		}
+
+		public TileMap<Cell> GenerateNewMap(int level)
+		{
+			int seed = System.Guid.NewGuid().GetHashCode() ^ System.DateTime.UtcNow.Millisecond;
+			return GenerateNewMap(level, seed);
+		}
+
+		#endregion
+
+		#region [Helpers]
+
+		private TileMap<TileType> GenerateBlueprint(int level, int levelSeed)
+		{
+			TileMap<TileType> result = ZoneConnector.BuildMap(LayoutGenerator, ZoneGenerator, level, levelSeed);
+			return result;
+		}
+
+		private TileMap<Cell> GenerateWorld(TileMap<TileType> blueprint, int level)
+		{
+			TileMap<Cell> map = GenerateMap(blueprint);
+			MapManager mapManager = Locator.Get<MapManager>();
+			mapManager.Initialize(map);
+			AddEntities(map, level);
+			return map;
+		}
+
+		private TileMap<Cell> GenerateMap(TileMap<TileType> blueprint)
+		{
+			TileMap<Cell> result = blueprint.Convert((TileType cellType) =>
 			{
-				walkable = false;
-			}
+				bool walkable = true;
 
-			return new Cell(new TileInfo(cellType, walkable));
-		});
+				if (cellType == TileType.Wall)
+				{
+					walkable = false;
+				}
 
-		return result;
-	}
+				return new Cell(new TileInfo(cellType, walkable));
+			});
 
-	private void AddEntities(TileMap<Cell> map)
-	{
-		MapManager mapManager = Locator.Get<MapManager>();
+			return result;
+		}
 
-		IPropGenerator propGenerator = new BasicPropGenerator();
-		propGenerator.AddStairs(mapManager);
-		propGenerator.AddDoors(mapManager);
-		propGenerator.AddKeys(mapManager);
-		propGenerator.AddItems(mapManager);
+		private void AddEntities(TileMap<Cell> map, int level)
+		{
+			MapManager mapManager = Locator.Get<MapManager>();
 
-		IActorGenerator actorGenerator = new BasicActorGenerator();
-		actorGenerator.AddEnemies(mapManager);
+			IPropGenerator propGenerator = new BasicPropGenerator();
+			propGenerator.AddStairs(mapManager, level);
+			propGenerator.AddDoors(mapManager, level);
+			propGenerator.AddKeys(mapManager, level);
+			propGenerator.AddItems(mapManager, level);
+
+			IActorGenerator actorGenerator = new BasicActorGenerator();
+			actorGenerator.AddEnemies(mapManager, level);
+		}
+
+		#endregion
 	}
 }

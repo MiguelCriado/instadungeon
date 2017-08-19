@@ -2,9 +2,9 @@
 {
 	public interface IPropGenerator
 	{
-		void AddStairs(MapManager manager);
-		void AddDoors(MapManager manager);
-		void AddKeys(MapManager manager);
-		void AddItems(MapManager manager);
+		void AddStairs(MapManager manager, int level);
+		void AddDoors(MapManager manager, int level);
+		void AddKeys(MapManager manager, int level);
+		void AddItems(MapManager manager, int level);
 	}
 }

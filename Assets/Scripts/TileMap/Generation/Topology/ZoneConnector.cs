@@ -1,24 +1,27 @@
 ﻿using Random = UnityEngine.Random;
 
-public static class ZoneConnector
+namespace InstaDungeon.MapGeneration
 {
-	public static TileMap<TileType> BuildMap(ILayoutGenerator layoutGenerator, IZoneGenerator zoneGenerator, int levelSeed)
+	public static class ZoneConnector
 	{
-		Random.InitState(levelSeed);
-		TileMap<TileType> result = new TileMap<TileType>();
-
-		Layout layout = layoutGenerator.NewLayout();
-		result.Layout = layout;
-
-		while (!layoutGenerator.IsDone())
+		public static TileMap<TileType> BuildMap(ILayoutGenerator layoutGenerator, IZoneGenerator zoneGenerator, int level, int levelSeed)
 		{
-			result.Layout = layoutGenerator.Iterate(layout);
+			Random.InitState(levelSeed);
+			TileMap<TileType> result = new TileMap<TileType>();
 
-			result = zoneGenerator.PreConnectZones(result);
-			result = zoneGenerator.Generate(result);
-			result = zoneGenerator.PostConnectZones(result);
+			Layout layout = layoutGenerator.NewLayout(level);
+			result.Layout = layout;
+
+			while (!layoutGenerator.IsDone())
+			{
+				result.Layout = layoutGenerator.Iterate(layout, level);
+
+				result = zoneGenerator.PreConnectZones(result, level);
+				result = zoneGenerator.Generate(result, level);
+				result = zoneGenerator.PostConnectZones(result, level);
+			}
+
+			return result;
 		}
-
-		return result;
 	}
 }
