@@ -26,7 +26,14 @@ namespace InstaDungeon.MapGeneration
 
 			while (result == null && i < settings.Count)
 			{
-				if (settings[i].MinLevel >= level)
+				int nextMinLevel = int.MaxValue;
+
+				if (settings.Count - 1 > i)
+				{
+					nextMinLevel = settings[i + 1].MinLevel;
+				}
+
+				if (level >= settings[i].MinLevel && level < nextMinLevel)
 				{
 					result = settings[i];
 				}

@@ -2,7 +2,6 @@
 using InstaDungeon.BehaviorTreeNodes;
 using InstaDungeon.Components;
 using InstaDungeon.Events;
-using InstaDungeon.MapGeneration;
 using UnityEngine;
 
 namespace InstaDungeon
@@ -28,7 +27,7 @@ namespace InstaDungeon
 		private TurnManager turnManager;
 		private MapManager mapManager;
 		private ITileMapRenderer mapRenderer;
-		private MapGenerator mapGenerator;
+		private MapGenerationManager mapGenerationManager;
 		private VisibilityManager visibilityManager;
 		private ParticleSystemManager particleSystemManager;
 
@@ -66,7 +65,7 @@ namespace InstaDungeon
 			gameState = GameState.Loading;
 			InitializeMapManager();
 			InitializeTurnManager();
-			InitializeMapGenerator();
+			InitializeMapGenerationManager();
 			InitializeMapRenderer();
 			InitializeEntityManager();
 			InitializeCameraManager();
@@ -143,7 +142,7 @@ namespace InstaDungeon
 
 		private void GenerateNewMap(int level)
 		{
-			mapGenerator.GenerateNewMap(floorNumber);
+			mapGenerationManager.GenerateNewMap(floorNumber);
 			mapRenderer.RenderMap(mapManager.Map);
 		}
 
@@ -209,14 +208,9 @@ namespace InstaDungeon
 			turnManager = Locator.Get<TurnManager>();
 		}
 
-		private void InitializeMapGenerator()
+		private void InitializeMapGenerationManager()
 		{
-			mapGenerator = GetComponentInChildren<MapGenerator>();
-
-			if (mapGenerator == null)
-			{
-				Locator.Log.Error("There must be an object of type MapGenerator as a child of " + gameObject.name);
-			}
+			mapGenerationManager = Locator.Get<MapGenerationManager>();
 		}
 
 		private void InitializeMapRenderer()

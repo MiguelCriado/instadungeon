@@ -2,13 +2,13 @@
 {
 	public class MapGenerator
 	{
-		private IZoneGenerator zoneGenerator;
-		private ILayoutGenerator layoutGenerator;
+		public IZoneGenerator ZoneGenerator { get; set; }
+		public ILayoutGenerator LayoutGenerator { get; set; }
 
 		public MapGenerator(IZoneGenerator zoneGenerator, ILayoutGenerator layoutGenerator)
 		{
-			this.zoneGenerator = zoneGenerator;
-			this.layoutGenerator = layoutGenerator;
+			this.ZoneGenerator = zoneGenerator;
+			this.LayoutGenerator = layoutGenerator;
 		}
 
 		#region [Public API]
@@ -22,7 +22,7 @@
 		public TileMap<Cell> GenerateNewMap(int level)
 		{
 			int seed = System.Guid.NewGuid().GetHashCode() ^ System.DateTime.UtcNow.Millisecond;
-			return GenerateNewMap(seed);
+			return GenerateNewMap(level, seed);
 		}
 
 		#endregion
@@ -31,7 +31,7 @@
 
 		private TileMap<TileType> GenerateBlueprint(int level, int levelSeed)
 		{
-			TileMap<TileType> result = ZoneConnector.BuildMap(layoutGenerator, zoneGenerator, level, levelSeed);
+			TileMap<TileType> result = ZoneConnector.BuildMap(LayoutGenerator, ZoneGenerator, level, levelSeed);
 			return result;
 		}
 
