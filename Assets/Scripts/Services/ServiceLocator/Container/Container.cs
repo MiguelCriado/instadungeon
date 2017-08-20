@@ -84,9 +84,9 @@ namespace InstaDungeon.Services
 						{
 							instance = classConstructors[type][id]();
 						}
-						catch (Exception)
+						catch (Exception e)
 						{
-							throw new Exception(string.Format("Error creating an instance of type '{0}' with id '{1}'", type.ToString(), id));
+							throw new Exception(string.Format("Error creating an instance of type '{0}' with id '{1}'\n{2}", type.ToString(), id, e.Message));
 						}
 
 						instanceContainer[type].Add(id, instance);

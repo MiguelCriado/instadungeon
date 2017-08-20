@@ -14,13 +14,13 @@ namespace InstaDungeon
 		GameOver
 	}
 
-	public class GameManager : Singleton<GameManager>
+	public class GameManager : Manager
 	{
-		public static EventSystem Events { get { return Instance.events; } }
-		public static GameState GameState { get { return Instance.gameState; } }
-		public static Entity Player { get { return Instance.player; } }
-		public static MapManager MapManager { get { return Instance.mapManager; } }
-		public static ITileMapRenderer Renderer { get { return Instance.mapRenderer; } }
+		public EventSystem Events { get { return events; } }
+		public GameState GameState { get { return gameState; } }
+		public Entity Player { get { return player; } }
+		public MapManager MapManager { get { return mapManager; } }
+		public ITileMapRenderer Renderer { get { return mapRenderer; } }
 
 		private CameraManager cameraManager;
 		private EntityManager entityManager;
@@ -28,8 +28,6 @@ namespace InstaDungeon
 		private MapManager mapManager;
 		private ITileMapRenderer mapRenderer;
 		private MapGenerationManager mapGenerationManager;
-		private VisibilityManager visibilityManager;
-		private ParticleSystemManager particleSystemManager;
 
 		private BehaviorTree turnTree;
 		private Blackboard turnBlackboard;
@@ -40,56 +38,77 @@ namespace InstaDungeon
 		
 		private Entity player;
 
-		private void Awake()
+		public GameManager() : base (false, true)
 		{
 			events = new EventSystem();
-		}
-
-		private void Start()
-		{
-			Initialize();
-			LoadNewMap();
-			StartUpTurnSystem();
-		}
-
-		private void Update()
-		{
-			if (gameState == GameState.Running)
-			{
-				turnTree.Tick(turnManager, turnBlackboard);
-			}
+			floorNumber = 0;
 		}
 
 		public void Initialize()
 		{
 			gameState = GameState.Loading;
-			InitializeMapManager();
-			InitializeTurnManager();
-			InitializeMapGenerationManager();
+			mapManager = Locator.Get<MapManager>();
+			turnManager = Locator.Get<TurnManager>();
+			mapGenerationManager = Locator.Get<MapGenerationManager>();
+			entityManager = Locator.Get<EntityManager>();
+			cameraManager = Locator.Get<CameraManager>();
+			Locator.Get<VisibilityManager>();
 			InitializeMapRenderer();
-			InitializeEntityManager();
-			InitializeCameraManager();
-			InitializeVisibilityManager();
-			InitializeParticleSystemManager();
 			InitializePlayerCharacter();
-			floorNumber = 0;
+
+			LoadNewMap();
+			StartUpTurnSystem();
 		}
 
-		public static void LoadNewMap()
+		public void LoadNewMap(int floorNumber)
 		{
-			Instance.LoadNewMapInternal();
+			SetState(GameState.Loading);
+			this.floorNumber = floorNumber;
+			float fadeOutTime = floorNumber > 0 ? 0.5f : 0f;
+
+			turnManager.RevokeControl();
+
+			cameraManager.FadeOut(fadeOutTime)
+			.Catch((System.Exception e) =>
+			{
+				throw e;
+			})
+			.Then(() =>
+			{
+				TakePlayerFromMap();
+				GenerateNewMap(floorNumber);
+				PreparePlayerForNewLevel();
+				PrepareCameraForNewLevel();
+
+				return cameraManager.FadeIn(0.5f);
+			})
+			.Catch((System.Exception e) =>
+			{
+				throw e;
+			})
+			.Done(() =>
+			{
+				turnManager.GrantControl();
+				SetState(GameState.Running);
+				this.floorNumber++;
+			});
 		}
 
-		public static void ResetGame()
+		public void LoadNewMap()
 		{
-			Instance.ResetPlayerCharacter();
-			Instance.LoadNewMapInternal(0);
+			LoadNewMap(floorNumber);
 		}
 
-		public static void SetState(GameState state)
+		public void ResetGame()
 		{
-			GameState lastState = Instance.gameState;
-			Instance.gameState = state;
+			ResetPlayerCharacter();
+			LoadNewMap(0);
+		}
+
+		public void SetState(GameState state)
+		{
+			GameState lastState = gameState;
+			gameState = state;
 
 			Events.TriggerEvent(new GameStateChangeEvent(lastState, state));
 		}
@@ -105,39 +124,12 @@ namespace InstaDungeon
 
 		#region [Helpers]
 
-		private void LoadNewMapInternal(int floorNumber)
+		protected override void OnUpdate()
 		{
-			SetState(GameState.Loading);
-			this.floorNumber = floorNumber;
-			float fadeOutTime = floorNumber > 0 ? 0.5f : 0f;
-
-			turnManager.RevokeControl();
-
-			cameraManager.FadeOut(fadeOutTime)
-			.Catch((System.Exception e) => 
+			if (gameState == GameState.Running)
 			{
-				throw e;
-			})
-			.Then(() =>
-			{
-				TakePlayerFromMap();
-				GenerateNewMap(floorNumber);
-				PreparePlayerForNewLevel();
-				PrepareCameraForNewLevel();
-				
-				return cameraManager.FadeIn(0.5f);
-			})
-			.Done(() => 
-			{
-				turnManager.GrantControl();
-				SetState(GameState.Running);
-				this.floorNumber++;
-			});
-		}
-
-		private void LoadNewMapInternal()
-		{
-			LoadNewMapInternal(floorNumber);
+				turnTree.Tick(turnManager, turnBlackboard);
+			}
 		}
 
 		private void GenerateNewMap(int level)
@@ -198,21 +190,6 @@ namespace InstaDungeon
 
 		#region Initialization
 
-		private void InitializeMapManager()
-		{
-			mapManager = Locator.Get<MapManager>();
-		}
-
-		private void InitializeTurnManager()
-		{
-			turnManager = Locator.Get<TurnManager>();
-		}
-
-		private void InitializeMapGenerationManager()
-		{
-			mapGenerationManager = Locator.Get<MapGenerationManager>();
-		}
-
 		private void InitializeMapRenderer()
 		{
 			GameObject mapRendererObject = GameObject.FindGameObjectWithTag("TileMapRenderer");
@@ -230,26 +207,6 @@ namespace InstaDungeon
 			{
 				Locator.Log.Error("There must be one GameObject with tag \"TileMapRenderer\" in the scene.");
 			}
-		}
-
-		private void InitializeEntityManager()
-		{
-			entityManager = Locator.Get<EntityManager>();
-		}
-
-		private void InitializeVisibilityManager()
-		{
-			visibilityManager = Locator.Get<VisibilityManager>();
-		}
-
-		private void InitializeParticleSystemManager()
-		{
-			particleSystemManager = Locator.Get<ParticleSystemManager>();
-		}
-
-		private void InitializeCameraManager()
-		{
-			cameraManager = Locator.Get<CameraManager>();
 		}
 
 		private void InitializePlayerCharacter()

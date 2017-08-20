@@ -6,13 +6,19 @@ namespace InstaDungeon.Components
 	{
 		public int2 Position { get { return position; } }
 
-		[SerializeField]
-		private int2 position;
+		[SerializeField] private int2 position;
+
+		private GameManager gameManager;
+
+		private void Awake()
+		{
+			gameManager = Locator.Get<GameManager>();
+		}
 
 		public void MoveTo(int2 position)
 		{
 			this.position = position;
-			transform.position = GameManager.Renderer.SnappedTileMapToWorldPosition(position);
+			transform.position = gameManager.Renderer.SnappedTileMapToWorldPosition(position);
 		}
 	}
 }

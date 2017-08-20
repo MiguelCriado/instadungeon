@@ -79,6 +79,11 @@ namespace InstaDungeon
 			{
 				return new MapGenerationManager();
 			});
+
+			Locator.Provide<GameManager>(() => 
+			{
+				return new GameManager();
+			});
 		}
 	}
 }

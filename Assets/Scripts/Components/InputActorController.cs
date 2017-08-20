@@ -13,6 +13,7 @@ namespace InstaDungeon.Components
 		[SerializeField] private KeyCode down;
 		[SerializeField] private KeyCode left;
 
+		private GameManager gameManager;
 		private TurnComponent turn;
 		private Actor actor;
 
@@ -41,6 +42,11 @@ namespace InstaDungeon.Components
 			rightAction = () => { actor.Right(); };
 			downAction = () => { actor.Down(); };
 			leftAction = () => { actor.Left(); };
+		}
+
+		private void Start()
+		{
+			gameManager = Locator.Get<GameManager>();
 		}
 
 		private void Update()
@@ -88,7 +94,7 @@ namespace InstaDungeon.Components
 
 		private UnityAction GetInput()
 		{
-			if (GameManager.GameState == GameState.Running)
+			if (gameManager.GameState == GameState.Running)
 			{
 				if (Input.GetKeyDown(up))
 				{
