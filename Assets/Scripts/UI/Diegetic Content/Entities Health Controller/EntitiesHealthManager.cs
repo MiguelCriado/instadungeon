@@ -10,6 +10,7 @@ namespace InstaDungeon.UI
 		[Header("Prefabs")]
 		[SerializeField] private EntityHealthController healthControllerPrefab;
 
+		private GameManager gameManager;
 		private EntityManager entityManager;
 		private Dictionary<Entity, EntityHealthController> healthBars;
 
@@ -20,6 +21,7 @@ namespace InstaDungeon.UI
 
 		private void Start()
 		{
+			gameManager = Locator.Get<GameManager>();
 			entityManager = Locator.Get<EntityManager>();
 			SubscribeEvents();
 			LoadInitialData();
@@ -58,7 +60,7 @@ namespace InstaDungeon.UI
 		{
 			Health health = entity.GetComponent<Health>();
 
-			if (health != null && health.Entity != GameManager.Player)
+			if (health != null && health.Entity != gameManager.Player)
 			{
 				EntityHealthController healthBar = Instantiate(healthControllerPrefab, transform);
 				RectTransform rectTransform = healthBar.GetComponent<RectTransform>();

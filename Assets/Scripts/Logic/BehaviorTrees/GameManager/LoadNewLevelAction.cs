@@ -6,7 +6,7 @@ namespace InstaDungeon.BehaviorTreeNodes
 	{
 		protected override NodeStates Tick(Tick tick)
 		{
-			GameManager.LoadNewMap();
+			Locator.Get<GameManager>().LoadNewMap();
 
 			return NodeStates.Success;
 		}

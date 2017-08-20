@@ -36,8 +36,10 @@ namespace InstaDungeon.Actions
 				targetMovementTime = distance / MovementSpeed;
 				elapsedMovementTime = 0;
 
-				cachedOrigin = GameManager.Renderer.TileMapToWorldPosition(Command.Entity.CellTransform.Position);
-				cachedDestiny = GameManager.Renderer.TileMapToWorldPosition(Command.Position);
+				GameManager gameManager = Locator.Get<GameManager>();
+
+				cachedOrigin = gameManager.Renderer.TileMapToWorldPosition(Command.Entity.CellTransform.Position);
+				cachedDestiny = gameManager.Renderer.TileMapToWorldPosition(Command.Position);
 
 				Entity entity = command.Entity;
 				originalPosition = entity.CellTransform.Position;

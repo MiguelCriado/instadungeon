@@ -8,10 +8,11 @@ namespace InstaDungeon.BehaviorTreeNodes
 		protected override NodeStates Tick(Tick tick)
 		{
 			NodeStates result = NodeStates.Failure;
-			Entity player = GameManager.Player;
+			GameManager gameManager = Locator.Get<GameManager>();
+			Entity player = gameManager.Player;
 			CellTransform playerTransform = player.CellTransform;
 
-			Cell playerCell = GameManager.MapManager[playerTransform.Position.x, playerTransform.Position.y];
+			Cell playerCell = gameManager.MapManager[playerTransform.Position.x, playerTransform.Position.y];
 
 			if 
 			(
@@ -25,7 +26,6 @@ namespace InstaDungeon.BehaviorTreeNodes
 
 				if (trapDoor != null && trapDoor.IsOpen)
 				{
-					UnityEngine.Debug.Log("Level finished!!!");
 					result = NodeStates.Success;
 				}
 			}

@@ -15,6 +15,7 @@ namespace InstaDungeon.UI
 		[Header("Settings")]
 		[SerializeField] private KeyCode pauseKey;
 
+		private GameManager gameManager;
 		private MenuOption currentSelectedOption;
 
 		private void Reset()
@@ -32,7 +33,7 @@ namespace InstaDungeon.UI
 
 			continueOption.OnOptionPressed.AddListener(() => 
 			{
-				GameManager.SetState(GameState.Running);
+				gameManager.SetState(GameState.Running);
 			});
 
 			retryOption.OnOptionSelected.AddListener(() =>
@@ -43,7 +44,7 @@ namespace InstaDungeon.UI
 
 			retryOption.OnOptionPressed.AddListener(() =>
 			{
-				GameManager.ResetGame();
+				gameManager.ResetGame();
 			});
 
 			mainMenuOption.OnOptionSelected.AddListener(() =>
@@ -60,15 +61,16 @@ namespace InstaDungeon.UI
 
 		private void Start()
 		{
-			GameManager.Events.AddListener(OnGameStateChange, GameStateChangeEvent.EVENT_TYPE);
+			gameManager = Locator.Get<GameManager>();
+			gameManager.Events.AddListener(OnGameStateChange, GameStateChangeEvent.EVENT_TYPE);
 			content.gameObject.SetActive(false);
 		}
 
 		private void Update()
 		{
-			if (Input.GetKeyDown(pauseKey) && GameManager.GameState == GameState.Running)
+			if (Input.GetKeyDown(pauseKey) && gameManager.GameState == GameState.Running)
 			{
-				GameManager.SetState(GameState.Paused);
+				gameManager.SetState(GameState.Paused);
 			}
 		}
 

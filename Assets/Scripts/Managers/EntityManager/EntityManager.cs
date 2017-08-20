@@ -10,12 +10,15 @@ namespace InstaDungeon
 	{
 		public uint NextGuid { get { return nextGuid; } }
 		public EventSystem Events { get { return events; } }
+		public List<Entity> Entities { get { return GetCachedEntities(); } }
 
 		private Dictionary<uint, Entity> dynamicEntities;
 		private EntityLoader loader;
 		private EventSystem events;
 		private uint nextGuid;
 		private Transform entitiesContainer;
+		private bool dirty;
+		private List<Entity> cachedEntities;
 
 		public EntityManager() : base()
 		{
@@ -24,6 +27,8 @@ namespace InstaDungeon
 			dynamicEntities = new Dictionary<uint, Entity>();
 			loader = new EntityLoader();
 			entitiesContainer = GetSceneContainer("World", "Entities");
+			cachedEntities = new List<Entity>();
+			dirty = true;
 		}
 
 		public Entity Spawn(string entityType)
@@ -35,6 +40,7 @@ namespace InstaDungeon
 				result.Init(nextGuid++);
 				dynamicEntities.Add(result.Guid, result);
 				SubscribeToEvents(result);
+				dirty = true;
 
 				events.TriggerEvent(new EntitySpawnEvent(result.Guid));
 			}
@@ -48,6 +54,8 @@ namespace InstaDungeon
 
 			if (dynamicEntities.TryGetValue(entityGuid, out entityToRecycle))
 			{
+				dynamicEntities.Remove(entityGuid);
+				dirty = true;
 				entityToRecycle.Events.TriggerEvent(new EntityDisposeEvent(entityToRecycle));
 				UnsubscribeToEvents(entityToRecycle);
 
@@ -115,5 +123,22 @@ namespace InstaDungeon
 		}
 
 		#endregion
+
+		private List<Entity> GetCachedEntities()
+		{
+			if (dirty)
+			{
+				cachedEntities.Clear();
+
+				var enumerator = dynamicEntities.Values.GetEnumerator();
+
+				while (enumerator.MoveNext())
+				{
+					cachedEntities.Add(enumerator.Current);
+				}
+			}
+
+			return cachedEntities;
+		}
 	}
 }

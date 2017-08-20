@@ -13,6 +13,7 @@ namespace InstaDungeon
 
 	public class VisibilityManager : Manager
 	{
+		protected GameManager gameManager;
 		protected MapManager mapManager;
 		protected EntityManager entityManager;
 		protected List<Entity> lightCasters;
@@ -20,11 +21,13 @@ namespace InstaDungeon
 
 		public VisibilityManager() : base(true, true)
 		{
+			gameManager = Locator.Get<GameManager>();
 			mapManager = Locator.Get<MapManager>();
 			entityManager = Locator.Get<EntityManager>();
-			entityManager.Events.AddListener(OnEntitySpawned, EntitySpawnEvent.EVENT_TYPE);
 			lightCasters = new List<Entity>();
 			movingLightCasters = new Dictionary<Entity, int2>();
+			AddPresentLightCasters();
+			entityManager.Events.AddListener(OnEntitySpawned, EntitySpawnEvent.EVENT_TYPE);
 		}
 
 		public void Refresh()
@@ -45,19 +48,19 @@ namespace InstaDungeon
 			{
 				Entity entity = enumerator.Current.Key;
 				int2 lastPosition = enumerator.Current.Value;
-				int2 currentPosition = GameManager.Renderer.WorldToTileMapPosition(entity.transform.position);
+				int2 currentPosition = gameManager.Renderer.WorldToTileMapPosition(entity.transform.position);
 
 				if (lastPosition != currentPosition)
 				{
 					RefreshVisibility(currentPosition);
-					GameManager.Renderer.RefreshVisibility();
+					gameManager.Renderer.RefreshVisibility();
 					entitiesToUpdate.Add(entity);
 				}
 			}
 
 			for (int i = 0; i < entitiesToUpdate.Count; i++)
 			{
-				int2 currentPosition = GameManager.Renderer.WorldToTileMapPosition(entitiesToUpdate[i].transform.position);
+				int2 currentPosition = gameManager.Renderer.WorldToTileMapPosition(entitiesToUpdate[i].transform.position);
 				movingLightCasters[entitiesToUpdate[i]] = currentPosition;
 			}
 		}
@@ -146,7 +149,9 @@ namespace InstaDungeon
 			}
 		}
 
-		protected void OnEntitySpawned(IEventData eventData)
+		#region [Event Reactions]
+
+		private void OnEntitySpawned(IEventData eventData)
 		{
 			EntitySpawnEvent spawnEvent = eventData as EntitySpawnEvent;
 
@@ -154,46 +159,22 @@ namespace InstaDungeon
 
 			if (entity != null)
 			{
-				LightCaster lightCaster = entity.GetComponent<LightCaster>();
-
-				if (lightCaster != null)
-				{
-					lightCasters.Add(entity);
-					RefreshVisibility(entity.CellTransform.Position);
-					GameManager.Renderer.RefreshVisibility();
-
-					entity.Events.AddListener(OnLightSourceAddToMap, EntityAddToMapEvent.EVENT_TYPE);
-					entity.Events.AddListener(OnLightSourceStartMoving, EntityStartMovementEvent.EVENT_TYPE);
-					entity.Events.AddListener(OnLightSourceFinishMoving, EntityFinishMovementEvent.EVENT_TYPE);
-				}
-
-				if (entity.Info.NameId == "Door") // TODO: work a scriptableObject manager to access them via code
-				{
-					entity.Events.AddListener(OnDoorOpens, DoorOpenEvent.EVENT_TYPE);
-				}
+				RegisterLightCaster(entity);
 			}
 		}
 
-		protected void OnLightSourceAddToMap(IEventData eventData)
+		private void OnLightSourceAddToMap(IEventData eventData)
 		{
 			EntityAddToMapEvent addToMapEvent = eventData as EntityAddToMapEvent;
 			Entity entity = lightCasters.Find(x => x.Guid == addToMapEvent.Entity.Guid);
 
 			if (entity != null)
 			{
-				int2 pos = entity.CellTransform.Position;
-				Cell cell = mapManager.Map[pos];
-
-				if (cell != null)
-				{
-					cell.RefreshVisibility(true);
-					RefreshVisibility(entity.CellTransform.Position);
-					GameManager.Renderer.RefreshVisibility();
-				}
+				RefreshLightPoint(entity);
 			}
 		}
 
-		protected void OnLightSourceStartMoving(IEventData eventData)
+		private void OnLightSourceStartMoving(IEventData eventData)
 		{
 			EntityStartMovementEvent movementEvent = eventData as EntityStartMovementEvent;
 			Entity entity = lightCasters.Find(x => x.Guid == movementEvent.EntityId);
@@ -204,7 +185,7 @@ namespace InstaDungeon
 			}
 		}
 
-		protected void OnLightSourceFinishMoving(IEventData eventData)
+		private void OnLightSourceFinishMoving(IEventData eventData)
 		{
 			EntityFinishMovementEvent movementEvent = eventData as EntityFinishMovementEvent;
 			Entity entity = lightCasters.Find(x => x.Guid == movementEvent.EntityId); ;
@@ -215,7 +196,7 @@ namespace InstaDungeon
 			}
 		}
 
-		protected void OnDoorOpens(IEventData eventData)
+		private void OnDoorOpens(IEventData eventData)
 		{
 			DoorOpenEvent doorEvent = eventData as DoorOpenEvent;
 			Entity door = doorEvent.Door;
@@ -224,8 +205,73 @@ namespace InstaDungeon
 			if (cell != null && cell.Visibility == VisibilityType.Visible)
 			{
 				Refresh();
-				GameManager.Renderer.RefreshVisibility(); // TODO: switch this to a reactive system using VisibilityRefreshedEvent 
+				gameManager.Renderer.RefreshVisibility(); // TODO: switch this to a reactive system using VisibilityRefreshedEvent 
 			}
 		}
+
+		#endregion
+
+		#region [Helpers]
+
+		private void RegisterLightCaster(Entity entity)
+		{
+			LightCaster lightCaster = entity.GetComponent<LightCaster>();
+
+			if (lightCaster != null)
+			{
+				lightCasters.Add(entity);
+				RefreshVisibility(entity.CellTransform.Position);
+				gameManager.Renderer.RefreshVisibility();
+
+				entity.Events.AddListener(OnLightSourceAddToMap, EntityAddToMapEvent.EVENT_TYPE);
+				entity.Events.AddListener(OnLightSourceStartMoving, EntityStartMovementEvent.EVENT_TYPE);
+				entity.Events.AddListener(OnLightSourceFinishMoving, EntityFinishMovementEvent.EVENT_TYPE);
+			}
+
+			if (entity.Info.NameId == "Door") // TODO: work a scriptableObject manager to access them via code
+			{
+				entity.Events.AddListener(OnDoorOpens, DoorOpenEvent.EVENT_TYPE);
+			}
+		}
+
+		private void AddPresentLightCasters()
+		{
+			List<Entity> presentEntities = entityManager.Entities;
+
+			for (int i = 0; i < presentEntities.Count; i++)
+			{
+				RegisterLightCaster(presentEntities[i]);
+			}
+
+			List<Entity> mapEntities = new List<Entity>();
+			mapEntities.AddRange(mapManager.GetActors());
+			mapEntities.AddRange(mapManager.GetProps());
+			mapEntities.AddRange(mapManager.GetItems());
+
+			for (int i = 0; i < mapEntities.Count; i++)
+			{
+				LightCaster lightCaster = mapEntities[i].GetComponent<LightCaster>();
+
+				if (lightCaster != null)
+				{
+					RefreshLightPoint(mapEntities[i]);
+				}
+			}
+		}
+
+		private void RefreshLightPoint(Entity entity)
+		{
+			int2 pos = entity.CellTransform.Position;
+			Cell cell = mapManager.Map[pos];
+
+			if (cell != null)
+			{
+				cell.RefreshVisibility(true);
+				RefreshVisibility(entity.CellTransform.Position);
+				gameManager.Renderer.RefreshVisibility();
+			}
+		}
+
+		#endregion
 	}
 }

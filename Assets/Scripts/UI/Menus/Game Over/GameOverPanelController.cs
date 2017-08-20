@@ -23,7 +23,7 @@ namespace InstaDungeon.UI
 
 			retryOption.OnOptionPressed.AddListener(() => 
 			{
-				GameManager.ResetGame();
+				Locator.Get<GameManager>().ResetGame();
 			});
 
 			mainMenuOption.OnOptionSelected.AddListener(() => 
@@ -40,7 +40,7 @@ namespace InstaDungeon.UI
 
 		public void Start()
 		{
-			GameManager.Events.AddListener(OnGameStateChange, GameStateChangeEvent.EVENT_TYPE);
+			Locator.Get<GameManager>().Events.AddListener(OnGameStateChange, GameStateChangeEvent.EVENT_TYPE);
 			content.gameObject.SetActive(false);
 		}
 

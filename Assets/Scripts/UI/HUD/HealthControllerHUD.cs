@@ -33,13 +33,13 @@ namespace InstaDungeon.UI
 
 		private void LoadInitialData()
 		{
-			Health health = GameManager.Player.GetComponent<Health>();
+			Health health = Locator.Get<GameManager>().Player.GetComponent<Health>();
 			RefreshBar(health.MaxHealth, health.CurrentHealth);
 		}
 
 		private void SubscribeEvents()
 		{
-			GameManager.Player.Events.AddListener(OnPlayerHealthChange, EntityHealthChangeEvent.EVENT_TYPE);
+			Locator.Get<GameManager>().Player.Events.AddListener(OnPlayerHealthChange, EntityHealthChangeEvent.EVENT_TYPE);
 		}
 
 		private void RefreshBar(int maxHealth, int currentHealth)

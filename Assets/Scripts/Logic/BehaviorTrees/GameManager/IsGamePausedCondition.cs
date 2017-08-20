@@ -8,7 +8,7 @@ namespace InstaDungeon.BehaviorTreeNodes
 		{
 			NodeStates result = NodeStates.Failure;
 
-			if (GameManager.GameState == GameState.Paused)
+			if (Locator.Get<GameManager>().GameState == GameState.Paused)
 			{
 				result = NodeStates.Success;
 			}

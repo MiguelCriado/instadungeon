@@ -14,15 +14,17 @@ namespace InstaDungeon.AI
 		{
 			if (Tree == null)
 			{
+				GameManager gameManager = Locator.Get<GameManager>();
+
 				Tree = new BehaviorTree
 				(
 					new Priority
 					(
 						new Sequence
 						(
-							new CanSeeEntityCondition(GameManager.Player),
-							new StoreLastKnownEntityPositionAction(GameManager.Player),
-							new ChaseEntityAction(GameManager.Player)
+							new CanSeeEntityCondition(gameManager.Player),
+							new StoreLastKnownEntityPositionAction(gameManager.Player),
+							new ChaseEntityAction(gameManager.Player)
 						),
 						new GoToLastKnownPositionAction(),
 						new PassTurnActionNode()
