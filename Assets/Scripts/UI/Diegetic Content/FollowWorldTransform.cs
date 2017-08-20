@@ -40,9 +40,7 @@ namespace InstaDungeon.UI
 		{
 			if (target != null)
 			{
-				Vector2 targetScreenPosition = RectTransformUtility.WorldToScreenPoint(worldCamera, target.position);
-				Vector2 newPosition;
-				RectTransformUtility.ScreenPointToLocalPointInRectangle(parentRectTransform, targetScreenPosition, null, out newPosition);
+				Vector2 newPosition = parentRectTransform.InverseTransformPoint(target.position);
 				rectTransform.localPosition = newPosition + offset;
 			}
 		}
