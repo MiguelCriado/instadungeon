@@ -7,8 +7,10 @@ namespace InstaDungeon
 {
 	public class MapManager : Manager
 	{
+		public EventSystem Events { get { return events; } }
 		public TileMap<Cell> Map { get { return map; } }
 
+		private EventSystem events;
 		private EntityManager entityManager;
 		private TileMap<Cell> map;
 		private AStarSearch<int2, int> pathfinder;
@@ -26,6 +28,7 @@ namespace InstaDungeon
 
 		public MapManager() : base()
 		{
+			events = new EventSystem();
 			entityManager = Locator.Get<EntityManager>();
 			actors = new Dictionary<uint, Entity>();
 			props = new Dictionary<uint, Entity>();
@@ -138,6 +141,7 @@ namespace InstaDungeon
 				actors.Add(actor.Guid, actor);
 				actor.CellTransform.MoveTo(cellPosition);
 				actor.Events.TriggerEvent(new EntityAddToMapEvent(actor));
+				events.TriggerEvent(new ActorAddedToMapEvent(actor, cellPosition));
 				result = true;
 				actorsDirty = true;
 			}
@@ -166,6 +170,7 @@ namespace InstaDungeon
 			{
 				cell.Actor = null;
 				actors.Remove(actor.Guid);
+				events.TriggerEvent(new ActorRemovedFromMapEvent(actor, cellPosition));
 				result = true;
 				actorsDirty = true;
 			}
