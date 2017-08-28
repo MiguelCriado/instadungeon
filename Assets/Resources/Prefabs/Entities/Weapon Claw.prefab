@@ -19,10 +19,10 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4090674494462474}
-  - component: {fileID: 114224086850285988}
-  - component: {fileID: 114490353116988852}
-  - component: {fileID: 114639875365642022}
-  - component: {fileID: 114660787456687752}
+  - component: {fileID: 114670832310596102}
+  - component: {fileID: 114318279242878870}
+  - component: {fileID: 114391966853351390}
+  - component: {fileID: 114132164053557272}
   m_Layer: 0
   m_Name: Weapon Claw
   m_TagString: Untagged
@@ -102,7 +102,7 @@ Transform:
   m_Father: {fileID: 4090674494462474}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114224086850285988
+--- !u!114 &114132164053557272
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -110,53 +110,53 @@ MonoBehaviour:
   m_GameObject: {fileID: 1292002239252992}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da90a8b3ff9c83743b79e89581da30c3, type: 3}
+  m_Script: {fileID: 11500000, guid: e4835392e55206a45b14553534d8e3de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114318279242878870
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1292002239252992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 862d775d495fc49418ea80590fc30bd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  info: {fileID: 11400000, guid: 1c5e59c80beee72408a1a8684a70b1b6, type: 2}
+  blocksLineOfSight: 0
+  blocksMovement: 0
+--- !u!114 &114391966853351390
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1292002239252992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0af75ec37b06648478e40d20cc1fb077, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: Claw
+  weaponInfo: {fileID: 11400000, guid: 30d27feaa357dc04ea26bd4ad13ecc36, type: 2}
+  additionalRange: 0
+  additionalMinDamage: 0
+  additionalMaxDamage: 0
+--- !u!114 &114670832310596102
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1292002239252992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f672e0b57f6b3c2468a0067695c08414, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   position:
     x: 0
     y: 0
---- !u!114 &114490353116988852
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1292002239252992}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a1e49f010f05b9458176095c1a7f63d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  info: {fileID: 11400000, guid: 0374f3bd665807148a135a46a8e00180, type: 2}
-  blocksLineOfSight: 0
-  blocksMovement: 0
---- !u!114 &114639875365642022
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1292002239252992}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa5e4bcf5db45344b8561f1260b25d2d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemName: Claw
-  weaponInfo: {fileID: 11400000, guid: fdf8cb0d5026c2d4f9dd766c8145d3e2, type: 2}
-  additionalRange: 0
-  additionalMinDamage: 0
-  additionalMaxDamage: 0
---- !u!114 &114660787456687752
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1292002239252992}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 276f0c2324108d744951cf6ba7111b46, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!212 &212616495996618862
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -170,7 +170,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: f841ef0b6c2c38d419e9bf2bb92a0be7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -71,7 +71,7 @@ namespace InstaDungeon
 			cameraManager.FadeOut(fadeOutTime)
 			.Catch((System.Exception e) =>
 			{
-				throw e;
+				Debug.Log(e.Message);
 			})
 			.Then(() =>
 			{
@@ -84,7 +84,7 @@ namespace InstaDungeon
 			})
 			.Catch((System.Exception e) =>
 			{
-				throw e;
+				Debug.Log(e.Message);
 			})
 			.Done(() =>
 			{

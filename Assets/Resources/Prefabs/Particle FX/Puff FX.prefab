@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4930491135013898}
   - component: {fileID: 199492597412940208}
   - component: {fileID: 198515343313526886}
-  - component: {fileID: 114125863347611788}
+  - component: {fileID: 114023053902659228}
   m_Layer: 0
   m_Name: Puff FX
   m_TagString: Untagged
@@ -42,7 +42,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114125863347611788
+--- !u!114 &114023053902659228
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -50,7 +50,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1720884590957988}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e54d8b4dd4114f43848d12041bce91e, type: 3}
+  m_Script: {fileID: 11500000, guid: 85e8dc6cfeb077e47beb45b6465ca1b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   playOnEnable: 1
@@ -3199,7 +3199,7 @@ ParticleSystemRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 2100000, guid: dfaa668526db69644a4db0c9e6e56479, type: 2}
+  - {fileID: 2100000, guid: 860ba7320d4137547a89f8e001929134, type: 2}
   - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0

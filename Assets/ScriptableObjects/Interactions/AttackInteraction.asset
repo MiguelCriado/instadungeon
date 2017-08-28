@@ -8,6 +8,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d466953fc193dcd4696795bdbddff3d3, type: 3}
+  m_Script: {fileID: 11500000, guid: e67ebb42d53c7444592724ea15f4ee20, type: 3}
   m_Name: AttackInteraction
   m_EditorClassIdentifier: 

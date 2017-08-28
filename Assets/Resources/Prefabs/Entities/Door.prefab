@@ -96,13 +96,13 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4924063648352656}
-  - component: {fileID: 95208527420023920}
-  - component: {fileID: 114642095292046310}
-  - component: {fileID: 114284614459368670}
-  - component: {fileID: 114476855335799748}
-  - component: {fileID: 114643052653466018}
-  - component: {fileID: 114766703590283336}
-  - component: {fileID: 114173746202068610}
+  - component: {fileID: 114840745919403652}
+  - component: {fileID: 114689167923744660}
+  - component: {fileID: 114020855101255304}
+  - component: {fileID: 114032285325774800}
+  - component: {fileID: 114816969316506330}
+  - component: {fileID: 114291507358689018}
+  - component: {fileID: 95398013355487988}
   m_Layer: 0
   m_Name: Door
   m_TagString: Untagged
@@ -193,7 +193,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &95208527420023920
+--- !u!95 &95398013355487988
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 1
@@ -202,15 +202,15 @@ Animator:
   m_GameObject: {fileID: 1996770087871114}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 524bbf55c59d599419990bf8d7d10a9d, type: 2}
-  m_CullingMode: 2
+  m_Controller: {fileID: 9100000, guid: a475a6f875dd7af4d826b083fa06772c, type: 2}
+  m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!114 &114173746202068610
+--- !u!114 &114020855101255304
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -218,11 +218,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1996770087871114}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 93a5258f2975ef549ae61d998d107b24, type: 3}
+  m_Script: {fileID: 11500000, guid: 5cb7cd7f4708af940b0d181bdb7af706, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  direction: 0
---- !u!114 &114284614459368670
+  interaction: {fileID: 11400000, guid: bec2beb205057a5408bc1cec9ad0afc2, type: 2}
+--- !u!114 &114032285325774800
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -230,13 +230,36 @@ MonoBehaviour:
   m_GameObject: {fileID: 1996770087871114}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a1e49f010f05b9458176095c1a7f63d, type: 3}
+  m_Script: {fileID: 11500000, guid: 4890556a8ed53ba499d0c3bf60872536, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  info: {fileID: 11400000, guid: c90155294decd0e40883d0ac42456668, type: 2}
-  blocksLineOfSight: 0
+  direction: 2
+--- !u!114 &114291507358689018
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1996770087871114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4835392e55206a45b14553534d8e3de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114689167923744660
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1996770087871114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 862d775d495fc49418ea80590fc30bd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  info: {fileID: 11400000, guid: b98928f947c1e484388ea048c31c245b, type: 2}
+  blocksLineOfSight: 1
   blocksMovement: 1
---- !u!114 &114476855335799748
+--- !u!114 &114816969316506330
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -244,10 +267,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1996770087871114}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 276f0c2324108d744951cf6ba7111b46, type: 3}
+  m_Script: {fileID: 11500000, guid: 880bd77cb5572f74dbc41fb06f9cbdef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114642095292046310
+  interactionTarget: {fileID: 4885783993333756}
+--- !u!114 &114840745919403652
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -255,36 +279,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1996770087871114}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da90a8b3ff9c83743b79e89581da30c3, type: 3}
+  m_Script: {fileID: 11500000, guid: f672e0b57f6b3c2468a0067695c08414, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   position:
     x: 0
     y: 0
---- !u!114 &114643052653466018
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1996770087871114}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c8f9270850010c8469da3aca9fbc12a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interaction: {fileID: 11400000, guid: 5bc5424bfeb339d4691429b1cf43f84c, type: 2}
---- !u!114 &114766703590283336
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1996770087871114}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbd2d12a4e7051d4ea95d2490fb74242, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interactionTarget: {fileID: 4885783993333756}
 --- !u!212 &212318277916265588
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -298,7 +298,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8c71927e14de37f4fbaf8e26bb9973a7, type: 2}
+  - {fileID: 2100000, guid: f841ef0b6c2c38d419e9bf2bb92a0be7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -339,7 +339,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8c71927e14de37f4fbaf8e26bb9973a7, type: 2}
+  - {fileID: 2100000, guid: f841ef0b6c2c38d419e9bf2bb92a0be7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -366,4 +366,4 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0

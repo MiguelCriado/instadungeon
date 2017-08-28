@@ -8,7 +8,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b4bcdfc9708a8541943c614623880de, type: 3}
+  m_Script: {fileID: 11500000, guid: 7d1049151a2ec8f4b98909c9d655be04, type: 3}
   m_Name: DoorInteraction
   m_EditorClassIdentifier: 
-  requiredKey: {fileID: 11400000, guid: eaa820335633c7d45a7f1ede42cc247a, type: 2}
+  requiredKey: {fileID: 0}
