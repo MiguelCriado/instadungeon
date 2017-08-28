@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: TileMap
-  m_Shader: {fileID: 4800000, guid: 5162effee635cf84eb601be2238b6f89, type: 3}
+  m_Shader: {fileID: 4800000, guid: efdf36fa1e6fcdb459a3c2ee201d6e6d, type: 3}
   m_ShaderKeywords: PIXELSNAP_ON _EMISSION
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
@@ -39,7 +39,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: c8d15c0f0b1a18f44a55c2d2cdb8ea66, type: 3}
+        m_Texture: {fileID: 2800000, guid: d78b0d3d16052d74985059026b0bc466, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:

@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4830633322284052}
   - component: {fileID: 199461289986010692}
   - component: {fileID: 198312570432093464}
-  - component: {fileID: 114551048591137600}
+  - component: {fileID: 114146377309205782}
   m_Layer: 0
   m_Name: Hit FX
   m_TagString: Untagged
@@ -42,7 +42,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114551048591137600
+--- !u!114 &114146377309205782
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -50,7 +50,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1692318158553268}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e54d8b4dd4114f43848d12041bce91e, type: 3}
+  m_Script: {fileID: 11500000, guid: 85e8dc6cfeb077e47beb45b6465ca1b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   playOnEnable: 1
@@ -3199,7 +3199,7 @@ ParticleSystemRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6e2fa8fd0ebe7ca449576c7754eafe62, type: 2}
+  - {fileID: 2100000, guid: f36bf9586a078ca4196531277ae6a1f3, type: 2}
   - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0

@@ -26,14 +26,25 @@ namespace InstaDungeon
 			SuscribeListeners();
 		}
 
-		private void IncludePresentActors()
+		public List<Entity> GetActors(ConflictSide side)
 		{
-			List<Entity> actorsInMap = mapManager.GetActors();
+			return actors[side];
+		}
 
-			for (int i = 0; i < actorsInMap.Count; i++)
+		public List<Entity> GetOtherSidesActors(ConflictSide side)
+		{
+			List<Entity> result = new List<Entity>();
+			var enumerator = actors.GetEnumerator();
+
+			while (enumerator.MoveNext())
 			{
-				AddSideActor(actorsInMap[i]);
+				if (enumerator.Current.Key != side)
+				{
+					result.AddRange(enumerator.Current.Value);
+				}
 			}
+
+			return result;
 		}
 
 		#region [Event Reactions]
@@ -69,6 +80,16 @@ namespace InstaDungeon
 		{
 			mapManager.Events.AddListener(OnActorAddedToMap, ActorAddedToMapEvent.EVENT_TYPE);
 			mapManager.Events.AddListener(OnActorRemovedFromMap, ActorRemovedFromMapEvent.EVENT_TYPE);
+		}
+
+		private void IncludePresentActors()
+		{
+			List<Entity> actorsInMap = mapManager.GetActors();
+
+			for (int i = 0; i < actorsInMap.Count; i++)
+			{
+				AddSideActor(actorsInMap[i]);
+			}
 		}
 
 		private void AddSideActor(Entity actor)

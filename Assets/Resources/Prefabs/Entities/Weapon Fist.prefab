@@ -19,10 +19,10 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4090674494462474}
-  - component: {fileID: 114140695179418792}
-  - component: {fileID: 114032856048387172}
-  - component: {fileID: 114004525287775996}
-  - component: {fileID: 114160895292553906}
+  - component: {fileID: 114796533494504186}
+  - component: {fileID: 114623455483960830}
+  - component: {fileID: 114994656053572778}
+  - component: {fileID: 114035384107943990}
   m_Layer: 0
   m_Name: Weapon Fist
   m_TagString: Untagged
@@ -102,7 +102,7 @@ Transform:
   m_Father: {fileID: 4090674494462474}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114004525287775996
+--- !u!114 &114035384107943990
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -110,15 +110,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1292002239252992}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa5e4bcf5db45344b8561f1260b25d2d, type: 3}
+  m_Script: {fileID: 11500000, guid: e4835392e55206a45b14553534d8e3de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: Fist
-  weaponInfo: {fileID: 11400000, guid: ff4df83ff3ac0b649a6d466a79552b29, type: 2}
-  additionalRange: 0
-  additionalMinDamage: 0
-  additionalMaxDamage: 0
---- !u!114 &114032856048387172
+--- !u!114 &114623455483960830
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -126,13 +121,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1292002239252992}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a1e49f010f05b9458176095c1a7f63d, type: 3}
+  m_Script: {fileID: 11500000, guid: 862d775d495fc49418ea80590fc30bd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  info: {fileID: 11400000, guid: 9a11e83716c7edc4bb264c760c33a8ca, type: 2}
+  info: {fileID: 11400000, guid: 6a1ee91ebd3e86a489cd33214db059bf, type: 2}
   blocksLineOfSight: 0
   blocksMovement: 0
---- !u!114 &114140695179418792
+--- !u!114 &114796533494504186
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -140,13 +135,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1292002239252992}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da90a8b3ff9c83743b79e89581da30c3, type: 3}
+  m_Script: {fileID: 11500000, guid: f672e0b57f6b3c2468a0067695c08414, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   position:
     x: 0
     y: 0
---- !u!114 &114160895292553906
+--- !u!114 &114994656053572778
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -154,9 +149,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1292002239252992}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 276f0c2324108d744951cf6ba7111b46, type: 3}
+  m_Script: {fileID: 11500000, guid: 0af75ec37b06648478e40d20cc1fb077, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemName: Fist
+  weaponInfo: {fileID: 11400000, guid: 6d1cf621a893f01449d454f5a7ffb30f, type: 2}
+  additionalRange: 0
+  additionalMinDamage: 0
+  additionalMaxDamage: 0
 --- !u!212 &212616495996618862
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -170,7 +170,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 2100000, guid: dce561391d3d46d4e97545a98d2f444d, type: 2}
+  - {fileID: 2100000, guid: f841ef0b6c2c38d419e9bf2bb92a0be7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
