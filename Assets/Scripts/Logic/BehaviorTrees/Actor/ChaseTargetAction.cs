@@ -3,19 +3,25 @@ using InstaDungeon.Components;
 
 namespace InstaDungeon.BehaviorTreeNodes
 {
-	public class GoToLastKnownPositionAction : ActionNode
+	public class ChaseTargetAction : ActionNode
 	{
+		private string entityToChase;
+
+		public ChaseTargetAction(string targetIdInBlackboard)
+		{
+			entityToChase = targetIdInBlackboard;
+		}
+
 		protected override NodeStates Tick(Tick tick)
 		{
 			NodeStates result = NodeStates.Failure;
-			int2 lastKnownPosition;
+			MapManager mapManager = Locator.Get<MapManager>();
+			Entity chaser = tick.Target as Entity;
+			Entity target = null;
 
-			if (tick.Blackboard.TryGet("targetLastKnownPosition", out lastKnownPosition))
+			if (tick.Blackboard.TryGet(entityToChase, out target) && target != null)
 			{
-				MapManager mapManager = Locator.Get<MapManager>();
-				Entity chaser = tick.Target as Entity;
-
-				int2[] path = mapManager.GetPath(chaser.CellTransform.Position, lastKnownPosition);
+				int2[] path = mapManager.GetPath(chaser.CellTransform.Position, target.CellTransform.Position);
 
 				if (path.Length > 0)
 				{

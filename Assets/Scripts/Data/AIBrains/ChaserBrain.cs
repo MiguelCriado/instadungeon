@@ -8,25 +8,24 @@ namespace InstaDungeon.AI
 	[CreateAssetMenu(menuName = "InstaDungeon/AI Brains/ChaserBrain", fileName = "new ChaserBrain", order = 1000)]
 	public class ChaserBrain : AIBrain
 	{
+		private static readonly string TargetId = "targetActor";
 		private static BehaviorTree Tree;
 
 		public override void CreateTree()
 		{
 			if (Tree == null)
 			{
-				GameManager gameManager = Locator.Get<GameManager>();
-
 				Tree = new BehaviorTree
 				(
 					new Priority
 					(
 						new Sequence
 						(
-							new CanSeeEntityCondition(gameManager.Player),
-							new StoreLastKnownEntityPositionAction(gameManager.Player),
-							new ChaseEntityAction(gameManager.Player)
+							new AcquireClosestTargetAction(TargetId),
+							new StoreLastKnownTargetPositionAction(TargetId),
+							new ChaseTargetAction(TargetId)
 						),
-						new GoToLastKnownPositionAction(),
+						new GoToLastKnownTargetPositionAction(),
 						new PassTurnActionNode()
 					)
 				);
