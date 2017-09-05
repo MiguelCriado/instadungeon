@@ -434,7 +434,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 813460c7bae4c6e4abbb028327e6ce84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lightRadius: 5
+  lightRadius: 4
 --- !u!114 &114458958204394822
 MonoBehaviour:
   m_ObjectHideFlags: 1
