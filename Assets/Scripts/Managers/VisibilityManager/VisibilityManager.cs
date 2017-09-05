@@ -1,6 +1,7 @@
 ﻿using InstaDungeon.Components;
 using InstaDungeon.Events;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace InstaDungeon
 {
@@ -34,7 +35,7 @@ namespace InstaDungeon
 		{
 			for (int i = 0; i < lightCasters.Count; i++)
 			{
-				RefreshVisibility(lightCasters[i].CellTransform.Position);
+				RefreshVisibility(lightCasters[i], lightCasters[i].CellTransform.Position);
 			}
 		}
 
@@ -52,7 +53,7 @@ namespace InstaDungeon
 
 				if (lastPosition != currentPosition)
 				{
-					RefreshVisibility(currentPosition);
+					RefreshVisibility(entity, currentPosition);
 					gameManager.Renderer.RefreshVisibility();
 					entitiesToUpdate.Add(entity);
 				}
@@ -88,26 +89,30 @@ namespace InstaDungeon
 			}
 		}
 
-		protected void RefreshVisibility(int2 hero)
+		protected void RefreshVisibility(Entity entity, int2 position)
 		{
 			if (mapManager.Map != null)
 			{
+				LightCaster lightCaster = entity.GetComponent<LightCaster>();
+				List<int> rowTilesInsideRadius = GetTilesInsideRadius(position, lightCaster.LightRadius);
+
 				for (int octant = 0; octant < 8; octant++)
 				{
-					RefreshOctant(hero, octant);
+					RefreshOctant(position, lightCaster.LightRadius, octant, rowTilesInsideRadius);
 				}
 			}
 		}
 
-		protected void RefreshOctant(int2 hero, int octant)
+		protected void RefreshOctant(int2 origin, int radius, int octant, List<int> rowTilesInsideRadius)
 		{
 			ShadowLine line = new ShadowLine();
 			bool fullShadow = false;
 			TileMap<Cell> map = mapManager.Map;
+			int extents = radius + 2;
 
-			for (int row = 1; ; row++)
+			for (int row = 1; row < extents; row++)
 			{
-				int2 pos = hero + TransformOctant(row, 0, octant);
+				int2 pos = origin + TransformOctant(row, 0, octant);
 
 				if (!map.Bounds.Contains(pos))
 				{
@@ -116,7 +121,7 @@ namespace InstaDungeon
 
 				for (int col = 0; col <= row; col++)
 				{
-					pos = hero + TransformOctant(row, col, octant);
+					pos = origin + TransformOctant(row, col, octant);
 
 					if (!map.Bounds.Contains(pos))
 					{
@@ -134,8 +139,8 @@ namespace InstaDungeon
 						else
 						{
 							Shadow projection = ProjectTile(row, col);
-
-							bool visible = !line.IsInShadow(projection);
+							bool isInsideRadius = row <= rowTilesInsideRadius.Count && rowTilesInsideRadius[row - 1] > col;
+							bool visible = !line.IsInShadow(projection) && isInsideRadius;
 							cell.RefreshVisibility(visible);
 
 							if (visible && map[pos].BreaksLineOfSight())
@@ -220,7 +225,7 @@ namespace InstaDungeon
 			if (lightCaster != null)
 			{
 				lightCasters.Add(entity);
-				RefreshVisibility(entity.CellTransform.Position);
+				RefreshVisibility(entity, entity.CellTransform.Position);
 				gameManager.Renderer.RefreshVisibility();
 
 				entity.Events.AddListener(OnLightSourceAddToMap, EntityAddToMapEvent.EVENT_TYPE);
@@ -267,9 +272,38 @@ namespace InstaDungeon
 			if (cell != null)
 			{
 				cell.RefreshVisibility(true);
-				RefreshVisibility(entity.CellTransform.Position);
+				RefreshVisibility(entity, entity.CellTransform.Position);
 				gameManager.Renderer.RefreshVisibility();
 			}
+		}
+
+		private List<int> GetTilesInsideRadius(int2 position, int radius)
+		{
+			List<int> result = new List<int>();
+			Vector2 origin = position;
+			float correctedRadius = radius + 0.5f;
+
+			for (int row = 1; row <= radius; row++)
+			{
+				int rowCount = 0;
+
+				for (int col = 0; col <= row; col++)
+				{
+					Vector2 target = new Vector2(origin.x + col, origin.y + row);
+					float distance = Vector2.Distance(target, origin);
+
+					if (distance > correctedRadius)
+					{
+						break;
+					}
+
+					rowCount++;
+				}
+
+				result.Add(rowCount);
+			}
+
+			return result;
 		}
 
 		#endregion
