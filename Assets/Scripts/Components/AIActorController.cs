@@ -20,11 +20,6 @@ namespace InstaDungeon.Components
 			blackboard = new Blackboard();
 		}
 
-		private void Start()
-		{
-			brain.CreateTree();
-		}
-
 		private void OnEnable()
 		{
 			TurnManager turnManager = Locator.Get<TurnManager>();

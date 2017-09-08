@@ -1,6 +1,5 @@
 ﻿using AI.BehaviorTrees;
 using InstaDungeon.BehaviorTreeNodes;
-using InstaDungeon.Components;
 using UnityEngine;
 
 namespace InstaDungeon.AI
@@ -9,32 +8,24 @@ namespace InstaDungeon.AI
 	public class ChaserBrain : AIBrain
 	{
 		private static readonly string TargetId = "targetActor";
-		private static BehaviorTree Tree;
+		private static readonly string LastKnownPositionId = "lastKnownPosition";
 
-		public override void CreateTree()
+		protected override BehaviorTree GenerateNewTree()
 		{
-			if (Tree == null)
-			{
-				Tree = new BehaviorTree
+			return new BehaviorTree
+			(
+				new Priority
 				(
-					new Priority
+					new Sequence
 					(
-						new Sequence
-						(
-							new AcquireClosestTargetAction(TargetId),
-							new StoreLastKnownTargetPositionAction(TargetId),
-							new ChaseTargetAction(TargetId)
-						),
-						new GoToLastKnownTargetPositionAction(),
-						new PassTurnActionNode()
-					)
-				);
-			}
-		}
-
-		public override void Think(Entity target, Blackboard blackboard)
-		{
-			Tree.Tick(target, blackboard);
+						new AcquireClosestTargetAction(TargetId),
+						new StoreLastKnownTargetPositionAction(TargetId, LastKnownPositionId),
+						new ChaseTargetAction(TargetId)
+					),
+					new GoToLastKnownTargetPositionAction(LastKnownPositionId),
+					new PassTurnActionNode()
+				)
+			);
 		}
 	}
 }

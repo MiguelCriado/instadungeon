@@ -23,14 +23,14 @@ namespace AI.BehaviorTrees
 			memory[key] = value;
 		}
 
-		public void Set<T>(string key, T value)
-		{
-			Set(key, value, null, null);
-		}
-
 		public void Set<T>(string key, T value, string treeScope)
 		{
 			Set(key, value, treeScope, null);
+		}
+
+		public void Set<T>(string key, T value)
+		{
+			Set(key, value, null, null);
 		}
 
 		public bool TryGet<T>(string key, string treeScope, string nodeScope, out T value)
@@ -54,14 +54,30 @@ namespace AI.BehaviorTrees
 			return result;
 		}
 
+		public bool TryGet<T>(string key, string treeScope, out T value)
+		{
+			return TryGet(key, treeScope, null, out value);
+		}
+
 		public bool TryGet<T>(string key, out T value)
 		{
 			return TryGet(key, null, null, out value);
 		}
 
-		public bool TryGet<T>(string key, string treeScope, out T value)
+		public bool Remove(string key, string treeScope, string nodeScope)
 		{
-			return TryGet(key, treeScope, null, out value);
+			memory = GetMemory(treeScope, nodeScope);
+			return memory.Remove(key);
+		}
+
+		public bool Remove(string key, string treeScope)
+		{
+			return Remove(key, treeScope, null);
+		}
+
+		public bool Remove(string key)
+		{
+			return Remove(key, null, null);
 		}
 
 		private Dictionary<string, object> GetTreeMemory(string treeScope)

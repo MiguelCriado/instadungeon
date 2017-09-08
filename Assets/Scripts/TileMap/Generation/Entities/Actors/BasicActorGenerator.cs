@@ -14,16 +14,16 @@ namespace InstaDungeon
 
 		public void AddEnemies(MapManager manager, int level)
 		{
-			for (int i = 0; i < 3; i++)
-			{
-				Entity enemy = entityManager.Spawn("Green Slime");
-				manager.AddActor(enemy, GetSpawnLocation(manager));
+			//for (int i = 0; i < 3; i++)
+			//{
+			//	Entity enemy = entityManager.Spawn("Green Slime");
+			//	manager.AddActor(enemy, GetSpawnLocation(manager));
 
-				if (i == 0)
-				{
-					enemy.GetComponent<LootDropper>().AddDrop("Key Silver", 0, true);
-				}
-			}
+			//	if (i == 0)
+			//	{
+			//		enemy.GetComponent<LootDropper>().AddDrop("Key Silver", 0, true);
+			//	}
+			//}
 		}
 		
 		private int2 GetSpawnLocation(MapManager manager)
