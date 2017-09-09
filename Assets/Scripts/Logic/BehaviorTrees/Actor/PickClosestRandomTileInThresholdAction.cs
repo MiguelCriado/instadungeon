@@ -7,13 +7,10 @@ namespace InstaDungeon.BehaviorTreeNodes
 {
 	public class PickClosestRandomTileInThresholdAction : ActionNode
 	{
-		private const string DefaultTileId = "ThresholdTileId";
-		private const string DefaultThresholdId = "ThresholdId";
-
 		private string tileId;
 		private string thresholdId;
 
-		public PickClosestRandomTileInThresholdAction(string tileIdInBlackboard = DefaultTileId, string thresholdIdInBlackboard = DefaultThresholdId)
+		public PickClosestRandomTileInThresholdAction(string tileIdInBlackboard, string thresholdIdInBlackboard)
 		{
 			tileId = tileIdInBlackboard;
 			thresholdId = thresholdIdInBlackboard;

@@ -8,6 +8,7 @@ namespace InstaDungeon.AI
 	public class PlayerBrain : AIBrain
 	{
 		private static readonly string ThresholdId = "Threshold";
+		private static readonly string CheckedTilesId = "CheckedTilesId";
 		private static readonly string TileId = "ThresholdTileId";
 
 		protected override BehaviorTree GenerateNewTree()
@@ -16,7 +17,7 @@ namespace InstaDungeon.AI
 			(
 				new Sequence
 				(
-					new RefreshVisibilityThreshold(ThresholdId),
+					new RefreshVisibilityThreshold(ThresholdId, CheckedTilesId),
 					new Sequence // Exploration
 					(
 						new PickClosestRandomTileInThresholdAction(TileId, ThresholdId),
