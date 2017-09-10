@@ -23,7 +23,7 @@ namespace InstaDungeon.AI
 						new ChaseTargetAction(TargetId)
 					),
 					new GoToLastKnownTargetPositionAction(LastKnownPositionId),
-					new PassTurnActionNode()
+					new PassTurnActionAction()
 				)
 			);
 		}

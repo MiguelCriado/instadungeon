@@ -55,14 +55,25 @@ namespace InstaDungeon.Components
 
 		public Item GetEquippedItem(InventorySlotType slot)
 		{
-			return equipment[slot];
+			Item result = null;
+
+			if (slot == InventorySlotType.None && slot != InventorySlotType.Bag)
+			{
+				Locator.Log.Error(string.Format("Equipped item slot cannot be of type {0}", slot));
+			}
+			else
+			{
+				result = equipment[slot];
+			}
+
+			return result;
 		}
 
 		public bool EquipItem(Item item, InventorySlotType slot)
 		{
 			bool result = false;
 
-			if (item.ItemInfo.InventorySlot == slot)
+			if (slot != InventorySlotType.None && slot != InventorySlotType.Bag && item.ItemInfo.InventorySlot == slot)
 			{
 				Item itemInSlot = equipment[slot];
 
@@ -135,6 +146,11 @@ namespace InstaDungeon.Components
 		public bool BagContains(ItemInfo item)
 		{
 			return bag.Find(x => x.ItemInfo == item) != null;
+		}
+
+		public List<Item> FindInBag(string nameId)
+		{
+			return bag.FindAll(x => x.ItemInfo.NameId == nameId);
 		}
 
 		public Item RemoveFromBag(ItemInfo item)

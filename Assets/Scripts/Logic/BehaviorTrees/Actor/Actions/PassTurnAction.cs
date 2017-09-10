@@ -3,7 +3,7 @@ using InstaDungeon.Components;
 
 namespace InstaDungeon.BehaviorTreeNodes
 {
-	public class PassTurnActionNode : ActionNode
+	public class PassTurnActionAction : ActionNode
 	{
 		protected override NodeStates Tick(Tick tick)
 		{

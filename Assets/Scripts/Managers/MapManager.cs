@@ -5,6 +5,13 @@ using UnityEngine;
 
 namespace InstaDungeon
 {
+	public enum EntityTypeInMap
+	{
+		Actor,
+		Prop,
+		Item
+	}
+
 	public class MapManager : Manager
 	{
 		public EventSystem Events { get { return events; } }

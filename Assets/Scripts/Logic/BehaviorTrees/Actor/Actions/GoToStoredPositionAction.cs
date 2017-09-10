@@ -3,11 +3,11 @@ using InstaDungeon.Components;
 
 namespace InstaDungeon.BehaviorTreeNodes
 {
-	public class GoToStoredPositionNode : ActionNode
+	public class GoToStoredPositionAction : ActionNode
 	{
 		private string storedPositionId;
 
-		public GoToStoredPositionNode(string storedPositionIdInBlackboard)
+		public GoToStoredPositionAction(string storedPositionIdInBlackboard)
 		{
 			storedPositionId = storedPositionIdInBlackboard;
 		}

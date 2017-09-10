@@ -5,7 +5,7 @@ using System.Text;
 
 namespace InstaDungeon.BehaviorTreeNodes
 {
-	public class RefreshVisibilityThreshold : ActionNode
+	public class RefreshVisibilityThresholdAction : ActionNode
 	{
 		private static readonly int2[] Directions = new int2[]
 		{
@@ -35,7 +35,7 @@ namespace InstaDungeon.BehaviorTreeNodes
 		private string thresholdId;
 		private string checkedTilesId;
 
-		public RefreshVisibilityThreshold(string thresholdIdInMemory, string checkedTilesIdInMemory)
+		public RefreshVisibilityThresholdAction(string thresholdIdInMemory, string checkedTilesIdInMemory)
 		{
 			thresholdId = thresholdIdInMemory;
 			checkedTilesId = checkedTilesIdInMemory;
