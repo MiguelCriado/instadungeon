@@ -21,6 +21,7 @@ namespace InstaDungeon
 		public Entity Player { get { return player; } }
 		public MapManager MapManager { get { return mapManager; } }
 		public ITileMapRenderer Renderer { get { return mapRenderer; } }
+		public int CurrentFloor { get { return floorNumber; } }
 
 		private CameraManager cameraManager;
 		private EntityManager entityManager;

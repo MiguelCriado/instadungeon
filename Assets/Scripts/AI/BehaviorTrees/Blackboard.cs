@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace AI.BehaviorTrees
 {
@@ -43,7 +45,15 @@ namespace AI.BehaviorTrees
 
 			if (memory.TryGetValue(key, out returnValue))
 			{
-				value = (T)returnValue;
+				try
+				{
+					value = (T)returnValue;
+				}
+				catch(Exception)
+				{
+					value = GetTFromString<T>(returnValue.ToString());
+				}
+
 				result = true;
 			}
 			else
@@ -121,6 +131,12 @@ namespace AI.BehaviorTrees
 			}
 
 			return result;
+		}
+
+		private static T GetTFromString<T>(string value)
+		{
+			TypeConverter converter = TypeDescriptor.GetConverter(typeof(T));
+			return (T)(converter.ConvertFromInvariantString(value));
 		}
 	}
 }

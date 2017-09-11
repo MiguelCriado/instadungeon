@@ -13,16 +13,48 @@ namespace InstaDungeon.AI
 		private static readonly string TileId = "ThresholdTileId";
 		private static readonly string ItemsMemoryId = "ItemsMemoryId";
 		private static readonly string PropsMemoryId = "PropsMemoryId";
-		private static readonly string SilverKeyNameId = "Key Silver";
+		private static readonly string SilverKeyItemId = "Key Silver";
+		private static readonly string SilverKeyEntityId = "Silver Key";
+		private static readonly string SilverKeyPositionId = "SilverKeyPositionId";
+		private static readonly string StairsExitEntityId = "Stairs Exit";
+		private static readonly string StairsExitPositionId = "StairsExitPositionId";
+		private static readonly string FloorLevelId = "FloorLevelId";
+
+		private GameManager gameManager;
+		private StoreVariableInMemoryAction<int>.VariableSetter currentFloorSetter;
 
 		protected override BehaviorTree GenerateNewTree()
 		{
+			gameManager = Locator.Get<GameManager>();
+			currentFloorSetter = GetCurrentFloor;
+
 			return new BehaviorTree
 			(
 				new Sequence
 				(
+					TidyMemory(),
 					RecognizeEnvironment(),
-					Act()
+					Act(),
+					MemorizeCurrentFloor()
+				)
+			);
+		}
+
+		private BaseNode TidyMemory()
+		{
+			return new Succeeder
+			(
+				new Sequence
+				(
+					new VariableExistsInMemoryCondition<int>(FloorLevelId),
+					new CheckVariableCondition<int>(FloorLevelId, (int x) => x != gameManager.CurrentFloor),
+					new RemoveVariableFromMemoryAction(ThresholdId),
+					new RemoveVariableFromMemoryAction(CheckedTilesId),
+					new RemoveVariableFromMemoryAction(TileId),
+					new RemoveVariableFromMemoryAction(ItemsMemoryId),
+					new RemoveVariableFromMemoryAction(PropsMemoryId),
+					new RemoveVariableFromMemoryAction(SilverKeyPositionId),
+					new RemoveVariableFromMemoryAction(StairsExitPositionId)
 				)
 			);
 		}
@@ -41,7 +73,7 @@ namespace InstaDungeon.AI
 		{
 			return new Priority
 			(
-				// ExitFloor(),
+				ExitFloor(),
 				Explore()
 			);
 		}
@@ -50,18 +82,18 @@ namespace InstaDungeon.AI
 		{
 			return new Priority
 			(
-				new MemSequence
+				new Sequence
 				(
-					new Inverter(new InventoryContainsCondition(SilverKeyNameId, InventorySlotType.Bag))
-					// TODO Condition: knows position of key
-					// TODO set key's position as destiny
-					// TODO go to destiny
+					new Inverter(new InventoryContainsCondition(SilverKeyItemId, InventorySlotType.Bag)),
+					new EntitiesMemoryContainsCondition(ItemsMemoryId, SilverKeyEntityId),
+					new SetEntityPositionInMemoryAsDestinyAction(ItemsMemoryId, SilverKeyEntityId, SilverKeyPositionId),
+					new GoToStoredPositionAction(SilverKeyPositionId)
 				),
-				new MemSequence
+				new Sequence
 				(
-					// TODO Condition: knows position of StairsExit
-					// TODO set StairsExit's position as destiny
-					// TODO go to destiny
+					new EntitiesMemoryContainsCondition(PropsMemoryId, StairsExitEntityId),
+					new SetEntityPositionInMemoryAsDestinyAction(PropsMemoryId, StairsExitPositionId, StairsExitPositionId),
+					new GoToStoredPositionAction(StairsExitPositionId)
 				)
 			);
 		}
@@ -71,8 +103,18 @@ namespace InstaDungeon.AI
 			return new Sequence
 			(
 				new PickClosestRandomTileInThresholdAction(TileId, ThresholdId),
-				new GoToStoredPositionAction(TileId)
+				new GetOneStepCloserToStoredPositionAction(TileId)
 			);
+		}
+
+		private BaseNode MemorizeCurrentFloor()
+		{
+			return new StoreVariableInMemoryAction<int>(FloorLevelId, currentFloorSetter);
+		}
+
+		private int GetCurrentFloor()
+		{
+			return gameManager.CurrentFloor;
 		}
 	}
 }
