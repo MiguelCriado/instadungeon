@@ -45,14 +45,8 @@ namespace AI.BehaviorTrees
 
 			if (memory.TryGetValue(key, out returnValue))
 			{
-				try
-				{
-					value = (T)returnValue;
-				}
-				catch(Exception)
-				{
-					value = GetTFromString<T>(returnValue.ToString());
-				}
+
+				value = (T)returnValue;
 
 				result = true;
 			}
@@ -131,12 +125,6 @@ namespace AI.BehaviorTrees
 			}
 
 			return result;
-		}
-
-		private static T GetTFromString<T>(string value)
-		{
-			TypeConverter converter = TypeDescriptor.GetConverter(typeof(T));
-			return (T)(converter.ConvertFromInvariantString(value));
 		}
 	}
 }

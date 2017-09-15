@@ -21,12 +21,10 @@ namespace InstaDungeon.AI
 		private static readonly string FloorLevelId = "FloorLevelId";
 
 		private GameManager gameManager;
-		private StoreVariableInMemoryAction<int>.VariableSetter currentFloorSetter;
 
 		protected override BehaviorTree GenerateNewTree()
 		{
 			gameManager = Locator.Get<GameManager>();
-			currentFloorSetter = GetCurrentFloor;
 
 			return new BehaviorTree
 			(
@@ -109,12 +107,7 @@ namespace InstaDungeon.AI
 
 		private BaseNode MemorizeCurrentFloor()
 		{
-			return new StoreVariableInMemoryAction<int>(FloorLevelId, currentFloorSetter);
-		}
-
-		private int GetCurrentFloor()
-		{
-			return gameManager.CurrentFloor;
+			return new StoreVariableInMemoryAction<int>(FloorLevelId, () => gameManager.CurrentFloor);
 		}
 	}
 }
