@@ -10,16 +10,11 @@ namespace InstaDungeon
 			EntityManager entityManager = Locator.Get<EntityManager>();
 			TileMap<Cell> map = manager.Map;
 
-			int2 entrancePosition = PropGeneratorUtils.FindPlaceForStairs(manager.Map, map.Layout.InitialZone);
-			int2 exitPosition = PropGeneratorUtils.FindPlaceForStairs(manager.Map, map.Layout.FinalZone);
-
 			Entity entranceStairs = entityManager.Spawn("Stairs Entrance");
 			Entity exitStairs = entityManager.Spawn("Stairs Exit");
 
-			manager.AddProp(entranceStairs, entrancePosition);
-			manager.AddProp(exitStairs, exitPosition);
-
-			map.SpawnPoint = entrancePosition;
+			manager.AddProp(entranceStairs, map.SpawnPoint);
+			manager.AddProp(exitStairs, map.ExitPoint);
 		}
 
 		public void AddDoors(MapManager manager, int level)
@@ -50,53 +45,53 @@ namespace InstaDungeon
 
 		public void AddKeys(MapManager manager, int level)
 		{
-			//EntityManager entityManager = Locator.Get<EntityManager>();
-			//TileMap<Cell> map = manager.Map;
-			//NodeList<Zone> zoneNodeList = map.Layout.Zones.Nodes;
-			//Zone[] zoneList = new Zone[zoneNodeList.Count - 1];
+			EntityManager entityManager = Locator.Get<EntityManager>();
+			TileMap<Cell> map = manager.Map;
+			NodeList<Zone> zoneNodeList = map.Layout.Zones.Nodes;
+			Zone[] zoneList = new Zone[zoneNodeList.Count - 1];
 
-			//int index = 0;
+			int index = 0;
 
-			//for (int i = 0; i < zoneNodeList.Count; i++)
-			//{
-			//	if (zoneNodeList[i].Value != map.Layout.FinalZone)
-			//	{
-			//		zoneList[index++] = zoneNodeList[i].Value;
-			//	}
-			//}
+			for (int i = 0; i < zoneNodeList.Count; i++)
+			{
+				if (zoneNodeList[i].Value != map.Layout.InitialZone)
+				{
+					zoneList[index++] = zoneNodeList[i].Value;
+				}
+			}
 
-			//Zone keyZone = zoneList[Random.Range(0, zoneList.Length)];
-			//bool positionFound = false;
+			Zone keyZone = zoneList[Random.Range(0, zoneList.Length)];
+			bool positionFound = false;
 
-			//while (!positionFound)
-			//{
-			//	int tileSelected = Random.Range(0, keyZone.tiles.Count);
-			//	int tileCount = 0;
-			//	var tileEnumerator = keyZone.GetEnumerator();
+			while (!positionFound)
+			{
+				int tileSelected = Random.Range(0, keyZone.tiles.Count);
+				int tileCount = 0;
+				var tileEnumerator = keyZone.GetEnumerator();
 
-			//	while (!positionFound && tileEnumerator.MoveNext())
-			//	{
-			//		if (tileCount >= tileSelected)
-			//		{
-			//			Cell selectedCell = map[tileEnumerator.Current];
+				while (!positionFound && tileEnumerator.MoveNext())
+				{
+					if (tileCount >= tileSelected)
+					{
+						Cell selectedCell = map[tileEnumerator.Current];
 
-			//			if 
-			//			(
-			//				selectedCell.TileInfo.TileType == TileType.Floor
-			//				&& selectedCell.Prop == null
-			//				&& selectedCell.Items.Count == 0
-			//			)
-			//			{
-			//				Entity key = entityManager.Spawn("Key Silver");
-			//				manager.AddItem(key, tileEnumerator.Current);
+						if
+						(
+							selectedCell.TileInfo.TileType == TileType.Floor
+							&& selectedCell.Prop == null
+							&& selectedCell.Items.Count == 0
+						)
+						{
+							Entity key = entityManager.Spawn("Key Silver");
+							manager.AddItem(key, tileEnumerator.Current);
 
-			//				positionFound = true;
-			//			}
-			//		}
+							positionFound = true;
+						}
+					}
 
-			//		tileCount++;
-			//	}
-			//}
+					tileCount++;
+				}
+			}
 		}
 
 		public void AddItems(MapManager manager, int level)

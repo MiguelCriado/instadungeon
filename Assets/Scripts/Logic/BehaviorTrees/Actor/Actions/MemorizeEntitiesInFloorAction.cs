@@ -61,16 +61,24 @@ namespace InstaDungeon.BehaviorTreeNodes
 
 				if (cell != null && cell.Visibility == VisibilityType.Visible && cell.TileInfo.TileType == TileType.Floor)
 				{
-					if (GetEntityCountInCell(cell) > 0)
+					List<Entity> entityList = GetEntityList(cell);
+
+					if (entityList.Count > 0)
 					{
 						if (!memorizeEntities.ContainsKey(tile))
 						{
 							memorizeEntities.Add(tile, new HashSet<Entity>());
 						}
 
-						List<Entity> entityList = GetEntityList(cell);
 						memorizeEntities[tile].UnionWith(entityList);
-						RemoveNoPresentItemsInTile(tile, memorizeEntities[tile], entityList);
+					}
+
+					if (memorizeEntities.ContainsKey(tile))
+					{
+						if (entityList != null)
+						{
+							RemoveNoPresentItemsInTile(tile, memorizeEntities[tile], entityList);
+						}
 
 						if (memorizeEntities[tile].Count <= 0)
 						{
@@ -84,20 +92,6 @@ namespace InstaDungeon.BehaviorTreeNodes
 					}
 				}
 			}
-		}
-
-		private int GetEntityCountInCell(Cell cell)
-		{
-			int result = 0;
-
-			switch (entityType)
-			{
-				case EntityTypeInMap.Actor: result = cell.Actor != null ? 1 : 0; break;
-				case EntityTypeInMap.Prop: result = cell.Prop != null ? 1 : 0; break;
-				case EntityTypeInMap.Item: result = cell.Items.Count; break;
-			}
-
-			return result;
 		}
 
 		private List<Entity> GetEntityList(Cell cell)

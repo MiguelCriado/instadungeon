@@ -82,16 +82,22 @@ namespace InstaDungeon.AI
 			(
 				new Sequence
 				(
-					new Inverter(new InventoryContainsCondition(SilverKeyItemId, InventorySlotType.Bag)),
-					new EntitiesMemoryContainsCondition(ItemsMemoryId, SilverKeyEntityId),
-					new SetEntityPositionInMemoryAsDestinyAction(ItemsMemoryId, SilverKeyEntityId, SilverKeyPositionId),
-					new GoToStoredPositionAction(SilverKeyPositionId)
+					new EntitiesMemoryContainsCondition(PropsMemoryId, StairsExitEntityId),
+					new Parallel
+					(
+						1,
+						2,
+						new InventoryContainsCondition(SilverKeyItemId, InventorySlotType.Bag),
+						new ExitIsOpenCondition()
+					),
+					new SetEntityPositionInMemoryAsDestinyAction(PropsMemoryId, StairsExitEntityId, StairsExitPositionId),
+					new GoToStoredPositionAction(StairsExitPositionId)
 				),
 				new Sequence
 				(
-					new EntitiesMemoryContainsCondition(PropsMemoryId, StairsExitEntityId),
-					new SetEntityPositionInMemoryAsDestinyAction(PropsMemoryId, StairsExitPositionId, StairsExitPositionId),
-					new GoToStoredPositionAction(StairsExitPositionId)
+					new EntitiesMemoryContainsCondition(ItemsMemoryId, SilverKeyEntityId),
+					new SetEntityPositionInMemoryAsDestinyAction(ItemsMemoryId, SilverKeyEntityId, SilverKeyPositionId),
+					new GoToStoredPositionAction(SilverKeyPositionId)
 				)
 			);
 		}
