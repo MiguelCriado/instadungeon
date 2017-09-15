@@ -231,7 +231,7 @@ public struct int2 : System.IEquatable<int2>
 
 	public static bool operator !=(int2 a, int2 b)
 	{
-		return a.x != b.x || a.y != b.x;
+		return a.x != b.x || a.y != b.y;
 	}
 
 	// Component index access

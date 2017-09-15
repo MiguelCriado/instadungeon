@@ -16,8 +16,10 @@
 			this.settings = settings;
 		}
 
+		public abstract TileMap<TileType> PreConnectZones(TileMap<TileType> map, int level);
 		public abstract TileMap<TileType> Generate(TileMap<TileType> map, int level);
 		public abstract TileMap<TileType> PostConnectZones(TileMap<TileType> map, int level);
-		public abstract TileMap<TileType> PreConnectZones(TileMap<TileType> map, int level);
+		public abstract int2 GetSpawnPoint(TileMap<TileType> map, int level);
+		public abstract int2 GetExitPoint(TileMap<TileType> map, int level);
 	}
 }

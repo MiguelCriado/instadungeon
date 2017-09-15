@@ -7,8 +7,8 @@
 
 		public MapGenerator(IZoneGenerator zoneGenerator, ILayoutGenerator layoutGenerator)
 		{
-			this.ZoneGenerator = zoneGenerator;
-			this.LayoutGenerator = layoutGenerator;
+			ZoneGenerator = zoneGenerator;
+			LayoutGenerator = layoutGenerator;
 		}
 
 		#region [Public API]

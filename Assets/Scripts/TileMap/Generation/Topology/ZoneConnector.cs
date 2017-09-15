@@ -21,6 +21,9 @@ namespace InstaDungeon.MapGeneration
 				result = zoneGenerator.PostConnectZones(result, level);
 			}
 
+			result.SpawnPoint = zoneGenerator.GetSpawnPoint(result, level);
+			result.ExitPoint = zoneGenerator.GetExitPoint(result, level);
+
 			return result;
 		}
 	}

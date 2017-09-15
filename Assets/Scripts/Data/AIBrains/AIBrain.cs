@@ -6,7 +6,23 @@ namespace InstaDungeon.AI
 {
 	public abstract class AIBrain : ScriptableObject
 	{
-		public abstract void CreateTree();
-		public abstract void Think(Entity target, Blackboard blackboard);
+		private static BehaviorTree Tree;
+
+		public void Think(Entity target, Blackboard blackboard)
+		{
+			GetTree().Tick(target, blackboard);
+		}
+
+		protected abstract BehaviorTree GenerateNewTree();
+
+		private BehaviorTree GetTree()
+		{
+			if (Tree == null)
+			{
+				Tree = GenerateNewTree();
+			}
+
+			return Tree;
+		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace InstaDungeon.TileMap
@@ -14,11 +15,12 @@ namespace InstaDungeon.TileMap
 		[SerializeField] private int2 chunkSize;
 		[SerializeField] private Material material;
 
+		// private MapManager mapManager;
 		private Dictionary<int2, OrthogonalChunkRenderer> chunks;
 		private Transform chunksContainer;
 		private Transform chunkPool;
 
-		void Awake()
+		private void Awake()
 		{
 			chunks = new Dictionary<int2, OrthogonalChunkRenderer>();
 
@@ -30,6 +32,24 @@ namespace InstaDungeon.TileMap
 			chunkPool = go.transform;
 			chunkPool.SetParent(transform);
 		}
+
+		//private void Start()
+		//{
+		//	mapManager = Locator.Get<MapManager>();
+		//}
+
+		//private void OnDrawGizmos()
+		//{
+		//	if (mapManager != null)
+		//	{
+		//		int2[] tiles = mapManager.Map.GetPresentTiles();
+
+		//		for (int i = 0; i < tiles.Length; i++)
+		//		{
+		//			Handles.Label(TileMapToWorldPosition(tiles[i]), tiles[i].ToString());
+		//		}
+		//	}
+		//}
 
 		public void RenderMap(TileMap<Cell> map)
 		{
