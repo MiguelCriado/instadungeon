@@ -1,6 +1,7 @@
 ﻿using InstaDungeon.MapGeneration;
 using InstaDungeon.Settings;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace InstaDungeon
 {
@@ -11,9 +12,12 @@ namespace InstaDungeon
 
 		public MapGenerator Generator { get; private set; }
 
+		private MapGenerationManagerInspector settings;
+
 		public MapGenerationManager()
 		{
 			Generator = GetDefaultGenerator();
+			settings = gameObject.AddComponent<MapGenerationManagerInspector>();
 		}
 
 		public void SetLayoutGenerator(ILayoutGenerator layoutGenerator)
@@ -33,7 +37,18 @@ namespace InstaDungeon
 
 		public TileMap<Cell> GenerateNewMap(int level)
 		{
-			return Generator.GenerateNewMap(level);
+			if (settings.CustomSeed == false)
+			{
+				settings.LevelSeed = System.Guid.NewGuid().GetHashCode() ^ System.DateTime.UtcNow.Millisecond;
+			}
+
+			return GenerateNewMap(level, settings.LevelSeed);
+		}
+
+		protected override void OnSceneUnLoaded(Scene scene)
+		{
+			base.OnSceneUnLoaded(scene);
+			settings = gameObject.AddComponent<MapGenerationManagerInspector>();
 		}
 
 		private MapGenerator GetDefaultGenerator()

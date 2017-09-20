@@ -19,12 +19,6 @@
 			return GenerateWorld(blueprint, level);
 		}
 
-		public TileMap<Cell> GenerateNewMap(int level)
-		{
-			int seed = System.Guid.NewGuid().GetHashCode() ^ System.DateTime.UtcNow.Millisecond;
-			return GenerateNewMap(level, seed);
-		}
-
 		#endregion
 
 		#region [Helpers]
