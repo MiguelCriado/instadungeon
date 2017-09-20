@@ -25,6 +25,7 @@ namespace InstaDungeon
 			}
 		}
 
+		protected GameObject gameObject;
 		protected DummyMonoBehaviour monoBehaviourHelper;
 
 		public Manager() : this(true, false)
@@ -34,7 +35,7 @@ namespace InstaDungeon
 
 		public Manager(bool persistentBetweenScenes, bool registerForUpdateTicks)
 		{
-			CreateGameObject();
+			gameObject = CreateGameObject();
 
 			if (persistentBetweenScenes)
 			{
@@ -47,17 +48,18 @@ namespace InstaDungeon
 			}
 		}
 
-		protected void CreateGameObject()
+		protected GameObject CreateGameObject()
 		{
-			GameObject go = new GameObject(GetType().Name);
-			monoBehaviourHelper = go.AddComponent<DummyMonoBehaviour>();
+			GameObject result = new GameObject(GetType().Name);
+			monoBehaviourHelper = result.AddComponent<DummyMonoBehaviour>();
 			monoBehaviourHelper.Manager = this;
-			go.transform.SetParent(ManagerUtils.GetOrCreateManagersParent());
+			result.transform.SetParent(ManagerUtils.GetOrCreateManagersParent());
+			return result;
 		}
 
 		protected virtual void OnSceneUnLoaded(Scene scene)
 		{
-			CreateGameObject();
+			gameObject = CreateGameObject();
 		}
 
 		protected virtual void OnUpdate()
