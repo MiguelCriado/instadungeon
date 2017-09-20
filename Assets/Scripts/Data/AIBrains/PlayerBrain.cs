@@ -16,6 +16,7 @@ namespace InstaDungeon.AI
 		private static readonly string SilverKeyItemId = "Key Silver";
 		private static readonly string SilverKeyEntityId = "Silver Key";
 		private static readonly string SilverKeyPositionId = "SilverKeyPositionId";
+		private static readonly string CombatTargetId = "CombatTargetId";
 		private static readonly string StairsExitEntityId = "Stairs Exit";
 		private static readonly string StairsExitPositionId = "StairsExitPositionId";
 		private static readonly string FloorLevelId = "FloorLevelId";
@@ -71,8 +72,19 @@ namespace InstaDungeon.AI
 		{
 			return new Priority
 			(
+				Combat(),
 				ExitFloor(),
 				Explore()
+			);
+		}
+
+		private BaseNode Combat()
+		{
+			return new Sequence
+			(
+				new CanSeeAnyEnemyCondition(),
+				new AcquireClosestTargetAction(CombatTargetId),
+				new ChaseTargetAction(CombatTargetId)
 			);
 		}
 
