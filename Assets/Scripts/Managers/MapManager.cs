@@ -2,6 +2,7 @@
 using InstaDungeon.Events;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace InstaDungeon
 {
@@ -58,9 +59,9 @@ namespace InstaDungeon
 		{
 			this.map = map;
 
-			DisposeEntities(actors);
-			DisposeEntities(props);
-			DisposeEntities(items);
+			DisposeEntities(actors, (Entity entity, int2 position) => RemoveActor(entity, position));
+			DisposeEntities(props, (Entity entity, int2 position) => RemoveProp(entity, position));
+			DisposeEntities(items, (Entity entity, int2 position) => RemoveItem(entity, position));
 
 			actors.Clear();
 			props.Clear();
@@ -258,6 +259,35 @@ namespace InstaDungeon
 			return result;
 		}
 
+		public bool RemoveProp(Entity prop, int2 cellPosition)
+		{
+			bool result = false;
+			Cell cell = map[cellPosition];
+
+			if (!props.ContainsKey(prop.Guid))
+			{
+				Debug.LogError(string.Format("Cannot remove prop '{0}'. Prop not found in map.", prop.name), prop);
+			}
+			else if (cell == null)
+			{
+				Debug.LogError(string.Format("Cannot remove prop '{0}'. CellPosition ({1}) is not valid.", prop, cellPosition), prop);
+			}
+			else if (cell.Prop != prop)
+			{
+				Debug.LogError(string.Format("Cannot remove prop '{0}' from position '{1}'. The requested prop is not there.", prop, cellPosition), prop);
+			}
+			else
+			{
+				cell.Prop = null;
+				props.Remove(prop.Guid);
+				events.TriggerEvent(new PropRemovedFromMapEvent(prop, cellPosition));
+				result = true;
+				propsDirty = true;
+			}
+
+			return result;
+		}
+
 		#endregion
 
 		#region [Items]
@@ -344,12 +374,14 @@ namespace InstaDungeon
 
 		#endregion
 
-		private void DisposeEntities(Dictionary<uint, Entity> entitySet)
+		private void DisposeEntities(Dictionary<uint, Entity> entitySet, UnityAction<Entity, int2> removeEntityCallback)
 		{
 			var enumerator = entitySet.GetEnumerator();
 
 			while (enumerator.MoveNext())
 			{
+				Entity entity = enumerator.Current.Value;
+				removeEntityCallback(entity, entity.CellTransform.Position);
 				entityManager.Recycle(enumerator.Current.Key);
 			}
 		}

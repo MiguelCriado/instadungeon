@@ -16,11 +16,24 @@ namespace InstaDungeon.AI
 		private static readonly string SilverKeyItemId = "Key Silver";
 		private static readonly string SilverKeyEntityId = "Silver Key";
 		private static readonly string SilverKeyPositionId = "SilverKeyPositionId";
+		private static readonly string CombatTargetId = "CombatTargetId";
 		private static readonly string StairsExitEntityId = "Stairs Exit";
 		private static readonly string StairsExitPositionId = "StairsExitPositionId";
 		private static readonly string FloorLevelId = "FloorLevelId";
 
+		private static BehaviorTree Tree;
+
 		private GameManager gameManager;
+
+		protected override BehaviorTree GetTree()
+		{
+			if (Tree == null)
+			{
+				Tree = GenerateNewTree();
+			}
+
+			return Tree;
+		}
 
 		protected override BehaviorTree GenerateNewTree()
 		{
@@ -52,7 +65,8 @@ namespace InstaDungeon.AI
 					new RemoveVariableFromMemoryAction(ItemsMemoryId),
 					new RemoveVariableFromMemoryAction(PropsMemoryId),
 					new RemoveVariableFromMemoryAction(SilverKeyPositionId),
-					new RemoveVariableFromMemoryAction(StairsExitPositionId)
+					new RemoveVariableFromMemoryAction(StairsExitPositionId),
+					new RemoveVariableFromMemoryAction(CombatTargetId)
 				)
 			);
 		}
@@ -71,8 +85,19 @@ namespace InstaDungeon.AI
 		{
 			return new Priority
 			(
+				Combat(),
 				ExitFloor(),
 				Explore()
+			);
+		}
+
+		private BaseNode Combat()
+		{
+			return new Sequence
+			(
+				new CanSeeAnyEnemyCondition(),
+				new AcquireClosestTargetAction(CombatTargetId),
+				new ChaseTargetAction(CombatTargetId)
 			);
 		}
 
