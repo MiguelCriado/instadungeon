@@ -98,7 +98,7 @@ namespace InstaDungeon
 			if (pendingActors.Count > 0)
 			{
 				actors.AddRange(pendingActors);
-				actors.Sort((a, b) => a.Initiative.CompareTo(b.Initiative));
+				actors.Sort((a, b) => b.Initiative.CompareTo(a.Initiative));
 
 				pendingActors.Clear();
 			}

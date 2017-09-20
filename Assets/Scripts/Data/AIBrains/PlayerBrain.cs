@@ -21,7 +21,19 @@ namespace InstaDungeon.AI
 		private static readonly string StairsExitPositionId = "StairsExitPositionId";
 		private static readonly string FloorLevelId = "FloorLevelId";
 
+		private static BehaviorTree Tree;
+
 		private GameManager gameManager;
+
+		protected override BehaviorTree GetTree()
+		{
+			if (Tree == null)
+			{
+				Tree = GenerateNewTree();
+			}
+
+			return Tree;
+		}
 
 		protected override BehaviorTree GenerateNewTree()
 		{
@@ -53,7 +65,8 @@ namespace InstaDungeon.AI
 					new RemoveVariableFromMemoryAction(ItemsMemoryId),
 					new RemoveVariableFromMemoryAction(PropsMemoryId),
 					new RemoveVariableFromMemoryAction(SilverKeyPositionId),
-					new RemoveVariableFromMemoryAction(StairsExitPositionId)
+					new RemoveVariableFromMemoryAction(StairsExitPositionId),
+					new RemoveVariableFromMemoryAction(CombatTargetId)
 				)
 			);
 		}
