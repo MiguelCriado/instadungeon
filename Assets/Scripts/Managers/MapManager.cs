@@ -25,7 +25,8 @@ namespace InstaDungeon
 		private Dictionary<uint, Entity> actors;
 		private Dictionary<uint, Entity> props;
 		private Dictionary<uint, Entity> items;
-		private TileMapWeightedGraph weightedGraph;
+		private TileMapWeightedGraph defaultGraph;
+		private TileMapIgnoreActorsWeightedGraph ignoreActorsGraph;
 
 		private List<Entity> cachedActors;
 		private List<Entity> cachedProps;
@@ -57,8 +58,6 @@ namespace InstaDungeon
 
 		public void Initialize(TileMap<Cell> map)
 		{
-			this.map = map;
-
 			DisposeEntities(actors, (Entity entity, int2 position) => RemoveActor(entity, position));
 			DisposeEntities(props, (Entity entity, int2 position) => RemoveProp(entity, position));
 			DisposeEntities(items, (Entity entity, int2 position) => RemoveItem(entity, position));
@@ -67,8 +66,11 @@ namespace InstaDungeon
 			props.Clear();
 			items.Clear();
 
-			weightedGraph = new TileMapWeightedGraph(map);
-			pathfinder = new AStarSearch<int2, int>(weightedGraph, new ManhattanDistanceHeuristic());
+			this.map = map;
+
+			defaultGraph = new TileMapWeightedGraph(map);
+			pathfinder = new AStarSearch<int2, int>(defaultGraph, new ManhattanDistanceHeuristic());
+			ignoreActorsGraph = new TileMapIgnoreActorsWeightedGraph(map);
 		}
 
 		#region [Common]
@@ -368,22 +370,32 @@ namespace InstaDungeon
 
 		public int2[] GetPath(int2 start, int2 goal)
 		{
-			weightedGraph.SetGoal(goal);
+			defaultGraph.SetGoal(goal);
 			return pathfinder.Search(start, goal);
+		}
+
+		public int2[] GetPathIgnoringActors(int2 start, int2 goal)
+		{
+			ignoreActorsGraph.SetGoal(goal);
+			return pathfinder.Search(start, goal, ignoreActorsGraph);
 		}
 
 		#endregion
 
+		#region [Helpers]
+
 		private void DisposeEntities(Dictionary<uint, Entity> entitySet, UnityAction<Entity, int2> removeEntityCallback)
 		{
-			var enumerator = entitySet.GetEnumerator();
+			List<Entity> entityList = new List<Entity>(entitySet.Values);
 
-			while (enumerator.MoveNext())
+			for (int i = 0; i < entityList.Count; i++)
 			{
-				Entity entity = enumerator.Current.Value;
+				Entity entity = entityList[i];
 				removeEntityCallback(entity, entity.CellTransform.Position);
-				entityManager.Recycle(enumerator.Current.Key);
+				entityManager.Recycle(entity.Guid);
 			}
 		}
+
+		#endregion
 	}
 }

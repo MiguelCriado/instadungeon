@@ -33,7 +33,7 @@ namespace InstaDungeon.BehaviorTreeNodes
 				
 				while (enumerator.MoveNext())
 				{
-					int2[] path = mapManager.GetPath(targetPosition, enumerator.Current);
+					int2[] path = mapManager.GetPathIgnoringActors(targetPosition, enumerator.Current);
 
 					if (path.Length > 0 && path.Length < closestDistance)
 					{
@@ -54,7 +54,7 @@ namespace InstaDungeon.BehaviorTreeNodes
 
 					if (tick.Blackboard.TryGet(tileId, out currentDestiny))
 					{
-						int2[] path = mapManager.GetPath(targetPosition, currentDestiny);
+						int2[] path = mapManager.GetPathIgnoringActors(targetPosition, currentDestiny);
 						Cell cell = mapManager[currentDestiny.x, currentDestiny.y];
 
 						if (threshold.Contains(currentDestiny) && path.Length > 0 && path.Length <= closestDistance)

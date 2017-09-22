@@ -116,13 +116,13 @@ namespace InstaDungeon.AI
 						new ExitIsOpenCondition()
 					),
 					new SetEntityPositionInMemoryAsDestinyAction(PropsMemoryId, StairsExitEntityId, StairsExitPositionId),
-					new GoToStoredPositionAction(StairsExitPositionId)
+					new GoToStoredPositionAction(StairsExitPositionId, true)
 				),
 				new Sequence
 				(
 					new EntitiesMemoryContainsCondition(ItemsMemoryId, SilverKeyEntityId),
 					new SetEntityPositionInMemoryAsDestinyAction(ItemsMemoryId, SilverKeyEntityId, SilverKeyPositionId),
-					new GoToStoredPositionAction(SilverKeyPositionId)
+					new GoToStoredPositionAction(SilverKeyPositionId, true)
 				)
 			);
 		}
@@ -132,7 +132,7 @@ namespace InstaDungeon.AI
 			return new Sequence
 			(
 				new PickClosestRandomTileInThresholdAction(TileId, ThresholdId),
-				new GetOneStepCloserToStoredPositionAction(TileId)
+				new GetOneStepCloserToStoredPositionAction(TileId, true)
 			);
 		}
 

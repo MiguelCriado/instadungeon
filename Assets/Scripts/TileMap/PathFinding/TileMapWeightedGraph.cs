@@ -4,21 +4,21 @@ namespace InstaDungeon
 {
 	public class TileMapWeightedGraph : IWeightedGraph<int2, int>
 	{
-		private TileMap<Cell> map;
-		private int2 currentGoal;
+		protected static readonly int2[] Dirs = new[]
+		{
+			new int2(1, 0),
+			new int2(0, -1),
+			new int2(-1, 0),
+			new int2(0, 1)
+		};
+
+		protected TileMap<Cell> map;
+		protected int2 currentGoal;
 
 		public TileMapWeightedGraph(TileMap<Cell> map)
 		{
 			this.map = map;
 		}
-
-		private static readonly int2[] Dirs = new[]
-		{
-			new int2(1, 0),
-			new int2(0, -1),
-			new int2(-1, 0),
-			new int2(0, 1) 
-        };
 
 		public void SetGoal(int2 goal)
 		{
@@ -31,7 +31,7 @@ namespace InstaDungeon
 			return 1;
 		}
 
-		public IEnumerable<int2> Neighbors(int2 id)
+		public virtual IEnumerable<int2> Neighbors(int2 id)
 		{
 			int2 nextPosition;
 			Cell next;

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 /// <typeparam name="C">Cost type</typeparam>
 public class AStarSearch<L, C> where C : IComparable<C>
 {
-	private IWeightedGraph<L, C> graph;
+	private IWeightedGraph<L, C> defaultGraph;
 	private IAStarHeuristic<L, C> defaultHeuristic;
 	private PriorityQueue<L, C> frontier;
 	private Dictionary<L, L> cameFrom;
@@ -16,7 +16,7 @@ public class AStarSearch<L, C> where C : IComparable<C>
 
 	public AStarSearch(IWeightedGraph<L, C> graph, IAStarHeuristic<L, C> heuristic)
 	{
-		this.graph = graph;
+		defaultGraph = graph;
 		defaultHeuristic = heuristic;
 		frontier = new PriorityQueue<L, C>();
 		cameFrom = new Dictionary<L, L>();
@@ -25,10 +25,15 @@ public class AStarSearch<L, C> where C : IComparable<C>
 
 	public L[] Search(L start, L goal)
 	{
-		return Search(start, goal, defaultHeuristic);
+		return Search(start, goal, defaultGraph, defaultHeuristic);
 	}
 
-	public L[] Search(L start, L goal, IAStarHeuristic<L, C> heuristic)
+	public L[] Search(L start, L goal, IWeightedGraph<L, C> graph)
+	{
+		return Search(start, goal, graph, defaultHeuristic);
+	}
+
+	public L[] Search(L start, L goal, IWeightedGraph<L, C> graph, IAStarHeuristic<L, C> heuristic)
 	{
 		List<L> result;
 		frontier.Clear();

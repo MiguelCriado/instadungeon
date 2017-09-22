@@ -6,10 +6,12 @@ namespace InstaDungeon.BehaviorTreeNodes
 	public class GetOneStepCloserToStoredPositionAction : ActionNode
 	{
 		private string storedPositionId;
+		private bool ignoreActors;
 
-		public GetOneStepCloserToStoredPositionAction(string storedPositionIdInMemory)
+		public GetOneStepCloserToStoredPositionAction(string storedPositionIdInMemory, bool ignoreActors = false)
 		{
 			storedPositionId = storedPositionIdInMemory;
+			this.ignoreActors = ignoreActors;
 		}
 
 		protected override NodeStates Tick(Tick tick)
@@ -21,7 +23,16 @@ namespace InstaDungeon.BehaviorTreeNodes
 			{
 				MapManager mapManager = Locator.Get<MapManager>();
 				Entity target = tick.Target as Entity;
-				int2[] path = mapManager.GetPath(target.CellTransform.Position, destiny);
+				int2[] path;
+
+				if (ignoreActors == true)
+				{
+					path = mapManager.GetPathIgnoringActors(target.CellTransform.Position, destiny);
+				}
+				else
+				{
+					path = mapManager.GetPath(target.CellTransform.Position, destiny);
+				}
 
 				if (path.Length > 0)
 				{

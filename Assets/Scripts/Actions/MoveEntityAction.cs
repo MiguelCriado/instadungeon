@@ -32,18 +32,26 @@ namespace InstaDungeon.Actions
 
 			if (IsValid(Command.Entity, Command.Position))
 			{
-				float distance = int2.EuclideanDistance(Command.Entity.CellTransform.Position, Command.Position);
+				int2 origin = Command.Entity.CellTransform.Position;
+				int2 destiny = Command.Position;
+				float distance = int2.EuclideanDistance(origin, destiny);
 				targetMovementTime = distance / MovementSpeed;
 				elapsedMovementTime = 0;
+				MapManager mapManager = Locator.Get<MapManager>();
+
+				if (mapManager.Map[origin.x, origin.y].Visibility == VisibilityType.Obscured
+					&& mapManager.Map[destiny.x, destiny.y].Visibility == VisibilityType.Obscured)
+				{
+					targetMovementTime = 0;
+				}
 
 				GameManager gameManager = Locator.Get<GameManager>();
-
-				cachedOrigin = gameManager.Renderer.TileMapToWorldPosition(Command.Entity.CellTransform.Position);
-				cachedDestiny = gameManager.Renderer.TileMapToWorldPosition(Command.Position);
+				cachedOrigin = gameManager.Renderer.TileMapToWorldPosition(origin);
+				cachedDestiny = gameManager.Renderer.TileMapToWorldPosition(destiny);
 
 				Entity entity = command.Entity;
 				originalPosition = entity.CellTransform.Position;
-				entity.Events.TriggerEvent(new EntityStartMovementEvent(entity.Guid, originalPosition, command.Position));
+				entity.Events.TriggerEvent(new EntityStartMovementEvent(entity.Guid, origin, destiny));
 			}
 		}
 
@@ -53,9 +61,8 @@ namespace InstaDungeon.Actions
 			{
 				float clampedStepMovementTime = Mathf.Min(targetMovementTime - elapsedMovementTime, deltaTime);
 				elapsedMovementTime += clampedStepMovementTime;
-
-				Vector3 targetPosition = Vector3.Lerp(cachedOrigin, cachedDestiny, elapsedMovementTime / targetMovementTime);
-
+				float displacementFraction = targetMovementTime == 0 ? 1 : elapsedMovementTime / targetMovementTime;
+				Vector3 targetPosition = Vector3.Lerp(cachedOrigin, cachedDestiny, displacementFraction);
 				Command.Entity.transform.position = targetPosition;
 
 				if (elapsedMovementTime >= targetMovementTime)

@@ -9,12 +9,14 @@ namespace InstaDungeon.BehaviorTreeNodes
 		private string storedPositionId;
 		private string pathId;
 		private string currentPathNodeId;
+		private bool ignoreActors;
 
-		public GoToStoredPositionAction(string storedPositionIdInMemory)
+		public GoToStoredPositionAction(string storedPositionIdInMemory, bool ignoreActors = false)
 		{
 			storedPositionId = storedPositionIdInMemory;
 			pathId = string.Format("{0} - Path - {1}", storedPositionId, Guid.NewGuid());
 			currentPathNodeId = string.Format("{0} - CurrentPathNode - {1}", storedPositionId, Guid.NewGuid());
+			this.ignoreActors = ignoreActors;
 		}
 
 		protected override void Open(Tick tick)
@@ -25,8 +27,17 @@ namespace InstaDungeon.BehaviorTreeNodes
 			{
 				MapManager mapManager = Locator.Get<MapManager>();
 				Entity target = tick.Target as Entity;
+				int2[] path;
 
-				int2[] path = mapManager.GetPath(target.CellTransform.Position, destiny);
+				if (ignoreActors == true)
+				{
+					path = mapManager.GetPathIgnoringActors(target.CellTransform.Position, destiny);
+				}
+				else
+				{
+					path = mapManager.GetPath(target.CellTransform.Position, destiny);
+				}
+
 				tick.Blackboard.Set(pathId, path);
 				tick.Blackboard.Set(currentPathNodeId, 0);
 			}
