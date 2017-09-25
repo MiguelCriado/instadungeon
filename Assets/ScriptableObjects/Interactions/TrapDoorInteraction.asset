@@ -11,4 +11,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b61cc08fc530ae74aa144cd5a9ed22a4, type: 3}
   m_Name: TrapDoorInteraction
   m_EditorClassIdentifier: 
+  minRange: 1
+  maxRange: 1
   requiredItem: {fileID: 11400000, guid: 2183099b449b63945b456de66761d5f2, type: 2}

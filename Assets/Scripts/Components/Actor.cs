@@ -31,22 +31,41 @@ namespace InstaDungeon.Components
 
 		public void Up()
 		{
-			ProcessCommand(up);
+			ProcessMoveCommand(up);
 		}
 
 		public void Right()
 		{
-			ProcessCommand(right);
+			ProcessMoveCommand(right);
 		}
 
 		public void Down()
 		{
-			ProcessCommand(down);
+			ProcessMoveCommand(down);
 		}
 
 		public void Left()
 		{
-			ProcessCommand(left);
+			ProcessMoveCommand(left);
+		}
+
+		public void InteractWithCurrentTile()
+		{
+			if (turn.EntityCanAct)
+			{
+				int2 actionPosition = entity.CellTransform.Position;
+				Cell actionCell = mapManager.Map[actionPosition];
+
+				if (actionCell != null)
+				{
+					Interactable interactable = FindValidInteractable(actionCell, entity);
+
+					if (interactable != null)
+					{
+						interactable.Interact(entity, turn.Token);
+					}
+				}
+			}
 		}
 
 		public void PassTurn()
@@ -57,7 +76,7 @@ namespace InstaDungeon.Components
 			}
 		}
 
-		private void ProcessCommand(int2 actionDirection)
+		private void ProcessMoveCommand(int2 actionDirection)
 		{
 			if (turn.EntityCanAct)
 			{
@@ -66,50 +85,13 @@ namespace InstaDungeon.Components
 
 				if (actionCell != null)
 				{
-					bool interactionFound = false;
-					Interactable interactable;
+					Interactable interactable = FindValidInteractable(actionCell, entity);
 
-					if (actionCell.Actor != null)
+					if (interactable != null)
 					{
-						interactable = actionCell.Actor.GetComponent<Interactable>();
-
-						if (interactable != null && interactable.IsValidInteraction(entity))
-						{
-							interactable.Interact(entity, turn.Token);
-							interactionFound = true;
-						}
+						interactable.Interact(entity, turn.Token);
 					}
-
-					if (!interactionFound && actionCell.Prop != null)
-					{
-						interactable = actionCell.Prop.GetComponent<Interactable>();
-
-						if (interactable != null && interactable.IsValidInteraction(entity))
-						{
-							interactable.Interact(entity, turn.Token);
-							interactionFound = true;
-						}
-					}
-
-					if (!interactionFound && actionCell.Items.Count > 0)
-					{
-						int i = 0;
-
-						while (!interactionFound && i < actionCell.Items.Count)
-						{
-							interactable = actionCell.Items[i].GetComponent<Interactable>();
-
-							if (interactable != null && interactable.IsValidInteraction(entity))
-							{
-								interactable.Interact(entity, turn.Token);
-								interactionFound = true;
-							}
-
-							i++;
-						}
-					}
-
-					if (!interactionFound)
+					else
 					{
 						TryMove(actionDirection.x, actionDirection.y);
 					}
@@ -125,6 +107,51 @@ namespace InstaDungeon.Components
 			{
 				locomotion.Move(new int2(x, y), turn.Token);
 			}
+		}
+
+		private Interactable FindValidInteractable(Cell actionCell, Entity interactor)
+		{
+			Interactable result = null;
+			Interactable interactable = null;
+
+			if (actionCell.Actor != null)
+			{
+				interactable = actionCell.Actor.GetComponent<Interactable>();
+
+				if (interactable != null && interactable.IsValidInteraction(entity))
+				{
+					result = interactable;
+				}
+			}
+
+			if (result == null && actionCell.Prop != null)
+			{
+				interactable = actionCell.Prop.GetComponent<Interactable>();
+
+				if (interactable != null && interactable.IsValidInteraction(entity))
+				{
+					result = interactable;
+				}
+			}
+
+			if (result == null && actionCell.Items.Count > 0)
+			{
+				int i = 0;
+
+				while (result == null && i < actionCell.Items.Count)
+				{
+					interactable = actionCell.Items[i].GetComponent<Interactable>();
+
+					if (interactable != null && interactable.IsValidInteraction(entity))
+					{
+						result = interactable;
+					}
+
+					i++;
+				}
+			}
+
+			return result;
 		}
 
 		#endregion

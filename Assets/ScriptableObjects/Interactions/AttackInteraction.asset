@@ -11,3 +11,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e67ebb42d53c7444592724ea15f4ee20, type: 3}
   m_Name: AttackInteraction
   m_EditorClassIdentifier: 
+  minRange: 1
+  maxRange: 1
