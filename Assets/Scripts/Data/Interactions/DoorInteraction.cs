@@ -12,7 +12,13 @@ namespace InstaDungeon
 
 		[SerializeField] protected ItemInfo requiredKey;
 
-		public override bool IsValidInteraction(Entity activeActor, Entity pasiveActor)
+		public override IAction Interact(Entity activeActor, Entity pasiveActor)
+		{
+			OpenDoorAction result = new OpenDoorAction(activeActor, pasiveActor, requiredKey);
+			return result;
+		}
+
+		protected override bool IsValidInteractionInternal(Entity activeActor, Entity pasiveActor)
 		{
 			bool result = pasiveActor.BlocksMovement;
 
@@ -22,12 +28,6 @@ namespace InstaDungeon
 				result = inventory != null && inventory.BagContains(requiredKey);
 			}
 
-			return result;
-		}
-
-		public override IAction Interact(Entity activeActor, Entity pasiveActor)
-		{
-			OpenDoorAction result = new OpenDoorAction(activeActor, pasiveActor, requiredKey);
 			return result;
 		}
 	}

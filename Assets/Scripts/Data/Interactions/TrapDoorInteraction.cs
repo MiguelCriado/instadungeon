@@ -12,16 +12,16 @@ namespace InstaDungeon
 
 		[SerializeField] private ItemInfo requiredItem;
 
-		public override bool IsValidInteraction(Entity activeActor, Entity pasiveActor)
-		{
-			Inventory inventory = activeActor.GetComponent<Inventory>();
-			return inventory != null && inventory.BagContains(requiredItem);
-		}
-
 		public override IAction Interact(Entity activeActor, Entity pasiveActor)
 		{
 			OpenTrapDoorAction result = new OpenTrapDoorAction(activeActor, pasiveActor, requiredItem);
 			return result;
+		}
+
+		protected override bool IsValidInteractionInternal(Entity activeActor, Entity pasiveActor)
+		{
+			Inventory inventory = activeActor.GetComponent<Inventory>();
+			return inventory != null && inventory.BagContains(requiredItem);
 		}
 	}
 }

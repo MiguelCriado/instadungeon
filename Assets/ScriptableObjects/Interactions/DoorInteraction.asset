@@ -11,4 +11,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d1049151a2ec8f4b98909c9d655be04, type: 3}
   m_Name: DoorInteraction
   m_EditorClassIdentifier: 
+  minRange: 1
+  maxRange: 1
   requiredKey: {fileID: 0}

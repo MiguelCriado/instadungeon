@@ -348,6 +348,11 @@ public struct int2 : System.IEquatable<int2>
 		return (a - b).chebyshevLength;
 	}
 
+	public static int ManhattanDistance(int2 a, int2 b)
+	{
+		return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
+	}
+
 	public override string ToString()
 	{
 		return "[ " + x + " , " + y + " ]";
