@@ -11,11 +11,13 @@ namespace InstaDungeon.Configuration
 		public string NameId { get { return nameId; } }
 		public Sprite Avatar { get { return avatar; } }
 		public InventorySlotType InventorySlot { get { return inventorySlot; } }
+		public bool Stackable { get { return stackable; } }
 
 		[SerializeField] protected uint id;
 		[SerializeField] protected string nameId;
 		[SerializeField] protected Sprite avatar;
-		[SerializeField] private InventorySlotType inventorySlot;
+		[SerializeField] protected InventorySlotType inventorySlot;
+		[SerializeField] protected bool stackable;
 
 		protected virtual void Reset()
 		{
@@ -23,6 +25,7 @@ namespace InstaDungeon.Configuration
 			nameId = Guid.NewGuid().ToString();
 			avatar = null;
 			inventorySlot = InventorySlotType.None;
+			stackable = false;
 		}
 	}
 }

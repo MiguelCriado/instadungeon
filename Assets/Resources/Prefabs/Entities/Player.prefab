@@ -117,6 +117,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1458765301641340
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4937903445127300}
+  m_Layer: 0
+  m_Name: Special Items
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1507571216597276
 GameObject:
   m_ObjectHideFlags: 1
@@ -266,6 +281,7 @@ Transform:
   m_Children:
   - {fileID: 4306684628448724}
   - {fileID: 4871836129218252}
+  - {fileID: 4937903445127300}
   m_Father: {fileID: 4000013327510206}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -379,6 +395,19 @@ Transform:
   m_Father: {fileID: 4004403304326140}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4937903445127300
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1458765301641340}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4004403304326140}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &114037081721699196
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -442,7 +471,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010063882004}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 47d505d20a36ade4aa72e67a8c9a3f2d, type: 3}
   m_Name: 
@@ -524,6 +553,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: Fist
+  amount: 1
   weaponInfo: {fileID: 11400000, guid: 6d1cf621a893f01449d454f5a7ffb30f, type: 2}
   additionalRange: 0
   additionalMinDamage: 0
@@ -534,7 +564,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010063882004}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3da3195bddce78545a0a5c314f0a6c7e, type: 3}
   m_Name: 
@@ -555,17 +585,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b88bd5c7f5c14640bb64d0f39c3c665, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bag: []
-  bagCapacity: 10
-  keys: 02000000030000000400000005000000
+  inventoryContainer: {fileID: 4004403304326140}
+  equipmentContainer: {fileID: 4306684628448724}
+  bagContainer: {fileID: 4871836129218252}
+  specialContainer: {fileID: 4937903445127300}
+  keys: 04000000050000000600000007000000
   values:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 114764214809874202}
   - {fileID: 0}
-  inventoryContainer: {fileID: 4004403304326140}
-  equipmentContainer: {fileID: 4306684628448724}
-  bagContainer: {fileID: 4871836129218252}
+  bag: []
+  bagCapacity: 0
 --- !u!114 &114827804979738364
 MonoBehaviour:
   m_ObjectHideFlags: 1

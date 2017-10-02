@@ -10,15 +10,15 @@ namespace InstaDungeon.Commands
 	{
 		public Entity Actor { get; private set; }
 		public Entity TrapDoor { get; private set; }
-		public ItemInfo RequiredItem { get; private set; }
+		public KeyInfo RequiredKey { get; private set; }
 
-		private Item usedItem;
+		private Key usedKey;
 
-		public OpenTrapDoorCommand(Entity actor, Entity trapDoor, ItemInfo requiredItem)
+		public OpenTrapDoorCommand(Entity actor, Entity trapDoor, KeyInfo requiredKey)
 		{
 			Actor = actor;
 			TrapDoor = trapDoor;
-			RequiredItem = requiredItem;
+			RequiredKey = requiredKey;
 		}
 
 		public override void Execute()
@@ -29,10 +29,10 @@ namespace InstaDungeon.Commands
 
 			if (inventory != null)
 			{
-				if (inventory.BagContains(RequiredItem))
+				if (inventory.KeysContains(RequiredKey))
 				{
-					usedItem = inventory.RemoveFromBag(RequiredItem);
-					Locator.Get<EntityManager>().Recycle(usedItem.GetComponent<Entity>().Guid);
+					usedKey = inventory.RemoveKey(RequiredKey, 1);
+					Locator.Get<EntityManager>().Recycle(usedKey.GetComponent<Entity>().Guid);
 
 					TrapDoor.BlocksLineOfSight = false;
 					TrapDoor.BlocksMovement = false;
@@ -67,7 +67,7 @@ namespace InstaDungeon.Commands
 					animator.SetBool("IsOpen", false);
 				}
 
-				inventory.AddToBag(usedItem);
+				inventory.AddKey(usedKey);
 			}
 		}
 	}

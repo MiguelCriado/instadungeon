@@ -8,20 +8,20 @@ namespace InstaDungeon
 	[CreateAssetMenu(menuName = "InstaDungeon/Interactions/TrapDoorInteraction", fileName = "new TrapDoorInteraction", order = 1000)]
 	public class TrapDoorInteraction : Interaction
 	{
-		public ItemInfo RequiredItem { get { return requiredItem; } }
+		public KeyInfo RequiredKey { get { return requiredKey; } }
 
-		[SerializeField] private ItemInfo requiredItem;
+		[SerializeField] private KeyInfo requiredKey;
 
 		public override IAction Interact(Entity activeActor, Entity pasiveActor)
 		{
-			OpenTrapDoorAction result = new OpenTrapDoorAction(activeActor, pasiveActor, requiredItem);
+			OpenTrapDoorAction result = new OpenTrapDoorAction(activeActor, pasiveActor, requiredKey);
 			return result;
 		}
 
 		protected override bool IsValidInteractionInternal(Entity activeActor, Entity pasiveActor)
 		{
 			Inventory inventory = activeActor.GetComponent<Inventory>();
-			return inventory != null && inventory.BagContains(requiredItem);
+			return inventory != null && inventory.KeysContains(requiredKey);
 		}
 	}
 }

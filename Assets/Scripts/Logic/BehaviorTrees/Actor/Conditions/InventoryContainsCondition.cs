@@ -36,14 +36,14 @@ namespace InstaDungeon.BehaviorTreeNodes
 				{
 					Item item = null;
 
-					if (slotsToLookUp[i] == InventorySlotType.None && slotsToLookUp[i] != InventorySlotType.Bag)
+					if (ShouldCheckSlot(slotsToLookUp[i], Inventory.EquipSlotTypes) == true)
 					{
 						item = inventory.GetEquippedItem(slotsToLookUp[i]);
-					}
 
-					if (item != null)
-					{
-						result = NodeStates.Success;
+						if (item != null)
+						{
+							result = NodeStates.Success;
+						}
 					}
 
 					i++;
@@ -58,10 +58,34 @@ namespace InstaDungeon.BehaviorTreeNodes
 						result = NodeStates.Success;
 					}
 				}
+
+				if (result == NodeStates.Failure && slotsToLookUp.Contains(InventorySlotType.Key))
+				{
+					Key key = inventory.FindKey(itemNameId);
+
+					if (key != null)
+					{
+						result = NodeStates.Success;
+					}
+				}
 			}
 			else
 			{
 				result = NodeStates.Error;
+			}
+
+			return result;
+		}
+
+		private bool ShouldCheckSlot(InventorySlotType slot, InventorySlotType[] validSlots)
+		{
+			bool result = false;
+			int i = 0;
+
+			while (result == false && i < validSlots.Length)
+			{
+				result |= slot == validSlots[i];
+				i++;
 			}
 
 			return result;

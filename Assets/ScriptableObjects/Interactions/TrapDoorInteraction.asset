@@ -13,4 +13,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minRange: 1
   maxRange: 1
-  requiredItem: {fileID: 11400000, guid: 2183099b449b63945b456de66761d5f2, type: 2}
+  requiredKey: {fileID: 11400000, guid: 2183099b449b63945b456de66761d5f2, type: 2}

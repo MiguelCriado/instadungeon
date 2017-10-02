@@ -43,25 +43,38 @@ namespace InstaDungeon.Components
 
 					for (int i = 0; i < items.Count; i++)
 					{
-						if (inventory.AvailableBagSlots > 0)
+						Item item = items[i].GetComponent<Item>();
+
+						if (item != null)
 						{
-							if (mapManager.RemoveItem(items[i], movementEvent.CurrentPosition))
+							if (item.ItemInfo.InventorySlot == InventorySlotType.Bag)
 							{
-								Item itemToRemove = items[i].GetComponent<Item>();
-
-								if (itemToRemove != null)
+								if (inventory.AvailableBagSlots > 0)
 								{
-									inventory.AddToBag(itemToRemove);
-									AddItemAnimation(itemToRemove);
+									if (mapManager.RemoveItem(items[i], movementEvent.CurrentPosition))
+									{
+										inventory.AddToBag(item);
+										AddItemAnimation(item);
 
-									// TODO : add item picked event
+										// TODO : add item picked event
+									}
+								}
+								else
+								{
+									// TODO : add inventory full event
+									break;
 								}
 							}
-						}
-						else
-						{
-							// TODO : add inventory full event
-							break;
+							else if (item.ItemInfo.InventorySlot == InventorySlotType.Key)
+							{
+								Key key = item.GetComponent<Key>();
+
+								if (key != null && mapManager.RemoveItem(items[i], movementEvent.CurrentPosition))
+								{
+									inventory.AddKey(key);
+									AddItemAnimation(key);
+								}
+							}
 						}
 					}
 				}
