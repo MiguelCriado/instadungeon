@@ -112,18 +112,16 @@ namespace InstaDungeon.Actions
 		private static int SimulateAttack(Entity attacker, Entity defender)
 		{
 			int result = int.MinValue;
-
 			Inventory attackerInventory = attacker.GetComponent<Inventory>();
 			Health defenderHealth = defender.GetComponent<Health>();
 
 			if (attackerInventory != null && defenderHealth != null)
 			{
-				Item mainHandItem = attackerInventory.GetEquippedItem(InventorySlotType.MainHand);
+				Item mainHandItem = attackerInventory.GetItem(InventorySlotType.MainHand);
 
 				if (mainHandItem != null && mainHandItem.GetType() == typeof(Weapon))
 				{
 					Weapon weapon = mainHandItem as Weapon;
-
 					result = defenderHealth.SimulateAttack(weapon);
 				}
 			}

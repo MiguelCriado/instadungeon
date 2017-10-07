@@ -21,7 +21,7 @@ namespace InstaDungeon
 		protected override bool IsValidInteractionInternal(Entity activeActor, Entity pasiveActor)
 		{
 			Inventory inventory = activeActor.GetComponent<Inventory>();
-			return inventory != null && inventory.KeysContains(requiredKey);
+			return inventory != null && inventory.Contains(requiredKey);
 		}
 	}
 }

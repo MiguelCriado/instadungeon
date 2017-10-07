@@ -20,84 +20,92 @@ namespace InstaDungeon.Components
 
 	public class Inventory : MonoBehaviour, ISerializationCallbackReceiver
 	{
-		public static readonly InventorySlotType[] EquipSlotTypes = new InventorySlotType[]
-		{
-			InventorySlotType.Head,
-			InventorySlotType.Body,
-			InventorySlotType.MainHand,
-			InventorySlotType.OffHand
-		};
-
-		public int BagCapacity { get { return bagCapacity; } }
-		public int AvailableBagSlots { get { return bagCapacity - bag.Count; } }
-
-		// Containers
-		[SerializeField] private Transform inventoryContainer;
-		[SerializeField] private Transform equipmentContainer;
-		[SerializeField] private Transform bagContainer;
-		[SerializeField] private Transform specialContainer;
-		// Equipment
 		[SerializeField] private List<InventorySlotType> keys = new List<InventorySlotType>();
 		[SerializeField] private List<Item> values = new List<Item>();
-		private Dictionary<InventorySlotType, Item> equipment = new Dictionary<InventorySlotType, Item>();
-		private List<Item> equipmentCache = new List<Item>();
-		private bool equipmentDirty = true;
-		// Bag
-		[SerializeField] private List<Item> bag;
-		[SerializeField] private int bagCapacity;
-		// Special Items
-		private Dictionary<KeyInfo, Key> lockKeys = new Dictionary<KeyInfo, Key>();
-		private List<Key> lockKeysCache = new List<Key>();
-		private bool lockKeysDirty = true;
-		//private Gold gold;
-		// Managers
-		private EntityManager entityManager;
+
+		private Transform inventoryContainer;
+		private Dictionary<InventorySlotType, Item> items = new Dictionary<InventorySlotType, Item>();
+		private List<Item> itemsCache = new List<Item>();
+		private bool itemsDirty = true;
 
 		private void OnValidate()
 		{
-			RefreshEquipment();
+			RefreshItemsSlots();
 		}
 
 		private void Reset()
 		{
-			RetrieveContainers();
-			RefreshEquipment();
+			RetrieveContainer();
+			RefreshItemsSlots();
 		}
 
 		private void Awake()
 		{
-			entityManager = Locator.Get<EntityManager>();
-			RetrieveContainers();
-			RefreshEquipment();
+			RetrieveContainer();
+			RefreshItemsSlots();
 		}
 
-		#region [Common Operations]
+		#region [Public API]
+
+		public Item GetItem(InventorySlotType slot)
+		{
+			Item result;
+			items.TryGetValue(slot, out result);
+			return result;
+		}
+
+		public Item FindItem(string itemNameId)
+		{
+			return GetItemsCache().Find(x => x.ItemInfo.NameId == itemNameId);
+		}
 
 		public bool AddItem(Item item)
 		{
 			bool result = false;
-			Type itemType = item.GetType();
+			InventorySlotType itemSlot = item.ItemInfo.InventorySlot;
 
-			//if (itemType == typeof(Gold))
-			//{
-			//	// TODO
-			//}
-			//else
-			if (itemType == typeof(Key))
+			if (items.ContainsKey(itemSlot) && items[itemSlot] != null)
 			{
-				AddKey(item as Key);
-				result = true;
-			}
-			else if (item.ItemInfo.InventorySlot == InventorySlotType.Bag)
-			{
-				result = AddToBag(item);
+				throw new ArgumentException(string.Format("Slot already occupied by {0}", items[itemSlot]));
 			}
 			else
 			{
-				if (Array.Exists(EquipSlotTypes, x => x == item.ItemInfo.InventorySlot) == true)
-				{
-					result = EquipItem(item, item.ItemInfo.InventorySlot);
-				}
+				items[itemSlot] = item;
+				AttachToInventory(item, inventoryContainer);
+				itemsDirty = true;
+				result = true;
+				// TODO: trigger Event
+			}
+
+			return result;
+		}
+
+		public bool RemoveItem(Item item)
+		{
+			bool result = false;
+			InventorySlotType itemSlot = item.ItemInfo.InventorySlot;
+
+			if (items.ContainsKey(itemSlot) && items[itemSlot] != null)
+			{
+				Item itemToRemove = items[itemSlot];
+				itemToRemove.transform.SetParent(null);
+				itemToRemove.gameObject.SetActive(true);
+				items[itemSlot] = null;
+				itemsDirty = true;
+				result = true;
+				// TODO: trigger event
+			}
+
+			return result;
+		}
+
+		public Item RemoveItem(ItemInfo itemInfo)
+		{
+			Item result = GetItemsCache().Find(x => x.ItemInfo == itemInfo);
+
+			if (result != null)
+			{
+				RemoveItem(result);
 			}
 
 			return result;
@@ -105,211 +113,33 @@ namespace InstaDungeon.Components
 
 		public bool Contains(ItemInfo itemInfo)
 		{
-			return EquipmentContains(itemInfo) || BagContains(itemInfo) || KeysContains(itemInfo);
+			return GetItemsCache().Find(x => x.ItemInfo == itemInfo);
 		}
 
-		#endregion
-
-		#region [Equipment Operations]
-
-		public Item GetEquippedItem(InventorySlotType slot)
+		public bool Contains(Item item)
 		{
-			Item result = null;
-
-			if (Array.Exists(EquipSlotTypes, x => x == slot) == true)
-			{
-				result = equipment[slot];
-			}
-			else
-			{
-				Locator.Log.Error(string.Format("Equipped item slot cannot be of type {0}", slot));
-			}
-
-			return result;
+			return GetItemsCache().Contains(item);
 		}
 
-		public bool EquipmentContains(ItemInfo itemInfo)
+		public List<Item> GetItemsCache()
 		{
-			return GetEquippedItems().Find(x => x.ItemInfo == itemInfo) != null;
-		}
-
-		public List<Item> GetEquippedItems()
-		{
-			if (equipmentDirty == true)
+			if (itemsDirty == true)
 			{
-				equipmentCache = new List<Item>(equipment.Values);
-				equipmentDirty = false;
-			}
+				itemsCache = new List<Item>();
+				var enumerator = items.Values.GetEnumerator();
 
-			return equipmentCache;
-		}
-
-		public bool EquipItem(Item item, InventorySlotType slot)
-		{
-			bool result = false;
-
-			if 
-			(
-				item.ItemInfo.InventorySlot == slot
-				&& Array.Exists(EquipSlotTypes, x => x == item.ItemInfo.InventorySlot) == true
-			)
-			{
-				Item itemInSlot = equipment[slot];
-
-				if (itemInSlot != null)
+				while (enumerator.MoveNext())
 				{
-					throw new Exception(string.Format("Slot already occupied by {0}", itemInSlot));
+					if (enumerator.Current != null)
+					{
+						itemsCache.Add(enumerator.Current);
+					}
 				}
 
-				equipment[slot] = item;
-				AttachToInventory(item, equipmentContainer);
-				equipmentDirty = true;
-
-				result = true;
-			}
-			else
-			{
-				Debug.LogError(string.Format("slot parameter ({0}) doesn't match item's slot ({1})", slot, item.ItemInfo.InventorySlot));
+				itemsDirty = false;
 			}
 
-			return result;
-		}
-
-		public void UnequipItem(Item item)
-		{
-			// TODO get the item to the bag
-		}
-
-		#endregion
-
-		#region [Bag Operations]
-
-		public List<Item> GetBagItems()
-		{
-			return bag;
-		}
-
-		public bool AddToBag(Item item)
-		{
-			bool result = false;
-
-			if (bag.Count < bagCapacity)
-			{
-				bag.Add(item);
-				AttachToInventory(item, bagContainer);
-				result = true;
-			}
-
-			return result;
-		}
-
-		public bool RemoveFromBag(Item item)
-		{
-			bool result = bag.Remove(item);
-			item.transform.SetParent(null);
-			item.gameObject.SetActive(true);
-			return result;
-		}
-
-		public bool BagContains(Item item)
-		{
-			return bag.Contains(item);
-		}
-
-		public bool BagContains(ItemInfo item)
-		{
-			return bag.Find(x => x.ItemInfo == item) != null;
-		}
-
-		public List<Item> FindInBag(string nameId)
-		{
-			return bag.FindAll(x => x.ItemInfo.NameId == nameId);
-		}
-
-		public Item RemoveFromBag(ItemInfo item)
-		{
-			Item result = bag.Find(x => x.ItemInfo == item);
-
-			if (result != null)
-			{
-				RemoveFromBag(result);
-			}
-
-			return result;
-		}
-
-		#endregion
-
-		#region [Special Items Operations]
-
-		// TODO: gold operations
-
-		public Key GetKey(KeyInfo keyType)
-		{
-			Key result = null;
-			lockKeys.TryGetValue(keyType, out result);
-			return result;
-		}
-
-		public void AddKey(Key key)
-		{
-			if (lockKeys.ContainsKey(key.KeyInfo))
-			{
-				lockKeys[key.KeyInfo].Amount += key.Amount;
-				entityManager.Recycle(key.GetComponent<Entity>().Guid);
-			}
-			else
-			{
-				lockKeys[key.KeyInfo] = key;
-				AttachToInventory(key, specialContainer);
-				lockKeysDirty = true;
-			}
-		}
-
-		public Key RemoveKey(KeyInfo keyType, int amount)
-		{
-			Key result = null;
-
-			if (lockKeys.TryGetValue(keyType, out result))
-			{
-				int finalAmount = result.Amount - amount;
-				
-				if (finalAmount == 0)
-				{
-					lockKeys.Remove(keyType);
-					result.transform.SetParent(null);
-					result.gameObject.SetActive(true);
-				}
-				else
-				{
-					result.Amount = finalAmount;
-					result = entityManager.Spawn(keyType.NameId).GetComponent<Key>();
-					result.Amount = amount;
-				}
-			}
-
-			return result;
-		}
-
-		public Key FindKey(string nameId)
-		{
-			return GetAllKeys().Find(x => x.ItemInfo.NameId == nameId);
-		}
-
-		public bool KeysContains(ItemInfo itemInfo)
-		{
-			return GetAllKeys().Find(x => x.ItemInfo == itemInfo) != null;
-		}
-
-		public List<Key> GetAllKeys()
-		{
-			if (lockKeysDirty == true)
-			{
-				lockKeysCache = new List<Key>(lockKeys.Values);
-				lockKeysDirty = false;
-			}
-
-			return lockKeysCache;
+			return itemsCache;
 		}
 
 		#endregion
@@ -321,7 +151,7 @@ namespace InstaDungeon.Components
 			keys.Clear();
 			values.Clear();
 
-			var enumerator = equipment.GetEnumerator();
+			var enumerator = items.GetEnumerator();
 
 			while (enumerator.MoveNext())
 			{
@@ -332,11 +162,11 @@ namespace InstaDungeon.Components
 
 		public void OnAfterDeserialize()
 		{
-			equipment = new Dictionary<InventorySlotType, Item>();
+			items = new Dictionary<InventorySlotType, Item>();
 
 			for (int i = 0; i < Math.Min(keys.Count, values.Count); i++)
 			{
-				equipment.Add(keys[i], values[i]);
+				items.Add(keys[i], values[i]);
 			}
 		}
 
@@ -344,12 +174,9 @@ namespace InstaDungeon.Components
 
 		#region [Helpers]
 
-		private void RetrieveContainers()
+		private void RetrieveContainer()
 		{
 			inventoryContainer = transform.GetOrCreateContainer("Inventory");
-			equipmentContainer = inventoryContainer.GetOrCreateContainer("Equipment");
-			bagContainer = inventoryContainer.GetOrCreateContainer("Bag");
-			specialContainer = inventoryContainer.GetOrCreateContainer("Special Items");
 		}
 
 		private void AttachToInventory(Item item, Transform container)
@@ -359,21 +186,22 @@ namespace InstaDungeon.Components
 			item.gameObject.SetActive(false);
 		}
 
-		private void RefreshEquipment()
+		private void RefreshItemsSlots()
 		{
 			OnAfterDeserialize();
 
-			if (equipment.Count != EquipSlotTypes.Length - 1)
+			Array slotTypes = Enum.GetValues(typeof(InventorySlotType));
+
+			if (items.Count != slotTypes.Length)
 			{
-				for (int i = 0; i < EquipSlotTypes.Length; i++)
+				var enumerator = slotTypes.GetEnumerator();
+				
+				while (enumerator.MoveNext())
 				{
-					if (!equipment.ContainsKey(EquipSlotTypes[i]))
-					{
-						equipment[EquipSlotTypes[i]] = null;
-					}
+					items[(InventorySlotType)enumerator.Current] = null;
 				}
 
-				equipmentDirty = true;
+				itemsDirty = true;
 			}
 
 			OnBeforeSerialize();

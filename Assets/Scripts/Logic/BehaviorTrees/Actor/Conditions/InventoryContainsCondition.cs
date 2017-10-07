@@ -24,7 +24,6 @@ namespace InstaDungeon.BehaviorTreeNodes
 		protected override NodeStates Tick(Tick tick)
 		{
 			NodeStates result = NodeStates.Failure;
-
 			Entity target = tick.Target as Entity;
 			Inventory inventory = target.GetComponent<Inventory>();
 
@@ -34,58 +33,19 @@ namespace InstaDungeon.BehaviorTreeNodes
 
 				while (result == NodeStates.Failure && i < slotsToLookUp.Count)
 				{
-					Item item = null;
+					Item item = inventory.GetItem(slotsToLookUp[i]);
 
-					if (ShouldCheckSlot(slotsToLookUp[i], Inventory.EquipSlotTypes) == true)
+					if (item != null && item.ItemInfo.NameId == itemNameId)
 					{
-						item = inventory.GetEquippedItem(slotsToLookUp[i]);
-
-						if (item != null)
-						{
-							result = NodeStates.Success;
-						}
+						result = NodeStates.Success;
 					}
 
 					i++;
-				}
-
-				if (result == NodeStates.Failure && slotsToLookUp.Contains(InventorySlotType.Bag))
-				{
-					List<Item> itemsInBag = inventory.FindInBag(itemNameId);
-
-					if (itemsInBag.Count > 0)
-					{
-						result = NodeStates.Success;
-					}
-				}
-
-				if (result == NodeStates.Failure && slotsToLookUp.Contains(InventorySlotType.Key))
-				{
-					Key key = inventory.FindKey(itemNameId);
-
-					if (key != null)
-					{
-						result = NodeStates.Success;
-					}
 				}
 			}
 			else
 			{
 				result = NodeStates.Error;
-			}
-
-			return result;
-		}
-
-		private bool ShouldCheckSlot(InventorySlotType slot, InventorySlotType[] validSlots)
-		{
-			bool result = false;
-			int i = 0;
-
-			while (result == false && i < validSlots.Length)
-			{
-				result |= slot == validSlots[i];
-				i++;
 			}
 
 			return result;

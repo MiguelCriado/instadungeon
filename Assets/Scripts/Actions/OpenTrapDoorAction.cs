@@ -19,7 +19,7 @@ namespace InstaDungeon.Actions
 
 			if (itemInteractor != null)
 			{
-				itemInteractor.AddItem(command.RequiredKey)
+				itemInteractor.AddItem(command.RequiredItem)
 				.Done(() =>
 				{
 					command.Execute();

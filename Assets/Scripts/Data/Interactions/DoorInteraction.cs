@@ -25,7 +25,7 @@ namespace InstaDungeon
 			if (result == true)
 			{
 				Inventory inventory = activeActor.GetComponent<Inventory>();
-				result = inventory != null && inventory.BagContains(requiredKey);
+				result = inventory != null && inventory.Contains(requiredKey);
 			}
 
 			return result;
