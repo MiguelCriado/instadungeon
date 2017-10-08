@@ -185,7 +185,7 @@ MonoBehaviour:
   m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: d7363edd4ddfc1f4cab851f53d6dfd6b, type: 2}
   m_Color: {r: 0.7254902, g: 0.34117648, b: 0.14901961, a: 1}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
@@ -212,9 +212,9 @@ MonoBehaviour:
   m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: d7363edd4ddfc1f4cab851f53d6dfd6b, type: 2}
   m_Color: {r: 0.3921569, g: 0.21568629, b: 0.15686275, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -239,7 +239,7 @@ MonoBehaviour:
   m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: d7363edd4ddfc1f4cab851f53d6dfd6b, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 0.328}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
@@ -302,7 +302,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: -1272488505
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!224 &224052528229906982

@@ -31,7 +31,7 @@ namespace InstaDungeon.UI
 			}
 		}
 
-		private void Update()
+		private void LateUpdate()
 		{
 			RefreshPosition();
 		}

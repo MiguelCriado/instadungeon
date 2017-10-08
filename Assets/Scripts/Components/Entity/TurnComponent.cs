@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using InstaDungeon.Events;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace InstaDungeon.Components
@@ -14,10 +15,6 @@ namespace InstaDungeon.Components
 		public TurnToken Token { get { return token; } }
 		public int Initiative { get { return initiative; } set { initiative = value; } }
 		public int NumActions { get { return numActions; } set { numActions = value; } }
-
-		public TurnComponentEvent OnTurnGranted = new TurnComponentEvent();
-		public TurnComponentEvent OnTurnRevoked = new TurnComponentEvent();
-		public TurnComponentEvent OnTurnDone = new TurnComponentEvent();
 
 		[SerializeField] private int initiative;
 		[SerializeField] private int numActions;
@@ -36,22 +33,14 @@ namespace InstaDungeon.Components
 			this.token = token;
 			completedTurnActions = 0;
 			token.OnActionFinished.AddListener(OnActionDone);
-
-			if (OnTurnGranted != null)
-			{
-				OnTurnGranted.Invoke(this);
-			}
+			entity.Events.TriggerEvent(new EntityGrantTurnEvent(entity));
 		}
 
 		public void RevokeTurn(TurnToken token)
 		{
 			token.OnActionFinished.RemoveListener(OnActionDone);
 			this.token = null;
-
-			if (OnTurnRevoked != null)
-			{
-				OnTurnRevoked.Invoke(this);
-			}
+			entity.Events.TriggerEvent(new EntityRevokeTurnEvent(entity));
 		}
 
 		protected void OnActionDone()
@@ -66,10 +55,7 @@ namespace InstaDungeon.Components
 
 		protected void TurnDone()
 		{
-			if (OnTurnDone != null)
-			{
-				OnTurnDone.Invoke(this);
-			}
+			entity.Events.TriggerEvent(new EntityTurnDoneEvent(entity));
 		}
 	}
 }

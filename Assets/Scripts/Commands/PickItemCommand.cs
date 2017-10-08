@@ -1,18 +1,14 @@
 ﻿using InstaDungeon.Components;
-using InstaDungeon.Configuration;
 using InstaDungeon.Models;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace InstaDungeon.Commands
 {
 	public class PickItemCommand : Command
 	{
 		public Entity Actor { get; private set; }
-		public Item Item { get; private set; }
+		public Entity Item { get; private set; }
 
-		public PickItemCommand(Entity actor, Item item)
+		public PickItemCommand(Entity actor, Entity item)
 		{
 			Actor = actor;
 			Item = item;
@@ -22,11 +18,24 @@ namespace InstaDungeon.Commands
 		{
 			base.Execute();
 
+			MapManager mapManager = Locator.Get<MapManager>();
 			Inventory inventory = Actor.GetComponent<Inventory>();
+			Item itemComponent = Item.GetComponent<Item>();
 
-			if (inventory != null)
+			if (inventory != null && itemComponent != null)
 			{
-				inventory.AddItem(Item);
+				InventorySlotType slot = itemComponent.ItemInfo.InventorySlot;
+				Item presentItem = inventory.GetItem(slot);
+
+				if (presentItem != null)
+				{
+					inventory.RemoveItem(presentItem);
+					Entity itemEntity = presentItem.GetComponent<Entity>();
+					mapManager.AddItem(itemEntity, Item.CellTransform.Position);
+				}
+
+				mapManager.RemoveItem(Item, Item.CellTransform.Position);
+				inventory.AddItem(itemComponent);
 			}
 		}
 

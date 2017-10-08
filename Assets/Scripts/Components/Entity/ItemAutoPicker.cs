@@ -53,8 +53,6 @@ namespace InstaDungeon.Components
 								{
 									inventory.AddItem(item);
 									AddItemAnimation(item);
-
-									// TODO : add item picked event
 								}
 							}
 						}

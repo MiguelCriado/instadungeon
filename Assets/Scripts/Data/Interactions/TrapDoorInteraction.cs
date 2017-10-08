@@ -12,6 +12,16 @@ namespace InstaDungeon
 
 		[SerializeField] private KeyInfo requiredKey;
 
+		public override void EntityEntersRange(Entity activeActor, Entity pasiveActor)
+		{
+			// TODO ? 
+		}
+
+		public override void EntityExitsRange(Entity activeActor, Entity pasiveActor)
+		{
+			// TODO ? 
+		}
+
 		public override IAction Interact(Entity activeActor, Entity pasiveActor)
 		{
 			OpenTrapDoorAction result = new OpenTrapDoorAction(activeActor, pasiveActor, requiredKey);

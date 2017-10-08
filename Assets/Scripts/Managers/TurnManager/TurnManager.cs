@@ -164,7 +164,7 @@ namespace InstaDungeon
 		private void GrantTurn(TurnComponent actor)
 		{
 			token.Target = actor;
-			actor.OnTurnDone.AddListener(CurrentTurnDone);
+			actor.Entity.Events.AddListener(OnActorTurnDone, EntityTurnDoneEvent.EVENT_TYPE);
 			actor.GrantTurn(token);
 
 			if (OnTurnStarted != null)
@@ -173,10 +173,16 @@ namespace InstaDungeon
 			}
 		}
 
+		private void OnActorTurnDone(IEventData eventData)
+		{
+			EntityTurnDoneEvent turnEvent = eventData as EntityTurnDoneEvent;
+			CurrentTurnDone(turnEvent.Entity.GetComponent<TurnComponent>());
+		}
+
 		private void CurrentTurnDone(TurnComponent component)
 		{
 			actors[token.Turn].RevokeTurn(token);
-			actors[token.Turn].OnTurnDone.RemoveListener(CurrentTurnDone);
+			actors[token.Turn].Entity.Events.RemoveListener(OnActorTurnDone, EntityTurnDoneEvent.EVENT_TYPE);
 			turnDone = true;
 		}
 

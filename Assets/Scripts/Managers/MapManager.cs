@@ -150,7 +150,7 @@ namespace InstaDungeon
 				cell.Actor = actor;
 				actors.Add(actor.Guid, actor);
 				actor.CellTransform.MoveTo(cellPosition);
-				actor.Events.TriggerEvent(new EntityAddToMapEvent(actor));
+				actor.Events.TriggerEvent(new EntityAddToMapEvent(actor, cellPosition));
 				events.TriggerEvent(new ActorAddedToMapEvent(actor, cellPosition));
 				result = true;
 				actorsDirty = true;
@@ -181,6 +181,7 @@ namespace InstaDungeon
 				cell.Actor = null;
 				actors.Remove(actor.Guid);
 				events.TriggerEvent(new ActorRemovedFromMapEvent(actor, cellPosition));
+				actor.Events.TriggerEvent(new EntityRemoveFromMapEvent(actor, cellPosition));
 				result = true;
 				actorsDirty = true;
 			}
@@ -254,7 +255,7 @@ namespace InstaDungeon
 				cell.Prop = prop;
 				props.Add(prop.Guid, prop);
 				prop.CellTransform.MoveTo(cellPosition);
-				prop.Events.TriggerEvent(new EntityAddToMapEvent(prop));
+				prop.Events.TriggerEvent(new EntityAddToMapEvent(prop, cellPosition));
 				result = true;
 			}
 
@@ -283,6 +284,7 @@ namespace InstaDungeon
 				cell.Prop = null;
 				props.Remove(prop.Guid);
 				events.TriggerEvent(new PropRemovedFromMapEvent(prop, cellPosition));
+				prop.Events.TriggerEvent(new EntityRemoveFromMapEvent(prop, cellPosition));
 				result = true;
 				propsDirty = true;
 			}
@@ -330,7 +332,7 @@ namespace InstaDungeon
 				cell.Items.Add(item);
 				items.Add(item.Guid, item);
 				item.CellTransform.MoveTo(cellPosition);
-				item.Events.TriggerEvent(new EntityAddToMapEvent(item));
+				item.Events.TriggerEvent(new EntityAddToMapEvent(item, cellPosition));
 				result = true;
 			}
 
@@ -358,6 +360,7 @@ namespace InstaDungeon
 			{
 				cell.Items.Remove(item);
 				items.Remove(item.Guid);
+				item.Events.TriggerEvent(new EntityRemoveFromMapEvent(item, cellPosition));
 				result = true;
 			}
 

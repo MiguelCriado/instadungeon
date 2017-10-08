@@ -90,11 +90,21 @@ namespace InstaDungeon
 			entity.Events.AddListener(HandleEvent, EntityDisposeEvent.EVENT_TYPE);
 
 			entity.Events.AddListener(HandleEvent, EntityAddToMapEvent.EVENT_TYPE);
+			entity.Events.AddListener(HandleEvent, EntityRemoveFromMapEvent.EVENT_TYPE);
 			entity.Events.AddListener(HandleEvent, EntityStartMovementEvent.EVENT_TYPE);
 			entity.Events.AddListener(HandleEvent, EntityFinishMovementEvent.EVENT_TYPE);
 			entity.Events.AddListener(HandleEvent, EntityRelocateEvent.EVENT_TYPE);
 
 			entity.Events.AddListener(HandleEvent, DoorOpenEvent.EVENT_TYPE);
+
+			entity.Events.AddListener(HandleEvent, EntityDieEvent.EVENT_TYPE);
+			entity.Events.AddListener(HandleEvent, EntityHealthChangeEvent.EVENT_TYPE);
+
+			entity.Events.AddListener(HandleEvent, TrapDoorOpenEvent.EVENT_TYPE);
+
+			entity.Events.AddListener(HandleEvent, EntityGrantTurnEvent.EVENT_TYPE);
+			entity.Events.AddListener(HandleEvent, EntityRevokeTurnEvent.EVENT_TYPE);
+			entity.Events.AddListener(HandleEvent, EntityTurnDoneEvent.EVENT_TYPE);
 		}
 
 		protected void UnsubscribeToEvents(Entity entity)
@@ -103,11 +113,21 @@ namespace InstaDungeon
 			entity.Events.RemoveListener(HandleEvent, EntityDisposeEvent.EVENT_TYPE);
 
 			entity.Events.RemoveListener(HandleEvent, EntityAddToMapEvent.EVENT_TYPE);
+			entity.Events.RemoveListener(HandleEvent, EntityRemoveFromMapEvent.EVENT_TYPE);
 			entity.Events.RemoveListener(HandleEvent, EntityStartMovementEvent.EVENT_TYPE);
 			entity.Events.RemoveListener(HandleEvent, EntityFinishMovementEvent.EVENT_TYPE);
 			entity.Events.RemoveListener(HandleEvent, EntityRelocateEvent.EVENT_TYPE);
 
 			entity.Events.RemoveListener(HandleEvent, DoorOpenEvent.EVENT_TYPE);
+
+			entity.Events.RemoveListener(HandleEvent, EntityDieEvent.EVENT_TYPE);
+			entity.Events.RemoveListener(HandleEvent, EntityHealthChangeEvent.EVENT_TYPE);
+
+			entity.Events.RemoveListener(HandleEvent, TrapDoorOpenEvent.EVENT_TYPE);
+
+			entity.Events.RemoveListener(HandleEvent, EntityGrantTurnEvent.EVENT_TYPE);
+			entity.Events.RemoveListener(HandleEvent, EntityRevokeTurnEvent.EVENT_TYPE);
+			entity.Events.RemoveListener(HandleEvent, EntityTurnDoneEvent.EVENT_TYPE);
 		}
 
 		protected void HandleEvent(IEventData eventData)

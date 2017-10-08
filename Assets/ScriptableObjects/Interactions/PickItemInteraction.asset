@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04c3fade42b8470449630d9f551c0786, type: 3}
+  m_Name: PickItemInteraction
+  m_EditorClassIdentifier: 
+  minRange: 0
+  maxRange: 0
+  visualizerPrefab: {fileID: 114058445303357896, guid: 9a29b6e67513ac3408b3e1072d338cf0,
+    type: 2}
