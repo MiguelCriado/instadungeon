@@ -7,9 +7,12 @@ namespace InstaDungeon.Actions
 {
 	public class PickItemAction : BaseAction<PickItemCommand>
 	{
-		public PickItemAction(Entity actor, Entity item)
+		private ItemInteractionController interactionVisualizer;
+
+		public PickItemAction(Entity actor, Entity item, ItemInteractionController interactionVisualizer)
 		{
 			command = new PickItemCommand(actor, item);
+			this.interactionVisualizer = interactionVisualizer;
 			DOTween.Init();
 		}
 
@@ -22,10 +25,18 @@ namespace InstaDungeon.Actions
 		{
 			base.Act();
 
-			// TODO drop and pick animation
-
-			command.Execute();
-			ActionDone();
+			interactionVisualizer.AnimateReplaceItem()
+			.Done(() => 
+			{
+				DOTween.Sequence()
+				.AppendInterval(0.5f)
+				.AppendCallback(() => 
+				{
+					interactionVisualizer.Dispose();
+					command.Execute();
+					ActionDone();
+				});
+			});
 		}
 	}
 }

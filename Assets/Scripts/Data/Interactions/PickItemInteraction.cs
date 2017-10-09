@@ -41,7 +41,9 @@ namespace InstaDungeon
 
 		public override IAction Interact(Entity activeActor, Entity pasiveActor)
 		{
-			PickItemAction result = new PickItemAction(activeActor, pasiveActor);
+			ItemInteractionController visualizer = GetVisualizersList().Find(x => x.ReplaceItem.GetComponent<Entity>() == pasiveActor);
+
+			PickItemAction result = new PickItemAction(activeActor, pasiveActor, visualizer);
 			return result;
 		}
 
