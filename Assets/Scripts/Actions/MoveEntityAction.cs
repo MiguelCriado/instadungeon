@@ -70,9 +70,8 @@ namespace InstaDungeon.Actions
 					Locator.Get<MapManager>().MoveActorTo(Command.Entity, Command.Position);
 
 					Entity entity = command.Entity;
-					entity.Events.TriggerEvent(new EntityFinishMovementEvent(entity.Guid, originalPosition, command.Position));
-
 					command.Execute();
+					entity.Events.TriggerEvent(new EntityFinishMovementEvent(entity.Guid, originalPosition, command.Position));
 
 					ActionDone();
 				}

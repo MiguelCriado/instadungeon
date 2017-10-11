@@ -80,6 +80,24 @@ namespace InstaDungeon.Components
 			return result;
 		}
 
+		public bool AddItemAmount(Item item)
+		{
+			bool result = false;
+			InventorySlotType slot = item.ItemInfo.InventorySlot;
+
+			if (items[slot] != null 
+				&& items[slot ].ItemInfo.Id == item.ItemInfo.Id 
+				&& items[slot].ItemInfo.Stackable == true)
+			{
+				items[slot].Amount += item.Amount;
+				Locator.Get<EntityManager>().Recycle(item.GetComponent<Entity>().Guid);
+				result = true;
+				// TODO: trigger Event
+			}
+
+			return result;
+		}
+
 		public bool RemoveItem(Item item)
 		{
 			bool result = false;

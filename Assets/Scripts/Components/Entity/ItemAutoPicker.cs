@@ -1,5 +1,7 @@
 ﻿using InstaDungeon.Events;
 using InstaDungeon.Models;
+using RSG;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +10,8 @@ namespace InstaDungeon.Components
 	[RequireComponent(typeof(Entity), typeof(Inventory))]
 	public class ItemAutoPicker : MonoBehaviour
 	{
+		[SerializeField] private List<InventorySlotType> slotsToPick;
+
 		private Entity entity;
 		private Inventory inventory;
 		private MapManager mapManager;
@@ -45,13 +49,23 @@ namespace InstaDungeon.Components
 					{
 						Item item = items[i].GetComponent<Item>();
 
-						if (item != null)
+						if (item != null && slotsToPick.Contains(item.ItemInfo.InventorySlot))
 						{
-							if (inventory.GetItem(item.ItemInfo.InventorySlot) == null)
+							Item storedItem = inventory.GetItem(item.ItemInfo.InventorySlot);
+
+							if (storedItem == null)
 							{
 								if (mapManager.RemoveItem(items[i], movementEvent.CurrentPosition))
 								{
 									inventory.AddItem(item);
+									AddItemAnimation(item);
+								}
+							}
+							else if ((storedItem.ItemInfo.Id == item.ItemInfo.Id && item.ItemInfo.Stackable == true))
+							{
+								if (mapManager.RemoveItem(items[i], movementEvent.CurrentPosition))
+								{
+									inventory.AddItemAmount(item);
 									AddItemAnimation(item);
 								}
 							}
@@ -61,12 +75,20 @@ namespace InstaDungeon.Components
 			}
 		}
 
-		private void AddItemAnimation(Item item)
+		private IPromise AddItemAnimation(Item item)
 		{
+			Promise result = new Promise();
+
 			if (itemInteraction != null)
 			{
-				itemInteraction.AddItem(item.ItemInfo);
+				result = itemInteraction.AddItem(item.ItemInfo) as Promise;
 			}
+			else
+			{
+				result.Reject(new Exception("ItemInteraction not found"));
+			}
+
+			return result;
 		}
 	}
 }

@@ -96,18 +96,24 @@ namespace InstaDungeon.Components
 
 				int cumulativeWeight = 0;
 				int randomNumber = Random.Range(0, totalWeight);
+				string entityName = null;
 				int j = 0;
 
-				while (entityToDrop == null && j < lootTable.Count)
+				while (entityName == null && j < lootTable.Count)
 				{
 					cumulativeWeight += lootTable[j].Weight;
 
-					if (cumulativeWeight >= randomNumber)
+					if (cumulativeWeight > randomNumber)
 					{
-						entityToDrop = entityManager.Spawn(lootTable[j].EntityName);
+						entityName = lootTable[j].EntityName;
 					}
 
 					j++;
+				}
+
+				if (string.IsNullOrEmpty(entityName) == false)
+				{
+					entityToDrop = entityManager.Spawn(entityName);
 				}
 			}
 

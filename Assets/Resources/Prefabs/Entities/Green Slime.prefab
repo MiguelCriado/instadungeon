@@ -257,7 +257,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f41425cb6c6b71c4a9d29ebc6186bd7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lootTable: []
+  lootTable:
+  - entityName: 
+    weight: 1
+    alwaysDrop: 0
+  - entityName: Gold
+    weight: 5
+    alwaysDrop: 0
   alwaysDropTable: []
 --- !u!114 &114201443701304684
 MonoBehaviour:
