@@ -14,4 +14,5 @@ MonoBehaviour:
   id: 758842027
   nameId: Key Silver
   avatar: {fileID: 21300008, guid: d53b0ef3b071ed740b6990569ddd60e3, type: 3}
-  inventorySlot: 1
+  inventorySlot: 2
+  stackable: 1

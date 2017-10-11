@@ -24,7 +24,6 @@ namespace InstaDungeon.BehaviorTreeNodes
 		protected override NodeStates Tick(Tick tick)
 		{
 			NodeStates result = NodeStates.Failure;
-
 			Entity target = tick.Target as Entity;
 			Inventory inventory = target.GetComponent<Inventory>();
 
@@ -34,29 +33,14 @@ namespace InstaDungeon.BehaviorTreeNodes
 
 				while (result == NodeStates.Failure && i < slotsToLookUp.Count)
 				{
-					Item item = null;
+					Item item = inventory.GetItem(slotsToLookUp[i]);
 
-					if (slotsToLookUp[i] == InventorySlotType.None && slotsToLookUp[i] != InventorySlotType.Bag)
-					{
-						item = inventory.GetEquippedItem(slotsToLookUp[i]);
-					}
-
-					if (item != null)
+					if (item != null && item.ItemInfo.NameId == itemNameId)
 					{
 						result = NodeStates.Success;
 					}
 
 					i++;
-				}
-
-				if (result == NodeStates.Failure && slotsToLookUp.Contains(InventorySlotType.Bag))
-				{
-					List<Item> itemsInBag = inventory.FindInBag(itemNameId);
-
-					if (itemsInBag.Count > 0)
-					{
-						result = NodeStates.Success;
-					}
 				}
 			}
 			else

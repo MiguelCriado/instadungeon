@@ -14,7 +14,8 @@ MonoBehaviour:
   id: 908790350
   nameId: Weapon Fist
   avatar: {fileID: 0}
-  inventorySlot: 4
+  inventorySlot: 6
+  stackable: 0
   weaponType: 2
   baseRange: 1
   baseMinDamage: 1

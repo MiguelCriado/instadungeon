@@ -31,9 +31,9 @@ namespace InstaDungeon.Commands
 
 			if (inventory != null)
 			{
-				if (inventory.BagContains(RequiredKey))
+				if (inventory.Contains(RequiredKey))
 				{
-					usedKey = inventory.RemoveFromBag(RequiredKey);
+					usedKey = inventory.RemoveItem(RequiredKey);
 					Locator.Get<EntityManager>().Recycle(usedKey.GetComponent<Entity>().Guid);
 
 					lastBlocksLineOfSight = Door.BlocksLineOfSight;
@@ -71,7 +71,7 @@ namespace InstaDungeon.Commands
 				Door.BlocksLineOfSight = lastBlocksLineOfSight;
 				Door.BlocksMovement = lastBlocksMovement;
 
-				inventory.AddToBag(usedKey);
+				inventory.AddItem(usedKey);
 			}
 		}
 	}

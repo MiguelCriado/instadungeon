@@ -12,6 +12,16 @@ namespace InstaDungeon
 
 		[SerializeField] protected ItemInfo requiredKey;
 
+		public override void EntityEntersRange(Entity activeActor, Entity pasiveActor)
+		{
+			// TODO ? 
+		}
+
+		public override void EntityExitsRange(Entity activeActor, Entity pasiveActor)
+		{
+			// TODO ? 
+		}
+
 		public override IAction Interact(Entity activeActor, Entity pasiveActor)
 		{
 			OpenDoorAction result = new OpenDoorAction(activeActor, pasiveActor, requiredKey);
@@ -25,7 +35,7 @@ namespace InstaDungeon
 			if (result == true)
 			{
 				Inventory inventory = activeActor.GetComponent<Inventory>();
-				result = inventory != null && inventory.BagContains(requiredKey);
+				result = inventory != null && inventory.Contains(requiredKey);
 			}
 
 			return result;

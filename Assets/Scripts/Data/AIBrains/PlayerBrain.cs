@@ -112,7 +112,7 @@ namespace InstaDungeon.AI
 					(
 						1,
 						2,
-						new InventoryContainsCondition(SilverKeyItemId, InventorySlotType.Bag),
+						new InventoryContainsCondition(SilverKeyItemId, InventorySlotType.Key),
 						new ExitIsOpenCondition()
 					),
 					new SetEntityPositionInMemoryAsDestinyAction(PropsMemoryId, StairsExitEntityId, StairsExitPositionId),

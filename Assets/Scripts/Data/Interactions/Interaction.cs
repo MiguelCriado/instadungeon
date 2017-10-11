@@ -19,6 +19,10 @@ namespace InstaDungeon
 			return manhattanDistance >= MinRange && manhattanDistance <= MaxRange && IsValidInteractionInternal(activeActor, pasiveActor);
 		}
 
+		public abstract void EntityEntersRange(Entity activeActor, Entity pasiveActor);
+
+		public abstract void EntityExitsRange(Entity activeActor, Entity pasiveActor);
+
 		public abstract IAction Interact(Entity activeActor, Entity pasiveActor);
 
 		protected abstract bool IsValidInteractionInternal(Entity activeActor, Entity pasiveActor);

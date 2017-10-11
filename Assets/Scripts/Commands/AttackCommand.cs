@@ -21,8 +21,6 @@ namespace InstaDungeon.Commands
 
 			Health defenderHealth = Defender.GetComponent<Health>();
 			defenderHealth.Hurt(DamageDealt);
-			
-			// TODO trigger Hurt event
 		}
 
 		public override void Undo()
@@ -34,8 +32,6 @@ namespace InstaDungeon.Commands
 			if (defenderHealth != null)
 			{
 				defenderHealth.Heal(DamageDealt);
-
-				// TODO trigger Heal event
 			}
 		}
 	}

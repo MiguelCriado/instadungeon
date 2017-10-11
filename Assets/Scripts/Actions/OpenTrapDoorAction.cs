@@ -6,9 +6,9 @@ namespace InstaDungeon.Actions
 {
 	public class OpenTrapDoorAction : BaseAction<OpenTrapDoorCommand>
 	{
-		public OpenTrapDoorAction(Entity actor, Entity trapDoor, ItemInfo requiredItem)
+		public OpenTrapDoorAction(Entity actor, Entity trapDoor, KeyInfo requiredKey)
 		{
-			command = new OpenTrapDoorCommand(actor, trapDoor, requiredItem);
+			command = new OpenTrapDoorCommand(actor, trapDoor, requiredKey);
 		}
 
 		public override void Act()
