@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41500f9d0c61777409e7e249bf7d3098, type: 3}
+  m_Name: Small Health Potion
+  m_EditorClassIdentifier: 
+  id: 1941565794
+  nameId: Small Health Potion
+  avatar: {fileID: 21300064, guid: d53b0ef3b071ed740b6990569ddd60e3, type: 3}
+  inventorySlot: 1
+  stackable: 0
+  healthRestored: 10
