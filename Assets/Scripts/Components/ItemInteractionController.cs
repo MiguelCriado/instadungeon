@@ -25,10 +25,10 @@ namespace InstaDungeon
 		private Color[] originalRenderersColor;
 		private Vector3 replaceItemOriginalPosition;
 		private CanvasGroup canvasGroup;
-		private Entity entity;
-		private Item replaceItem;
 		private bool visible;
 		private Guid sequenceId;
+
+		private Item replaceItem;
 
 		private void Awake()
 		{
@@ -63,7 +63,6 @@ namespace InstaDungeon
 		{
 			downwardsArrow.DOPause();
 
-			entity = null;
 			replaceItem = null;
 
 			currentItemAvatar.sprite = null;
@@ -75,7 +74,6 @@ namespace InstaDungeon
 
 		public void Initialize(Entity entity, Item replaceItem)
 		{
-			this.entity = entity;
 			this.replaceItem = replaceItem;
 
 			Inventory inventory = entity.GetComponent<Inventory>();
@@ -119,6 +117,7 @@ namespace InstaDungeon
 
 			if (visible == false)
 			{
+				replaceItem.gameObject.SetActive(false);
 				DOTween.Kill(sequenceId);
 				Sequence sequence = DOTween.Sequence()
 				.SetId(sequenceId);
@@ -149,6 +148,7 @@ namespace InstaDungeon
 
 			if (visible == true)
 			{
+				replaceItem.gameObject.SetActive(true);
 				DOTween.Kill(sequenceId);
 				Sequence sequence = DOTween.Sequence()
 				.SetId(sequenceId);
