@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: d53b0ef3b071ed740b6990569ddd60e3
-timeCreated: 1507743212
+timeCreated: 1507749217
 licenseType: Pro
 TextureImporter:
   fileIDToRecycleName:
@@ -9,59 +9,59 @@ TextureImporter:
     21300004: doorHorizontal_openTip
     21300006: key_gold
     21300008: key_silver
-    21300010: items_5
-    21300012: items_6
-    21300014: items_7
-    21300016: items_8
-    21300018: items_9
-    21300020: items_10
-    21300022: items_11
-    21300024: items_12
-    21300026: items_13
-    21300028: items_14
-    21300030: items_15
-    21300032: items_16
-    21300034: items_17
-    21300036: items_18
-    21300038: items_19
-    21300040: items_20
-    21300042: items_21
-    21300044: items_22
-    21300046: items_23
-    21300048: items_24
-    21300050: items_25
-    21300052: items_26
-    21300054: items_27
+    21300010: chest_siver_closed
+    21300012: chest_silver_open
+    21300014: chest_gold_closed
+    21300016: chest_gold_open
+    21300018: magic_staff_A
+    21300020: crossbow
+    21300022: club
+    21300024: dagger
+    21300026: axe
+    21300028: magic_staff_B
+    21300030: arrow
+    21300032: arrow_poison
+    21300034: buckler
+    21300036: shield
+    21300038: helmet_bronze
+    21300040: helmet_iron
+    21300042: breastplate_bronze
+    21300044: breastplate_iron
+    21300046: gauntlet_bronze
+    21300048: gauntlet_iron
+    21300050: greaves_bronze
+    21300052: greaves_iron
+    21300054: boots
     21300056: items_28
-    21300058: items_29
-    21300060: items_30
-    21300062: items_31
-    21300064: items_32
-    21300066: items_33
-    21300068: items_34
-    21300070: items_35
-    21300072: items_36
-    21300074: items_37
-    21300076: items_38
-    21300078: items_39
-    21300080: items_40
-    21300082: items_41
-    21300084: items_42
-    21300086: items_43
-    21300088: items_44
+    21300058: red_potion_big
+    21300060: blue_potion_big
+    21300062: green_potion_medium
+    21300064: red_potion_small
+    21300066: flask_big
+    21300068: flask_medium
+    21300070: flask_small
+    21300072: scroll
+    21300074: bag
+    21300076: ring_diamond
+    21300078: ring_gold
+    21300080: ring_silver
+    21300082: ring_bronze
+    21300084: nugget_gold
+    21300086: nugget_silver
+    21300088: nugget_bronze
     21300090: gold_high
     21300092: gold_mid
     21300094: gold_low
-    21300096: items_48
-    21300098: items_49
-    21300100: items_50
-    21300102: items_51
-    21300104: items_52
-    21300106: items_53
-    21300108: items_54
-    21300110: items_55
-    21300112: items_56
-    21300114: items_57
+    21300096: meat
+    21300098: cheese
+    21300100: cheese_fresh
+    21300102: bread
+    21300104: apple
+    21300106: pear
+    21300108: grapes
+    21300110: mushroom_A
+    21300112: mushroom_B
+    21300114: mushroom_C
     21300116: doorVertical_closed_top
     21300118: doorVertical_open_top
     21300120: doorVertical_closed_bottom
@@ -213,7 +213,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_5
+      name: chest_siver_closed
       rect:
         serializedVersion: 2
         x: 120
@@ -226,7 +226,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_6
+      name: chest_silver_open
       rect:
         serializedVersion: 2
         x: 144
@@ -239,7 +239,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_7
+      name: chest_gold_closed
       rect:
         serializedVersion: 2
         x: 168
@@ -252,7 +252,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_8
+      name: chest_gold_open
       rect:
         serializedVersion: 2
         x: 192
@@ -265,7 +265,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_9
+      name: magic_staff_A
       rect:
         serializedVersion: 2
         x: 0
@@ -278,7 +278,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_10
+      name: crossbow
       rect:
         serializedVersion: 2
         x: 24
@@ -291,7 +291,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_11
+      name: club
       rect:
         serializedVersion: 2
         x: 48
@@ -304,7 +304,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_12
+      name: dagger
       rect:
         serializedVersion: 2
         x: 72
@@ -317,7 +317,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_13
+      name: axe
       rect:
         serializedVersion: 2
         x: 96
@@ -330,7 +330,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_14
+      name: magic_staff_B
       rect:
         serializedVersion: 2
         x: 120
@@ -343,7 +343,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_15
+      name: arrow
       rect:
         serializedVersion: 2
         x: 144
@@ -356,7 +356,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_16
+      name: arrow_poison
       rect:
         serializedVersion: 2
         x: 168
@@ -369,7 +369,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_17
+      name: buckler
       rect:
         serializedVersion: 2
         x: 192
@@ -382,7 +382,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_18
+      name: shield
       rect:
         serializedVersion: 2
         x: 216
@@ -395,7 +395,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_19
+      name: helmet_bronze
       rect:
         serializedVersion: 2
         x: 0
@@ -408,7 +408,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_20
+      name: helmet_iron
       rect:
         serializedVersion: 2
         x: 24
@@ -421,7 +421,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_21
+      name: breastplate_bronze
       rect:
         serializedVersion: 2
         x: 48
@@ -434,7 +434,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_22
+      name: breastplate_iron
       rect:
         serializedVersion: 2
         x: 72
@@ -447,7 +447,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_23
+      name: gauntlet_bronze
       rect:
         serializedVersion: 2
         x: 96
@@ -460,7 +460,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_24
+      name: gauntlet_iron
       rect:
         serializedVersion: 2
         x: 120
@@ -473,7 +473,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_25
+      name: greaves_bronze
       rect:
         serializedVersion: 2
         x: 144
@@ -486,7 +486,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_26
+      name: greaves_iron
       rect:
         serializedVersion: 2
         x: 168
@@ -499,7 +499,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_27
+      name: boots
       rect:
         serializedVersion: 2
         x: 192
@@ -525,7 +525,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_29
+      name: red_potion_big
       rect:
         serializedVersion: 2
         x: 24
@@ -538,7 +538,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_30
+      name: blue_potion_big
       rect:
         serializedVersion: 2
         x: 48
@@ -551,7 +551,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_31
+      name: green_potion_medium
       rect:
         serializedVersion: 2
         x: 72
@@ -564,7 +564,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_32
+      name: red_potion_small
       rect:
         serializedVersion: 2
         x: 96
@@ -577,7 +577,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_33
+      name: flask_big
       rect:
         serializedVersion: 2
         x: 120
@@ -590,7 +590,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_34
+      name: flask_medium
       rect:
         serializedVersion: 2
         x: 144
@@ -603,7 +603,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_35
+      name: flask_small
       rect:
         serializedVersion: 2
         x: 168
@@ -616,7 +616,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_36
+      name: scroll
       rect:
         serializedVersion: 2
         x: 192
@@ -629,7 +629,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_37
+      name: bag
       rect:
         serializedVersion: 2
         x: 216
@@ -642,7 +642,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_38
+      name: ring_diamond
       rect:
         serializedVersion: 2
         x: 0
@@ -655,7 +655,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_39
+      name: ring_gold
       rect:
         serializedVersion: 2
         x: 24
@@ -668,7 +668,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_40
+      name: ring_silver
       rect:
         serializedVersion: 2
         x: 48
@@ -681,7 +681,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_41
+      name: ring_bronze
       rect:
         serializedVersion: 2
         x: 72
@@ -694,7 +694,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_42
+      name: nugget_gold
       rect:
         serializedVersion: 2
         x: 96
@@ -707,7 +707,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_43
+      name: nugget_silver
       rect:
         serializedVersion: 2
         x: 120
@@ -720,7 +720,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_44
+      name: nugget_bronze
       rect:
         serializedVersion: 2
         x: 144
@@ -772,7 +772,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_48
+      name: meat
       rect:
         serializedVersion: 2
         x: 0
@@ -785,7 +785,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_49
+      name: cheese
       rect:
         serializedVersion: 2
         x: 24
@@ -798,7 +798,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_50
+      name: cheese_fresh
       rect:
         serializedVersion: 2
         x: 48
@@ -811,7 +811,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_51
+      name: bread
       rect:
         serializedVersion: 2
         x: 72
@@ -824,7 +824,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_52
+      name: apple
       rect:
         serializedVersion: 2
         x: 96
@@ -837,7 +837,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_53
+      name: pear
       rect:
         serializedVersion: 2
         x: 120
@@ -850,7 +850,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_54
+      name: grapes
       rect:
         serializedVersion: 2
         x: 144
@@ -863,7 +863,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_55
+      name: mushroom_A
       rect:
         serializedVersion: 2
         x: 168
@@ -876,7 +876,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_56
+      name: mushroom_B
       rect:
         serializedVersion: 2
         x: 192
@@ -889,7 +889,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: items_57
+      name: mushroom_C
       rect:
         serializedVersion: 2
         x: 216

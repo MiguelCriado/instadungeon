@@ -259,10 +259,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lootTable:
   - entityName: 
-    weight: 1
+    weight: 3
     alwaysDrop: 0
   - entityName: Gold
-    weight: 5
+    weight: 10
+    alwaysDrop: 0
+  - entityName: Small Health Potion
+    weight: 3
     alwaysDrop: 0
   alwaysDropTable: []
 --- !u!114 &114201443701304684
