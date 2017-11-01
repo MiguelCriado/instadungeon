@@ -1,4 +1,5 @@
 ﻿using InstaDungeon.Configuration;
+using InstaDungeon.Events;
 using InstaDungeon.Models;
 using System;
 using System.Collections.Generic;
@@ -18,11 +19,13 @@ namespace InstaDungeon.Components
 		OffHand
 	}
 
+	[RequireComponent(typeof(Entity))]
 	public class Inventory : MonoBehaviour, ISerializationCallbackReceiver
 	{
 		[SerializeField] private List<InventorySlotType> keys = new List<InventorySlotType>();
 		[SerializeField] private List<Item> values = new List<Item>();
 
+		private Entity entity;
 		private Transform inventoryContainer;
 		private Dictionary<InventorySlotType, Item> items = new Dictionary<InventorySlotType, Item>();
 		private List<Item> itemsCache = new List<Item>();
@@ -41,6 +44,7 @@ namespace InstaDungeon.Components
 
 		private void Awake()
 		{
+			entity = GetComponent<Entity>();
 			RetrieveContainer();
 			RefreshItemsSlots();
 		}
@@ -74,7 +78,7 @@ namespace InstaDungeon.Components
 				AttachToInventory(item, inventoryContainer);
 				itemsDirty = true;
 				result = true;
-				// TODO: trigger Event
+				entity.Events.TriggerEvent(new InventoryItemAddEvent(entity, this, itemSlot, item));
 			}
 
 			return result;
@@ -111,7 +115,7 @@ namespace InstaDungeon.Components
 				items[itemSlot] = null;
 				itemsDirty = true;
 				result = true;
-				// TODO: trigger event
+				entity.Events.TriggerEvent(new InventoryItemRemoveEvent(entity, this, itemSlot, item));
 			}
 
 			return result;
