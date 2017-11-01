@@ -13,10 +13,13 @@ namespace InstaDungeon.UI
 		[SerializeField] private Slider healthSlider;
 		[SerializeField] private Text healthText;
 
-		private void Start()
+		private Entity entity;
+
+		public void Initialize(Entity entity)
 		{
-			LoadInitialData();
-			SubscribeEvents();
+			this.entity = entity;
+			Refresh();
+			SubscribeEvents(entity);
 		}
 
 		#region [Event Handlers]
@@ -31,15 +34,22 @@ namespace InstaDungeon.UI
 
 		#region [Helpers]
 
-		private void LoadInitialData()
+		private void SubscribeEvents(Entity entity)
 		{
-			Health health = Locator.Get<GameManager>().Player.GetComponent<Health>();
-			RefreshBar(health.MaxHealth, health.CurrentHealth);
+			entity.Events.AddListener(OnPlayerHealthChange, EntityHealthChangeEvent.EVENT_TYPE);
 		}
 
-		private void SubscribeEvents()
+		private void Refresh()
 		{
-			Locator.Get<GameManager>().Player.Events.AddListener(OnPlayerHealthChange, EntityHealthChangeEvent.EVENT_TYPE);
+			if (entity != null)
+			{
+				Health health = entity.GetComponent<Health>();
+
+				if (health != null)
+				{
+					RefreshBar(health.MaxHealth, health.CurrentHealth);
+				}
+			}
 		}
 
 		private void RefreshBar(int maxHealth, int currentHealth)

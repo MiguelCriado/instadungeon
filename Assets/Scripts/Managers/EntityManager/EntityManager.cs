@@ -100,6 +100,9 @@ namespace InstaDungeon
 			entity.Events.AddListener(HandleEvent, EntityDieEvent.EVENT_TYPE);
 			entity.Events.AddListener(HandleEvent, EntityHealthChangeEvent.EVENT_TYPE);
 
+			entity.Events.AddListener(HandleEvent, InventoryItemAddEvent.EVENT_TYPE);
+			entity.Events.AddListener(HandleEvent, InventoryItemRemoveEvent.EVENT_TYPE);
+
 			entity.Events.AddListener(HandleEvent, TrapDoorOpenEvent.EVENT_TYPE);
 
 			entity.Events.AddListener(HandleEvent, EntityGrantTurnEvent.EVENT_TYPE);
@@ -122,6 +125,9 @@ namespace InstaDungeon
 
 			entity.Events.RemoveListener(HandleEvent, EntityDieEvent.EVENT_TYPE);
 			entity.Events.RemoveListener(HandleEvent, EntityHealthChangeEvent.EVENT_TYPE);
+
+			entity.Events.RemoveListener(HandleEvent, InventoryItemAddEvent.EVENT_TYPE);
+			entity.Events.RemoveListener(HandleEvent, InventoryItemRemoveEvent.EVENT_TYPE);
 
 			entity.Events.RemoveListener(HandleEvent, TrapDoorOpenEvent.EVENT_TYPE);
 
