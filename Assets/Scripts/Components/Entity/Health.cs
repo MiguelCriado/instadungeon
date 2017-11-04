@@ -80,7 +80,7 @@ namespace InstaDungeon.Components
 		public int Heal(int amount)
 		{
 			int previousHealth = currentHealth;
-			int effectiveHeal = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
+			int effectiveHeal = Mathf.Clamp(currentHealth + amount, 0, maxHealth) - currentHealth;
 			currentHealth += effectiveHeal;
 			entity.Events.TriggerEvent(new EntityHealthChangeEvent(entity, this, previousHealth, currentHealth));
 
