@@ -13,6 +13,7 @@ namespace InstaDungeon.Components
 		[SerializeField] private KeyCode down;
 		[SerializeField] private KeyCode left;
 		[SerializeField] private KeyCode currentTile;
+		[SerializeField] private KeyCode bag;
 
 		private GameManager gameManager;
 		private TurnComponent turn;
@@ -23,6 +24,7 @@ namespace InstaDungeon.Components
 		private UnityAction downAction;
 		private UnityAction leftAction;
 		private UnityAction currentTileAction;
+		private UnityAction consumeItemInBagAction;
 
 		private UnityAction bufferedInput;
 		private float bufferedeInputRemainingTime;
@@ -34,6 +36,7 @@ namespace InstaDungeon.Components
 			down = KeyCode.DownArrow;
 			left = KeyCode.LeftArrow;
 			currentTile = KeyCode.Space;
+			bag = KeyCode.B;
 		}
 
 		private void Awake()
@@ -46,6 +49,7 @@ namespace InstaDungeon.Components
 			downAction = () => { actor.Down(); };
 			leftAction = () => { actor.Left(); };
 			currentTileAction = () => { actor.InteractWithCurrentTile(); };
+			consumeItemInBagAction = () => { actor.ConsumeItemInBag(); };
 		}
 
 		private void Start()
@@ -123,6 +127,11 @@ namespace InstaDungeon.Components
 				if (Input.GetKeyDown(currentTile))
 				{
 					return currentTileAction;
+				}
+
+				if (Input.GetKeyDown(bag))
+				{
+					return consumeItemInBagAction;
 				}
 			}
 

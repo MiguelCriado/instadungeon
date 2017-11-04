@@ -1,4 +1,6 @@
 ﻿using InstaDungeon.Actions;
+using InstaDungeon.Models;
+using System;
 using UnityEngine;
 
 namespace InstaDungeon.Components
@@ -10,6 +12,7 @@ namespace InstaDungeon.Components
 		private Locomotion locomotion;
 		private TurnComponent turn;
 		private MapManager mapManager;
+		private EntityManager entityManager;
 
 		private int2 up;
 		private int2 right;
@@ -22,6 +25,7 @@ namespace InstaDungeon.Components
 			locomotion = GetComponent<Locomotion>();
 			turn = GetComponent<TurnComponent>();
 			mapManager = Locator.Get<MapManager>();
+			entityManager = Locator.Get<EntityManager>();
 
 			up = new int2(0, 1);
 			right = new int2(1, 0);
@@ -63,6 +67,34 @@ namespace InstaDungeon.Components
 					if (interactable != null)
 					{
 						interactable.Interact(entity, turn.Token);
+					}
+				}
+			}
+		}
+
+		public void ConsumeItemInBag()
+		{
+			if (turn.EntityCanAct)
+			{
+				Inventory inventory = entity.GetComponent<Inventory>();
+
+				if (inventory != null)
+				{
+					Item item = inventory.GetItem(InventorySlotType.Bag);
+
+					if (item != null && item is IConsumable)
+					{
+						((IConsumable)item).Consume(entity)
+						.Then(() => 
+						{
+							inventory.RemoveItem(item);
+							entityManager.Recycle(item.GetComponent<Entity>().Guid);
+							turn.Token.OnActionFinished.Invoke();
+						})
+						.Catch((Exception e) =>
+						{
+							Debug.Log(e.Message);
+						});
 					}
 				}
 			}
