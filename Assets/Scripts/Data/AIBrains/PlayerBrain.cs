@@ -1,6 +1,7 @@
 ﻿using AI.BehaviorTrees;
 using InstaDungeon.BehaviorTreeNodes;
 using InstaDungeon.Components;
+using InstaDungeon.Models;
 using UnityEngine;
 
 namespace InstaDungeon.AI
@@ -85,9 +86,20 @@ namespace InstaDungeon.AI
 		{
 			return new Priority
 			(
+				Heal(),
 				Combat(),
 				ExitFloor(),
 				Explore()
+			);
+		}
+
+		private BaseNode Heal()
+		{
+			return new Sequence
+			(
+				new InventoryContainsCondition(x => x is HealthPotion, InventorySlotType.Bag),
+				new CheckHealthCondition(Operation.LessThanOrEqualTo, 25, ValueType.Percent),
+				new ConsumeItemInBagAction()
 			);
 		}
 
@@ -112,7 +124,7 @@ namespace InstaDungeon.AI
 					(
 						1,
 						2,
-						new InventoryContainsCondition(SilverKeyItemId, InventorySlotType.Key),
+						new InventoryContainsCondition(x => x.ItemInfo.NameId == SilverKeyItemId, InventorySlotType.Key),
 						new ExitIsOpenCondition()
 					),
 					new SetEntityPositionInMemoryAsDestinyAction(PropsMemoryId, StairsExitEntityId, StairsExitPositionId),

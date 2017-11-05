@@ -1,23 +1,24 @@
 ﻿using AI.BehaviorTrees;
 using InstaDungeon.Components;
 using InstaDungeon.Models;
+using System;
 using System.Collections.Generic;
 
 namespace InstaDungeon.BehaviorTreeNodes
 {
 	public class InventoryContainsCondition : ConditionNode
 	{
-		private string itemNameId;
+		private Predicate<Item> itemMatch;
 		private List<InventorySlotType> slotsToLookUp;
 
 		/// <summary>
-		/// Checks if an item is present in the actor's inventory
+		/// Checks a predicate for inventory items
 		/// </summary>
 		/// <param name="itemNameId">The name Id of the item to look up. As ItemInfo.NameId</param>
 		/// <param name="slotsToLookUp"></param>
-		public InventoryContainsCondition(string itemNameId, params InventorySlotType[] slotsToLookUp)
+		public InventoryContainsCondition(Predicate<Item> itemMatch, params InventorySlotType[] slotsToLookUp)
 		{
-			this.itemNameId = itemNameId;
+			this.itemMatch = itemMatch;
 			this.slotsToLookUp = new List<InventorySlotType>(slotsToLookUp);
 		}
 
@@ -35,7 +36,7 @@ namespace InstaDungeon.BehaviorTreeNodes
 				{
 					Item item = inventory.GetItem(slotsToLookUp[i]);
 
-					if (item != null && item.ItemInfo.NameId == itemNameId)
+					if (item != null && itemMatch(item))
 					{
 						result = NodeStates.Success;
 					}
