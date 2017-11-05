@@ -1,5 +1,6 @@
 ﻿using AI.BehaviorTrees;
 using InstaDungeon.Components;
+using System;
 using System.Collections.Generic;
 
 namespace InstaDungeon.BehaviorTreeNodes
@@ -7,14 +8,14 @@ namespace InstaDungeon.BehaviorTreeNodes
 	public class SetEntityPositionInMemoryAsDestinyAction : ActionNode
 	{
 		private string memoryId;
-		private string entityId;
 		private string destinyId;
+		private Predicate<Entity> entityMatch;
 
-		public SetEntityPositionInMemoryAsDestinyAction(string entitiesMemoryId, string entityInfoNameId, string destinyIdInMemory)
+		public SetEntityPositionInMemoryAsDestinyAction(string entitiesMemoryId, string destinyIdInMemory, Predicate<Entity> entityMatch)
 		{
 			memoryId = entitiesMemoryId;
-			entityId = entityInfoNameId;
 			destinyId = destinyIdInMemory;
+			this.entityMatch = entityMatch;
 		}
 
 		protected override NodeStates Tick(Tick tick)
@@ -32,7 +33,7 @@ namespace InstaDungeon.BehaviorTreeNodes
 
 					while (result == NodeStates.Failure && entitiesEnumerator.MoveNext())
 					{
-						if (entitiesEnumerator.Current.Info.NameId == entityId)
+						if (entityMatch(entitiesEnumerator.Current))
 						{
 							tick.Blackboard.Set(destinyId, entitiesEnumerator.Current.CellTransform.Position);
 							result = NodeStates.Success;
