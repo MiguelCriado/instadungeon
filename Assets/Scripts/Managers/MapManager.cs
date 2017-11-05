@@ -56,6 +56,11 @@ namespace InstaDungeon
 			get { return map[x, y]; }
 		}
 
+		public Cell this[int2 position]
+		{
+			get { return map[position]; }
+		}
+
 		public void Initialize(TileMap<Cell> map)
 		{
 			DisposeEntities(actors, (Entity entity, int2 position) => RemoveActor(entity, position));

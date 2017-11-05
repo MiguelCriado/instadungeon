@@ -60,7 +60,7 @@ namespace InstaDungeon.BehaviorTreeNodes
 
 			if (valueType == ValueType.Percent)
 			{
-				result = (health.MaxHealth / health.CurrentHealth) * 100;
+				result = (health.CurrentHealth / (float)health.MaxHealth) * 100;
 			}
 
 			return result;

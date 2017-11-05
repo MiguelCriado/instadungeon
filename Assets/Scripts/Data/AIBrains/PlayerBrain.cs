@@ -21,10 +21,12 @@ namespace InstaDungeon.AI
 		private static readonly string StairsExitEntityId = "Stairs Exit";
 		private static readonly string StairsExitPositionId = "StairsExitPositionId";
 		private static readonly string FloorLevelId = "FloorLevelId";
+		private static readonly string LootPositionId = "LootPositionId";
 
 		private static BehaviorTree Tree;
 
 		private GameManager gameManager;
+		private MapManager mapManager;
 
 		protected override BehaviorTree GetTree()
 		{
@@ -39,6 +41,7 @@ namespace InstaDungeon.AI
 		protected override BehaviorTree GenerateNewTree()
 		{
 			gameManager = Locator.Get<GameManager>();
+			mapManager = Locator.Get<MapManager>();
 
 			return new BehaviorTree
 			(
@@ -88,6 +91,7 @@ namespace InstaDungeon.AI
 			(
 				Heal(),
 				Combat(),
+				Loot(),
 				ExitFloor(),
 				Explore()
 			);
@@ -98,7 +102,7 @@ namespace InstaDungeon.AI
 			return new Sequence
 			(
 				new InventoryContainsCondition(x => x is HealthPotion, InventorySlotType.Bag),
-				new CheckHealthCondition(Operation.LessThanOrEqualTo, 25, ValueType.Percent),
+				new CheckHealthCondition(Operation.LessThanOrEqualTo, 90, ValueType.Percent),
 				new ConsumeItemInBagAction()
 			);
 		}
@@ -110,6 +114,21 @@ namespace InstaDungeon.AI
 				new CanSeeAnyEnemyCondition(),
 				new AcquireClosestTargetAction(CombatTargetId),
 				new ChaseTargetAction(CombatTargetId)
+			);
+		}
+
+		private BaseNode Loot()
+		{
+			return new Sequence
+			(
+				new Inverter(new InventoryContainsCondition(x => x.GetComponent<HealthPotion>() != null, InventorySlotType.Bag)),
+				new SetEntityPositionInMemoryAsDestinyAction(ItemsMemoryId, LootPositionId, x => 
+				{
+					return	x.GetComponent<HealthPotion>() != null
+							&& mapManager[x.CellTransform.Position].Visibility == VisibilityType.Visible;
+				}),
+				new GoToStoredPositionAction(LootPositionId, true),
+				new InteractWithCurrentTileAction()
 			);
 		}
 
@@ -127,13 +146,13 @@ namespace InstaDungeon.AI
 						new InventoryContainsCondition(x => x.ItemInfo.NameId == SilverKeyItemId, InventorySlotType.Key),
 						new ExitIsOpenCondition()
 					),
-					new SetEntityPositionInMemoryAsDestinyAction(PropsMemoryId, StairsExitEntityId, StairsExitPositionId),
+					new SetEntityPositionInMemoryAsDestinyAction(PropsMemoryId, StairsExitPositionId, x => x.Info.NameId == StairsExitEntityId),
 					new GoToStoredPositionAction(StairsExitPositionId, true)
 				),
 				new Sequence
 				(
 					new EntitiesMemoryContainsCondition(ItemsMemoryId, SilverKeyEntityId),
-					new SetEntityPositionInMemoryAsDestinyAction(ItemsMemoryId, SilverKeyEntityId, SilverKeyPositionId),
+					new SetEntityPositionInMemoryAsDestinyAction(ItemsMemoryId, SilverKeyPositionId, x => x.Info.NameId == SilverKeyEntityId),
 					new GoToStoredPositionAction(SilverKeyPositionId, true)
 				)
 			);
