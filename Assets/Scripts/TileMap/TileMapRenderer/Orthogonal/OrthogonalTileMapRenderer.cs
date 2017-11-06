@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
-// using UnityEditor;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace InstaDungeon.TileMap
 {
@@ -15,10 +17,10 @@ namespace InstaDungeon.TileMap
 		[SerializeField] private int2 chunkSize;
 		[SerializeField] private Material material;
 
-		// private MapManager mapManager;
 		private Dictionary<int2, OrthogonalChunkRenderer> chunks;
 		private Transform chunksContainer;
 		private Transform chunkPool;
+		private Transform chunkLayerPool;
 
 		private void Awake()
 		{
@@ -31,25 +33,33 @@ namespace InstaDungeon.TileMap
 			go = new GameObject("ChunkPool");
 			chunkPool = go.transform;
 			chunkPool.SetParent(transform);
+
+			go = new GameObject("ChunkLayerPool");
+			chunkLayerPool = go.transform;
+			chunkLayerPool.SetParent(transform);
 		}
 
-		//private void Start()
-		//{
-		//	mapManager = Locator.Get<MapManager>();
-		//}
+#if UNITY_EDITOR
+		private MapManager mapManager;
 
-		//private void OnDrawGizmos()
-		//{
-		//	if (mapManager != null)
-		//	{
-		//		int2[] tiles = mapManager.Map.GetPresentTiles();
+		private void Start()
+		{
+			mapManager = Locator.Get<MapManager>();
+		}
 
-		//		for (int i = 0; i < tiles.Length; i++)
-		//		{
-		//			Handles.Label(TileMapToWorldPosition(tiles[i]), tiles[i].ToString());
-		//		}
-		//	}
-		//}
+		private void OnDrawGizmos()
+		{
+			if (mapManager != null)
+			{
+				int2[] tiles = mapManager.Map.GetPresentTiles();
+
+				for (int i = 0; i < tiles.Length; i++)
+				{
+					Handles.Label(TileMapToWorldPosition(tiles[i]), tiles[i].ToString());
+				}
+			}
+		}
+#endif
 
 		public void RenderMap(TileMap<Cell> map)
 		{
@@ -72,8 +82,7 @@ namespace InstaDungeon.TileMap
 					renderer = SpawnRenderer();
 					renderer.transform.SetParent(chunksContainer);
 					renderer.name = string.Format("Chunk [{0}, {1}]", chunkId.x, chunkId.y);
-					renderer.Setup(this, tileSet, material);
-					renderer.BeginBuilding(map);
+					renderer.Setup(this, tileSet, material, map);
 
 					chunks.Add(chunkId, renderer);
 				}
@@ -83,7 +92,7 @@ namespace InstaDungeon.TileMap
 
 			foreach(var chunkRenderer in chunks)
 			{
-				chunkRenderer.Value.FinishBuilding();
+				chunkRenderer.Value.Commit();
 			}
 		}
 
@@ -114,6 +123,11 @@ namespace InstaDungeon.TileMap
 			return result;
 		}
 
+		public OrthogonalChunkRendererLayer SpawnRendererLayer()
+		{
+			return SpawnComponentFromPool<OrthogonalChunkRendererLayer>("ChunkLayer", chunkLayerPool);
+		}
+
 		private int2 GetChunkId(int2 tilePosition)
 		{
 			return new int2(tilePosition.x / chunkSize.x, tilePosition.y / chunkSize.y);
@@ -121,12 +135,31 @@ namespace InstaDungeon.TileMap
 
 		private OrthogonalChunkRenderer SpawnRenderer()
 		{
-			OrthogonalChunkRenderer result = null;
+			return SpawnComponentFromPool<OrthogonalChunkRenderer>("Chunk", chunkPool);
+		}
 
-			if (chunkPool.childCount > 0)
+		private void RecycleChunks(Dictionary<int2, OrthogonalChunkRenderer> chunkList)
+		{
+			var enumerator = chunkList.Values.GetEnumerator();
+
+			while (enumerator.MoveNext())
 			{
-				Transform child = chunkPool.GetChild(0);
-				result = child.GetComponent<OrthogonalChunkRenderer>();
+				RecycleComponents(enumerator.Current.DisposeLayers().GetEnumerator(), chunkLayerPool);
+				enumerator.Current.transform.SetParent(chunkPool);
+				enumerator.Current.gameObject.SetActive(false);
+			}
+
+			chunkList.Clear();
+		}
+
+		private T SpawnComponentFromPool<T>(string objectName, Transform pool) where T : Component
+		{
+			T result = null;
+
+			if (pool.childCount > 0)
+			{
+				Transform child = pool.GetChild(0);
+				result = child.GetComponent<T>();
 
 				if (result != null)
 				{
@@ -136,22 +169,20 @@ namespace InstaDungeon.TileMap
 			}
 			else
 			{
-				GameObject go = new GameObject("Chunk");
-				result = go.AddComponent<OrthogonalChunkRenderer>();
+				GameObject go = new GameObject(objectName);
+				result = go.AddComponent<T>();
 			}
 
 			return result;
 		}
-		
-		private void RecycleChunks(Dictionary<int2, OrthogonalChunkRenderer> chunkList)
-		{
-			foreach (var chunk in chunkList)
-			{
-				chunk.Value.transform.SetParent(chunkPool);
-				chunk.Value.gameObject.SetActive(false);
-			}
 
-			chunkList.Clear();
+		private void RecycleComponents<T>(IEnumerator<T> list, Transform destinyPool) where T : Component
+		{
+			while (list.MoveNext())
+			{
+				list.Current.transform.SetParent(destinyPool);
+				list.Current.gameObject.SetActive(false);
+			}
 		}
 	}
 }

@@ -1,5 +1,19 @@
-﻿public static class TileMapper
+﻿using System.Collections.Generic;
+
+public static class TileMapper
 {
+	public class TileLayerInfo
+	{
+		public int Layer;
+		public Tile Tile;
+
+		public TileLayerInfo(int layer, Tile tile)
+		{
+			Layer = layer;
+			Tile = tile;
+		}
+	}
+
 	public static readonly int2[] neighboursCheck = new int2[]
 	{
 		new int2(-1, 1),
@@ -12,9 +26,9 @@
 		new int2(-1, 0)
 	};
 
-	public static Tile GetTile(TileMap<Cell> map, int2 position, TileSet tileSet)
+	public static List<TileLayerInfo> GetTileLayers(TileMap<Cell> map, int2 position, TileSet tileSet)
 	{
-		Tile result = null;
+		List<TileLayerInfo> result = null;
 		Cell cell = map[position.x, position.y];
 
 		if (cell != null)
@@ -25,8 +39,15 @@
 			{
 				default:
 				case TileType.Space: break;
-				case TileType.Floor: result = tileSet.GetTile(9); break;
-				case TileType.Wall: result = tileSet.GetTile("wall", GetNeighboursMask(map, position, TileType.Wall)); break;
+				case TileType.Floor:
+					result = new List<TileLayerInfo>();
+					result.Add(new TileLayerInfo(0, tileSet.GetTile(9)));
+				break;
+				case TileType.Wall:
+					result = new List<TileLayerInfo>();
+					AddLowerWallTile(result, map, position, tileSet);
+					result.Add(new TileLayerInfo(1, tileSet.GetTile("wall", GetNeighboursMask(map, position, TileType.Wall))));
+				break;
 			}
 		}
 
@@ -55,17 +76,45 @@
 		return result;
 	}
 
-	public static uint GetTileId(TileType type)
-	{
-		uint result = uint.MinValue;
+	private const byte ThinWall = 4; // 0000100
+	private const byte LeftWall = 6; // 0000110
+	private const byte CenterWall = 14; // 001110
+	private const byte RightWall = 12; // 0001100
 
-		switch(type)
+	private static void AddLowerWallTile(List<TileLayerInfo> result, TileMap<Cell> map, int2 position, TileSet tileSet)
+	{
+		uint tileIndex = uint.MaxValue;
+		Cell neighbour = map[position + int2.down];
+
+		if (neighbour != null && neighbour.TileInfo.TileType == TileType.Floor)
 		{
-			case TileType.Space: result = 0; break;
-			case TileType.Floor: result = 1; break;
-			case TileType.Wall: result = 2; break;
+			byte tileMask = 4;
+			neighbour = map[position + int2.left];
+
+			if (neighbour != null && neighbour.TileInfo.TileType == TileType.Wall)
+			{
+				tileMask |= 8;
+			}
+
+			neighbour = map[position + int2.right];
+
+			if (neighbour != null && neighbour.TileInfo.TileType == TileType.Wall)
+			{
+				tileMask |= 2;
+			}
+
+			switch (tileMask)
+			{
+				case ThinWall: tileIndex = 24; break;
+				case LeftWall: tileIndex = 25; break;
+				case CenterWall: tileIndex = 26; break;
+				case RightWall: tileIndex = 27; break;
+			}
 		}
 
-		return result;
+		if (tileIndex != uint.MaxValue)
+		{
+			result.Add(new TileLayerInfo(0, tileSet.GetTile(tileIndex)));
+		}
 	}
 }

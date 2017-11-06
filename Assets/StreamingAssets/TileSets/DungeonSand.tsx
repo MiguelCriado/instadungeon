@@ -13,6 +13,10 @@
 	<tile id="21" />
 	<tile id="22" />
 	<tile id="23" />
+	<tile id="24" />
+	<tile id="25" />
+	<tile id="26" />
+	<tile id="27" />
 	<tile id="0">
 		<properties>
 			<property name="autotilegroup" value="wall"/>
