@@ -11,11 +11,11 @@ namespace InstaDungeon.TileMap
 		private TileMap<Cell> map;
 		private float tileHeight;
 		private float tileWidth;
-		private Dictionary<int, OrthogonalChunkRendererLayer> layers;
+		private Dictionary<string, OrthogonalChunkRendererLayer> layers;
 
 		private void Awake()
 		{
-			layers = new Dictionary<int, OrthogonalChunkRendererLayer>();
+			layers = new Dictionary<string, OrthogonalChunkRendererLayer>();
 		}
 
 		public void Setup(OrthogonalTileMapRenderer renderer, TileSet tileSet, Material material, TileMap<Cell> map)
@@ -43,20 +43,19 @@ namespace InstaDungeon.TileMap
 				{
 					layerInfo = tileLayers[i];
 
-					if (!layers.TryGetValue(layerInfo.Layer, out renderer))
+					if (!layers.TryGetValue(layerInfo.SortingLayer, out renderer))
 					{
-						Vector2 layerOffset = Vector2.up * tileHeight * layerInfo.Layer;
+						Vector2 layerOffset = new Vector2(layerInfo.OffsetUnits.x * tileWidth, layerInfo.OffsetUnits.y * tileWidth);
 
 						renderer = tileMapRenderer.SpawnRendererLayer();
 						renderer.transform.SetParent(transform);
-						renderer.name = string.Format("Layer {0}", layerInfo.Layer);
-						renderer.BeginBuilding(map, tileSet.texture, material, tileWidth, tileHeight, layerOffset);
+						renderer.name = string.Format("Layer {0}", layerInfo.SortingLayer);
+						renderer.BeginBuilding(map, tileSet.texture, material, tileWidth, tileHeight, layerOffset, layerInfo.SortingLayer);
 
 						Vector3 newLayerPosition = renderer.transform.localPosition;
-						newLayerPosition.z = -1 * layerInfo.Layer;
 						renderer.transform.localPosition = newLayerPosition;
 
-						layers.Add(layerInfo.Layer, renderer);
+						layers.Add(layerInfo.SortingLayer, renderer);
 					}
 
 					renderer.AddTile(tilePosition, layerInfo.Tile);

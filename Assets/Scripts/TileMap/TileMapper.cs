@@ -1,15 +1,18 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 public static class TileMapper
 {
 	public class TileLayerInfo
 	{
-		public int Layer;
+		public string SortingLayer;
+		public Vector2 OffsetUnits;
 		public Tile Tile;
 
-		public TileLayerInfo(int layer, Tile tile)
+		public TileLayerInfo(string sortingLayer, Vector2 offsetUnits, Tile tile)
 		{
-			Layer = layer;
+			SortingLayer = sortingLayer;
+			OffsetUnits = offsetUnits;
 			Tile = tile;
 		}
 	}
@@ -26,6 +29,31 @@ public static class TileMapper
 		new int2(-1, 0)
 	};
 
+	private static readonly uint[] FloorTiles =		new uint[]	{ 3, 4, 5,  9, 11, 15, 16, 17, 21 };
+	private static readonly int[] FloorTilesWeight = new int[]	{ 0, 2, 3, 20, 1, 0, 0, 0, 0 };
+	private static int FloorTilesTotalWeight;
+
+	private static readonly uint[] WallTiles = new uint[] { 26, 28, 29, 30 };
+	private static readonly int[] WallTilesWeight = new int[] { 20, 5, 1, 2 };
+	private static int WallTilesTotalWeight;
+
+	static TileMapper()
+	{
+		FloorTilesTotalWeight = 0;
+
+		for (int i = 0; i < FloorTilesWeight.Length; i++)
+		{
+			FloorTilesTotalWeight += FloorTilesWeight[i];
+		}
+
+		WallTilesTotalWeight = 0;
+
+		for (int i = 0; i < WallTilesWeight.Length; i++)
+		{
+			WallTilesTotalWeight += WallTilesWeight[i];
+		}
+	}
+
 	public static List<TileLayerInfo> GetTileLayers(TileMap<Cell> map, int2 position, TileSet tileSet)
 	{
 		List<TileLayerInfo> result = null;
@@ -41,12 +69,12 @@ public static class TileMapper
 				case TileType.Space: break;
 				case TileType.Floor:
 					result = new List<TileLayerInfo>();
-					result.Add(new TileLayerInfo(0, tileSet.GetTile(9)));
+					result.Add(new TileLayerInfo("Bottom", Vector2.zero, tileSet.GetTile(GetRandomFloorTile())));
 				break;
 				case TileType.Wall:
 					result = new List<TileLayerInfo>();
 					AddLowerWallTile(result, map, position, tileSet);
-					result.Add(new TileLayerInfo(1, tileSet.GetTile("wall", GetNeighboursMask(map, position, TileType.Wall))));
+					result.Add(new TileLayerInfo("Top", Vector2.up, tileSet.GetTile("wall", GetNeighboursMask(map, position, TileType.Wall))));
 				break;
 			}
 		}
@@ -107,14 +135,46 @@ public static class TileMapper
 			{
 				case ThinWall: tileIndex = 24; break;
 				case LeftWall: tileIndex = 25; break;
-				case CenterWall: tileIndex = 26; break;
+				case CenterWall: tileIndex = GetRandomWallTile(); break;
 				case RightWall: tileIndex = 27; break;
 			}
 		}
 
 		if (tileIndex != uint.MaxValue)
 		{
-			result.Add(new TileLayerInfo(0, tileSet.GetTile(tileIndex)));
+			result.Add(new TileLayerInfo("Bottom", Vector2.zero, tileSet.GetTile(tileIndex)));
 		}
+	}
+
+	private static uint GetRandomFloorTile()
+	{
+		return PickRandomValue(FloorTilesTotalWeight, FloorTilesWeight, FloorTiles);
+	}
+
+	private static uint GetRandomWallTile()
+	{
+		return PickRandomValue(WallTilesTotalWeight, WallTilesWeight, WallTiles);
+	}
+
+	private static uint PickRandomValue(int totalWeight, int[] weightArray, uint[] valueArray)
+	{
+		uint result = uint.MaxValue;
+		int cumulativeWeight = 0;
+		int randomNumber = Random.Range(0, totalWeight);
+		int i = 0;
+
+		while (result == uint.MaxValue && i < weightArray.Length)
+		{
+			cumulativeWeight += weightArray[i];
+
+			if (cumulativeWeight > randomNumber)
+			{
+				result = valueArray[i];
+			}
+
+			i++;
+		}
+
+		return result;
 	}
 }

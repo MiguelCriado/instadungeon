@@ -54,7 +54,7 @@ namespace InstaDungeon.TileMap
 			triangles = new List<int>();
 		}
 
-		public void BeginBuilding(TileMap<Cell> map, Texture tilesetTexture, Material material, float tileWidth, float tileHeight, Vector2 localOffset)
+		public void BeginBuilding(TileMap<Cell> map, Texture tilesetTexture, Material material, float tileWidth, float tileHeight, Vector2 localOffset, string sortingLayer)
 		{
 			this.map = map;
 			this.tilesetTexture = tilesetTexture;
@@ -71,6 +71,8 @@ namespace InstaDungeon.TileMap
 			this.tileWidth = tileWidth;
 			this.tileHeight = tileHeight;
 			this.localOffset = localOffset;
+
+			meshRenderer.sortingLayerName = sortingLayer;
 		}
 
 		public void AddTile(int2 tilePosition, Tile tile)
