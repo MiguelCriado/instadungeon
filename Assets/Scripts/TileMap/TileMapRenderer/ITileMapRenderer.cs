@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public interface ITileMapRenderer
 {
 	float TileScale { get; }
 	int2 ChunkSize { get; }
-	Material Material { get; }
+	List<Material> Materials { get; }
 
 	void RenderMap(TileMap<Cell> map);
 	void RefreshVisibility();

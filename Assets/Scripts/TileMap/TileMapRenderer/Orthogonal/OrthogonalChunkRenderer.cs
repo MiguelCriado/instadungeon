@@ -7,7 +7,7 @@ namespace InstaDungeon.TileMap
 	{
 		private OrthogonalTileMapRenderer tileMapRenderer;
 		private TileSet tileSet;
-		private Material material;
+		private List<Material> materials;
 		private TileMap<Cell> map;
 		private float tileHeight;
 		private float tileWidth;
@@ -18,11 +18,11 @@ namespace InstaDungeon.TileMap
 			layers = new Dictionary<string, OrthogonalChunkRendererLayer>();
 		}
 
-		public void Setup(OrthogonalTileMapRenderer renderer, TileSet tileSet, Material material, TileMap<Cell> map)
+		public void Setup(OrthogonalTileMapRenderer renderer, TileSet tileSet, List<Material> materials, TileMap<Cell> map)
 		{
 			tileMapRenderer = renderer;
 			this.tileSet = tileSet;
-			this.material = material;
+			this.materials = materials;
 			this.map = map;
 
 			tileHeight = tileMapRenderer.TileScale;
@@ -46,6 +46,7 @@ namespace InstaDungeon.TileMap
 					if (!layers.TryGetValue(layerInfo.SortingLayer, out renderer))
 					{
 						Vector2 layerOffset = new Vector2(layerInfo.OffsetUnits.x * tileWidth, layerInfo.OffsetUnits.y * tileWidth);
+						Material material = materials.Find(x => x.name == layerInfo.Material);
 
 						renderer = tileMapRenderer.SpawnRendererLayer();
 						renderer.transform.SetParent(transform);

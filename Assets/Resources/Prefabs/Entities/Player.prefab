@@ -576,7 +576,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 5839a62289e757341960d3c2d8e40c1b, type: 2}
+  - {fileID: 2100000, guid: ab9f32d53d403cc44bfb160713f96236, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -617,7 +617,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 5839a62289e757341960d3c2d8e40c1b, type: 2}
+  - {fileID: 2100000, guid: ab9f32d53d403cc44bfb160713f96236, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

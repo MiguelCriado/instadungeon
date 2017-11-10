@@ -11,11 +11,11 @@ namespace InstaDungeon.TileMap
 	{
 		public float TileScale { get { return tileScale; } }
 		public int2 ChunkSize { get { return chunkSize; } }
-		public Material Material { get { return material; } }
+		public List<Material> Materials { get { return materials; } }
 
 		[SerializeField] private float tileScale = 1f;
 		[SerializeField] private int2 chunkSize;
-		[SerializeField] private Material material;
+		[SerializeField] private List<Material> materials;
 
 		private Dictionary<int2, OrthogonalChunkRenderer> chunks;
 		private Transform chunksContainer;
@@ -82,7 +82,7 @@ namespace InstaDungeon.TileMap
 					renderer = SpawnRenderer();
 					renderer.transform.SetParent(chunksContainer);
 					renderer.name = string.Format("Chunk [{0}, {1}]", chunkId.x, chunkId.y);
-					renderer.Setup(this, tileSet, material, map);
+					renderer.Setup(this, tileSet, materials, map);
 
 					chunks.Add(chunkId, renderer);
 				}
