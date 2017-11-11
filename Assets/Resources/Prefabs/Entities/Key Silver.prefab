@@ -54,6 +54,7 @@ GameObject:
   - component: {fileID: 114181865386985538}
   - component: {fileID: 114755517731933810}
   - component: {fileID: 114590134670818374}
+  - component: {fileID: 114376351206971532}
   m_Layer: 0
   m_Name: Key Silver
   m_TagString: Untagged
@@ -130,6 +131,17 @@ MonoBehaviour:
   info: {fileID: 11400000, guid: 91d9f758d858fad40b017b240455b750, type: 2}
   blocksLineOfSight: 0
   blocksMovement: 0
+--- !u!114 &114376351206971532
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1740144372161032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 768a4fea643e79249ae87debe54797e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114590134670818374
 MonoBehaviour:
   m_ObjectHideFlags: 1

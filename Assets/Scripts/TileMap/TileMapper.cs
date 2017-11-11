@@ -6,13 +6,15 @@ public static class TileMapper
 	public class TileLayerInfo
 	{
 		public string SortingLayer;
+		public int SortingOrder;
 		public string Material;
 		public Vector2 OffsetUnits;
 		public Tile Tile;
 
-		public TileLayerInfo(string sortingLayer, string material, Vector2 offsetUnits, Tile tile)
+		public TileLayerInfo(string sortingLayer, int sortingOrder, string material, Vector2 offsetUnits, Tile tile)
 		{
 			SortingLayer = sortingLayer;
+			SortingOrder = sortingOrder;
 			Material = material;
 			OffsetUnits = offsetUnits;
 			Tile = tile;
@@ -71,12 +73,12 @@ public static class TileMapper
 				case TileType.Space: break;
 				case TileType.Floor:
 					result = new List<TileLayerInfo>();
-					result.Add(new TileLayerInfo("Bottom", "TileMap", Vector2.zero, tileSet.GetTile(GetRandomFloorTile())));
+					result.Add(new TileLayerInfo("Bottom", -32768, "TileMap", Vector2.zero, tileSet.GetTile(GetRandomFloorTile())));
 				break;
 				case TileType.Wall:
 					result = new List<TileLayerInfo>();
 					AddLowerWallTile(result, map, position, tileSet);
-					result.Add(new TileLayerInfo("Middle", "TileMap Occluder", Vector2.up, tileSet.GetTile("wall", GetNeighboursMask(map, position, TileType.Wall))));
+					result.Add(new TileLayerInfo("Middle", -32768, "TileMap Occluder", Vector2.up, tileSet.GetTile("wall", GetNeighboursMask(map, position, TileType.Wall))));
 				break;
 			}
 		}
@@ -144,7 +146,7 @@ public static class TileMapper
 
 		if (tileIndex != uint.MaxValue)
 		{
-			result.Add(new TileLayerInfo("Bottom", "TileMap", Vector2.zero, tileSet.GetTile(tileIndex)));
+			result.Add(new TileLayerInfo("Bottom", -32768, "TileMap", Vector2.zero, tileSet.GetTile(tileIndex)));
 		}
 	}
 

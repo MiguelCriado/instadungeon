@@ -51,7 +51,7 @@ namespace InstaDungeon.TileMap
 						renderer = tileMapRenderer.SpawnRendererLayer();
 						renderer.transform.SetParent(transform);
 						renderer.name = string.Format("Layer {0}", layerInfo.SortingLayer);
-						renderer.BeginBuilding(map, tileSet.texture, material, tileWidth, tileHeight, layerOffset, layerInfo.SortingLayer);
+						renderer.BeginBuilding(map, tileSet.texture, material, tileWidth, tileHeight, layerOffset, layerInfo.SortingLayer, layerInfo.SortingOrder);
 
 						Vector3 newLayerPosition = renderer.transform.localPosition;
 						renderer.transform.localPosition = newLayerPosition;
