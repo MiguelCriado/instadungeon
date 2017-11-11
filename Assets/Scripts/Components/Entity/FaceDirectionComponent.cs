@@ -20,18 +20,18 @@ namespace InstaDungeon.Components
 
 		private Animator animator;
 
-		protected void Reset()
+		private void Reset()
 		{
 			direction = Direction.North;
 		}
 
-		protected void Awake()
+		private void Awake()
 		{
 			animator = GetComponent<Animator>();
 			UpdateFacingDirection(direction, true);
 		}
 
-		protected void UpdateFacingDirection(Direction newDirection, bool forceUpdate = false)
+		private void UpdateFacingDirection(Direction newDirection, bool forceUpdate = false)
 		{
 			if (newDirection != direction || forceUpdate)
 			{

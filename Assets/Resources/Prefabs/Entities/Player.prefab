@@ -34,6 +34,9 @@ GameObject:
   - component: {fileID: 114037081721699196}
   - component: {fileID: 114398371045187226}
   - component: {fileID: 114743549085443992}
+  - component: {fileID: 95677315125374960}
+  - component: {fileID: 114921522139246158}
+  - component: {fileID: 114839374301404756}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -322,6 +325,23 @@ Transform:
   m_Father: {fileID: 4670133045348136}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &95677315125374960
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010063882004}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: fe675b325b5d6e54f8ca458cc802e8cb, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!114 &114037081721699196
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -534,6 +554,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionTarget: {fileID: 4864525312770474}
+--- !u!114 &114839374301404756
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010063882004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08e21382993d2284ca224b95dee7aeaf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114912538364296624
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -548,6 +579,18 @@ MonoBehaviour:
   info: {fileID: 11400000, guid: 6a1ee91ebd3e86a489cd33214db059bf, type: 2}
   blocksLineOfSight: 0
   blocksMovement: 0
+--- !u!114 &114921522139246158
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010063882004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4890556a8ed53ba499d0c3bf60872536, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  direction: 0
 --- !u!114 &114926281602619304
 MonoBehaviour:
   m_ObjectHideFlags: 1
