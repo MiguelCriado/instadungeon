@@ -39,6 +39,7 @@ GameObject:
   - component: {fileID: 114570786724884980}
   - component: {fileID: 114405235577316430}
   - component: {fileID: 114483000558079174}
+  - component: {fileID: 114531265032142952}
   m_Layer: 0
   m_Name: Gold
   m_TagString: Untagged
@@ -141,6 +142,17 @@ MonoBehaviour:
   position:
     x: 0
     y: 0
+--- !u!114 &114531265032142952
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1407201246211996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 768a4fea643e79249ae87debe54797e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114570786724884980
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -168,7 +180,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 2100000, guid: f841ef0b6c2c38d419e9bf2bb92a0be7, type: 2}
+  - {fileID: 2100000, guid: a33ec033e62b5d840a1610b2ec366fb4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

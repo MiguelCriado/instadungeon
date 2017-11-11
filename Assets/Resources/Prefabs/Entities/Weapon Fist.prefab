@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 114623455483960830}
   - component: {fileID: 114994656053572778}
   - component: {fileID: 114035384107943990}
+  - component: {fileID: 114657754481097388}
   m_Layer: 0
   m_Name: Weapon Fist
   m_TagString: Untagged
@@ -127,6 +128,17 @@ MonoBehaviour:
   info: {fileID: 11400000, guid: 6a1ee91ebd3e86a489cd33214db059bf, type: 2}
   blocksLineOfSight: 0
   blocksMovement: 0
+--- !u!114 &114657754481097388
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1292002239252992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 768a4fea643e79249ae87debe54797e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114796533494504186
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -153,6 +165,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: Fist
+  amount: 1
   weaponInfo: {fileID: 11400000, guid: 6d1cf621a893f01449d454f5a7ffb30f, type: 2}
   additionalRange: 0
   additionalMinDamage: 0

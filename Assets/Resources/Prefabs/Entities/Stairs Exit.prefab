@@ -26,6 +26,7 @@ GameObject:
   - component: {fileID: 114279408836471472}
   - component: {fileID: 114762825299750350}
   - component: {fileID: 95993179614218746}
+  - component: {fileID: 114383709331519790}
   m_Layer: 0
   m_Name: Stairs Exit
   m_TagString: Untagged
@@ -218,6 +219,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interaction: {fileID: 11400000, guid: df6a2b6fbd5df3b4b91f21671e77a26c, type: 2}
+--- !u!114 &114383709331519790
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1574914782646984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 768a4fea643e79249ae87debe54797e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114461257671150790
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -3,175 +3,99 @@ using UnityEngine;
 
 namespace InstaDungeon.TileMap
 {
-	[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 	public class OrthogonalChunkRenderer : MonoBehaviour, IChunkRenderer
 	{
-		private struct TileVertices
-		{
-			public int2 tile;
-			public int numVertices;
-
-			public TileVertices(int2 tile, int numVertices)
-			{
-				this.tile = tile;
-				this.numVertices = numVertices;
-			}
-		}
-
-		private static readonly Color32 ObscuredColor = new Color32(26, 21, 32, 255);
-		private static readonly Color32 PreviouslySeenColor = new Color32(26, 21, 32, 128);
-		private static readonly Color32 VisibleColor = new Color32(26, 21, 32, 0);
-
 		private OrthogonalTileMapRenderer tileMapRenderer;
 		private TileSet tileSet;
-		private Material material;
-		private MeshFilter meshFilter;
-		private MeshRenderer meshRenderer;
-
+		private List<Material> materials;
 		private TileMap<Cell> map;
-		private List<TileVertices> tiles;
-		private List<Vector3> vertices;
-		private List<Vector3> normals;
-		private List<Vector2> uv;
-		private List<Color32> vertexColors;
-		private List<int> triangles;
-
-		private int vertexOffset;
 		private float tileHeight;
 		private float tileWidth;
+		private Dictionary<string, OrthogonalChunkRendererLayer> layers;
 
-		void Awake()
+		private void Awake()
 		{
-			meshFilter = GetComponent<MeshFilter>();
-			meshRenderer = GetComponent<MeshRenderer>();
-
-			tiles = new List<TileVertices>();
-			vertices = new List<Vector3>();
-			normals = new List<Vector3>();
-			uv = new List<Vector2>();
-			vertexColors = new List<Color32>();
-			triangles = new List<int>();
+			layers = new Dictionary<string, OrthogonalChunkRendererLayer>();
 		}
 
-		public void Setup(OrthogonalTileMapRenderer renderer, TileSet tileSet, Material material)
+		public void Setup(OrthogonalTileMapRenderer renderer, TileSet tileSet, List<Material> materials, TileMap<Cell> map)
 		{
 			tileMapRenderer = renderer;
 			this.tileSet = tileSet;
-			this.material = material;
-		}
-
-		public void BeginBuilding(TileMap<Cell> map)
-		{
+			this.materials = materials;
 			this.map = map;
-			tiles.Clear();
-			vertices.Clear();
-			normals.Clear();
-			uv.Clear();
-			vertexColors.Clear();
-			triangles.Clear();
 
-			vertexOffset = 0;
 			tileHeight = tileMapRenderer.TileScale;
 			tileWidth = tileMapRenderer.TileScale * tileSet.tileResolution.x / tileSet.tileResolution.y;
+
+			layers.Clear();
 		}
 
 		public void AddTile(int2 tilePosition)
 		{
-			int x = tilePosition.x;
-			int y = tilePosition.y;
+			List<TileMapper.TileLayerInfo> tileLayers = TileMapper.GetTileLayers(map, tilePosition, tileSet);
+			OrthogonalChunkRendererLayer renderer;
+			TileMapper.TileLayerInfo layerInfo;
 
-			Tile tile = TileMapper.GetTile(map, tilePosition, tileSet);
-
-			if (tile != null)
+			if (tileLayers != null)
 			{
-				Rect[] rects = tile.Rects;
-				Rect[] uvRects = tile.UvRects;
-				tiles.Add(new TileVertices(tilePosition, rects.Length * 4));
-
-				for (int j = 0; j < rects.Length; j++)
+				for (int i = 0; i < tileLayers.Count; i++)
 				{
-					float xSection = x + (rects[j].x);
-					float ySection = y + (rects[j].y);
+					layerInfo = tileLayers[i];
 
-					float widthSection = rects[j].width;
-					float heightSection = rects[j].height;
+					if (!layers.TryGetValue(layerInfo.SortingLayer, out renderer))
+					{
+						Vector2 layerOffset = new Vector2(layerInfo.OffsetUnits.x * tileWidth, layerInfo.OffsetUnits.y * tileWidth);
+						Material material = materials.Find(x => x.name == layerInfo.Material);
 
-					vertices.Add(new Vector3(xSection * tileWidth, ySection * tileHeight, 0f));
-					vertices.Add(new Vector3(xSection * tileWidth + widthSection, ySection * tileHeight, 0f));
-					vertices.Add(new Vector3(xSection * tileWidth, ySection * tileHeight + heightSection, 0f));
-					vertices.Add(new Vector3(xSection * tileWidth + widthSection, ySection * tileHeight + heightSection, 0f));
+						renderer = tileMapRenderer.SpawnRendererLayer();
+						renderer.transform.SetParent(transform);
+						renderer.name = string.Format("Layer {0}", layerInfo.SortingLayer);
+						renderer.BeginBuilding(map, tileSet.texture, material, tileWidth, tileHeight, layerOffset, layerInfo.SortingLayer, layerInfo.SortingOrder);
 
-					vertexColors.Add(Color.white);
-					vertexColors.Add(Color.white);
-					vertexColors.Add(Color.white);
-					vertexColors.Add(Color.white);
+						Vector3 newLayerPosition = renderer.transform.localPosition;
+						renderer.transform.localPosition = newLayerPosition;
 
-					normals.Add(Vector3.forward);
-					normals.Add(Vector3.forward);
-					normals.Add(Vector3.forward);
-					normals.Add(Vector3.forward);
+						layers.Add(layerInfo.SortingLayer, renderer);
+					}
 
-					uv.Add(uvRects[j].min);
-					uv.Add(new Vector2(uvRects[j].xMax, uvRects[j].y));
-					uv.Add(new Vector2(uvRects[j].x, uvRects[j].yMax));
-					uv.Add(uvRects[j].max);
-
-					triangles.Add(vertexOffset + 0);
-					triangles.Add(vertexOffset + 2);
-					triangles.Add(vertexOffset + 3);
-
-					triangles.Add(vertexOffset + 0);
-					triangles.Add(vertexOffset + 3);
-					triangles.Add(vertexOffset + 1);
-
-					vertexOffset += 4;
+					renderer.AddTile(tilePosition, layerInfo.Tile);
 				}
 			}
 		}
 
-		public void FinishBuilding()
+		public void Commit()
 		{
-			Mesh mesh = new Mesh();
-			mesh.vertices = vertices.ToArray();
-			mesh.normals = normals.ToArray();
-			mesh.uv = uv.ToArray();
-			mesh.colors32 = vertexColors.ToArray();
-			mesh.triangles = triangles.ToArray();
+			var layerEnumerator = layers.Values.GetEnumerator();
 
-			meshFilter.mesh = mesh;
-
-			Material[] rendererMaterials = meshRenderer.materials;
-			rendererMaterials[0] = material;
-			rendererMaterials[0].mainTexture = tileSet.texture;
-			meshRenderer.materials = rendererMaterials;
+			while (layerEnumerator.MoveNext())
+			{
+				layerEnumerator.Current.Commit();
+			}
 		}
 
 		public void RefreshVisibility()
 		{
-			Cell currentCell;
-			Color32 cellColor;
+			var layerEnumerator = layers.Values.GetEnumerator();
 
-			vertexColors.Clear();
-
-			for (int i = 0; i < tiles.Count; i++)
+			while (layerEnumerator.MoveNext())
 			{
-				currentCell = map[tiles[i].tile];
+				layerEnumerator.Current.RefreshVisibility();
+			}
+		}
 
-				switch (currentCell.Visibility)
-				{
-					default:
-					case VisibilityType.Obscured: cellColor = ObscuredColor; break;
-					case VisibilityType.PreviouslySeen: cellColor = PreviouslySeenColor; break;
-					case VisibilityType.Visible: cellColor = VisibleColor; break;
-				}
+		public List<OrthogonalChunkRendererLayer> DisposeLayers()
+		{
+			List<OrthogonalChunkRendererLayer> result = new List<OrthogonalChunkRendererLayer>();
+			var enumerator = layers.Values.GetEnumerator();
 
-				for (int j = 0; j < tiles[i].numVertices; j++)
-				{
-					vertexColors.Add(cellColor);
-				}
+			while (enumerator.MoveNext())
+			{
+				result.Add(enumerator.Current);
 			}
 
-			meshFilter.mesh.colors32 = vertexColors.ToArray();
+			layers.Clear();
+			return result;
 		}
 	}
 }

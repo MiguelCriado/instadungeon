@@ -669,7 +669,9 @@ MonoBehaviour:
   chunkSize:
     x: 10
     y: 10
-  material: {fileID: 2100000, guid: f2312a6764a9ab446b723822ccac3e5c, type: 2}
+  materials:
+  - {fileID: 2100000, guid: f2312a6764a9ab446b723822ccac3e5c, type: 2}
+  - {fileID: 2100000, guid: 763922249767c8f43ae52ba3ab72a7b0, type: 2}
 --- !u!114 &271026169
 MonoBehaviour:
   m_ObjectHideFlags: 0
