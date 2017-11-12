@@ -119,16 +119,10 @@ namespace InstaDungeon.AI
 
 		private BaseNode Loot()
 		{
-			return new Sequence
+			return new Priority
 			(
-				new Inverter(new InventoryContainsCondition(x => x.GetComponent<HealthPotion>() != null, InventorySlotType.Bag)),
-				new SetEntityPositionInMemoryAsDestinyAction(ItemsMemoryId, LootPositionId, x => 
-				{
-					return	x.GetComponent<HealthPotion>() != null
-							&& mapManager[x.CellTransform.Position].Visibility == VisibilityType.Visible;
-				}),
-				new GoToStoredPositionAction(LootPositionId, true),
-				new InteractWithCurrentTileAction()
+				LootPotions(),
+				LootGold()
 			);
 		}
 
@@ -170,6 +164,34 @@ namespace InstaDungeon.AI
 		private BaseNode MemorizeCurrentFloor()
 		{
 			return new StoreVariableInMemoryAction<int>(FloorLevelId, () => gameManager.CurrentFloor);
+		}
+
+		private BaseNode LootPotions()
+		{
+			return new Sequence
+			(
+				new Inverter(new InventoryContainsCondition(x => x.GetComponent<HealthPotion>() != null, InventorySlotType.Bag)),
+				new SetEntityPositionInMemoryAsDestinyAction(ItemsMemoryId, LootPositionId, x =>
+				{
+					return x.GetComponent<HealthPotion>() != null
+							&& mapManager[x.CellTransform.Position].Visibility == VisibilityType.Visible;
+				}),
+				new GoToStoredPositionAction(LootPositionId, true),
+				new InteractWithCurrentTileAction()
+			);
+		}
+
+		private BaseNode LootGold()
+		{
+			return new Sequence
+			(
+				new SetEntityPositionInMemoryAsDestinyAction(ItemsMemoryId, LootPositionId, x => 
+				{
+					return x.GetComponent<Item>().ItemInfo.InventorySlot == InventorySlotType.Gold
+					&& mapManager[x.CellTransform.Position].Visibility == VisibilityType.Visible;
+				}),
+				new GoToStoredPositionAction(LootPositionId, true)
+			);
 		}
 	}
 }
