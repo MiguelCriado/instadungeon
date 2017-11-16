@@ -6,6 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Other/Test.unity
-  - enabled: 0
-    path: Assets/Sandbox/PixelPerfect/Scenes/PixelPerfect.unity
+    path: Assets/Scenes/Main Menu.unity
+    guid: 0025317106d7b2248bb9bdea49a95c40
+  - enabled: 1
+    path: Assets/Scenes/Game.unity
+    guid: 3c498e95e4724cb47bf4b6ab76d2f64b

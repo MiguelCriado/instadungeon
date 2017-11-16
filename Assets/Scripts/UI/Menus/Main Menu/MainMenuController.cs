@@ -117,7 +117,7 @@ namespace InstaDungeon.UI
 		{
 			int result;
 
-			if (enableCustomSeed == false || int.TryParse(customSeedField.text, out result))
+			if (enableCustomSeed.isOn == false || int.TryParse(customSeedField.text, out result) == false)
 			{
 				result = System.Guid.NewGuid().GetHashCode() ^ System.DateTime.UtcNow.Millisecond;
 			}

@@ -2,6 +2,7 @@
 using InstaDungeon.BehaviorTreeNodes;
 using InstaDungeon.Components;
 using InstaDungeon.Events;
+using InstaDungeon.MapGeneration;
 using UnityEngine;
 
 namespace InstaDungeon
@@ -43,6 +44,15 @@ namespace InstaDungeon
 		{
 			events = new EventSystem();
 			floorNumber = 0;
+		}
+
+		public void Initialize(ILayoutGenerator layoutGenerator, IZoneGenerator zoneGenerator, int seed)
+		{
+			Random.InitState(seed);
+			mapGenerationManager = Locator.Get<MapGenerationManager>();
+			mapGenerationManager.SetLayoutGenerator(layoutGenerator);
+			mapGenerationManager.SetZoneGenerator(zoneGenerator);
+			Initialize();
 		}
 
 		public void Initialize()
@@ -135,7 +145,7 @@ namespace InstaDungeon
 
 		private void GenerateNewMap(int level)
 		{
-			mapGenerationManager.GenerateNewMap(floorNumber);
+			mapGenerationManager.GenerateNewMap(floorNumber, Random.Range(int.MinValue, int.MaxValue));
 			mapRenderer.RenderMap(mapManager.Map);
 		}
 

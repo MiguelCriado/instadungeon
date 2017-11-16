@@ -6,7 +6,16 @@ namespace InstaDungeon
 	{
 		private void Start()
 		{
-			Locator.Get<GameManager>().Initialize();
+			GameSettings settings = Locator.Get<GameFeederManager>().Settings;
+
+			if (settings != null)
+			{
+				Locator.Get<GameManager>().Initialize(settings.LayoutGenerator, settings.ZoneGenerator, settings.Seed);
+			}
+			else
+			{
+				Locator.Get<GameManager>().Initialize();
+			}
 		}
 	}
 }
