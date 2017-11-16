@@ -89,6 +89,11 @@ namespace InstaDungeon
 			{
 				return new SideManager();
 			});
+
+			Locator.Provide<GameFeederManager>(() => 
+			{
+				return new GameFeederManager();
+			});
 		}
 	}
 }
