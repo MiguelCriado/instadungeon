@@ -164,6 +164,17 @@ namespace InstaDungeon.Components
 			return itemsCache;
 		}
 
+		public void Clear()
+		{
+			List<Item> items = GetItemsCache();
+
+			for (int i = 0; i < items.Count; i++)
+			{
+				RemoveItem(items[i]);
+				Locator.Get<EntityManager>().Recycle(items[i].GetComponent<Entity>().Guid);
+			}
+		}
+
 		#endregion
 
 		#region [Serialization]

@@ -1,4 +1,5 @@
 ﻿using InstaDungeon.Services;
+using System;
 using UnityEngine;
 using Logger = InstaDungeon.Services.Logger;
 
@@ -16,79 +17,86 @@ namespace InstaDungeon
 
 		protected void AddServices()
 		{
-			if (!Locator.Contains<Logger>() || overrideServices)
+			Provide<Logger>(() =>
 			{
-				Locator.Provide<Logger>(() =>
-				{
-					return new ConsoleLogger(LogLevel.Debug);
-				});
-			}
+				return new ConsoleLogger(LogLevel.Debug);
+			});
 
-			if (!Locator.Contains<AssetBundleService>() || overrideServices)
+			Provide<AssetBundleService>(() =>
 			{
-				Locator.Provide<AssetBundleService>(() =>
-				{
-					return new CloudAssetBundleService();
-				});
-			}
+				return new CloudAssetBundleService();
+			});
 		}
 
 		protected void AddManagers()
 		{
-			Locator.Provide<ActionManager>(() =>
+			Provide(() =>
 			{
 				return new ActionManager();
 			});
 
-			Locator.Provide<EntityManager>(() =>
+			Provide(() =>
 			{
 				return new EntityManager();
 			});
 
-			Locator.Provide<MapManager>(() =>
+			Provide(() =>
 			{
 				return new MapManager();
 			});
 
-			Locator.Provide<CommandManager>(() =>
+			Provide(() =>
 			{
 				return new CommandManager();
 			});
 
-			Locator.Provide<VisibilityManager>(() =>
+			Provide(() =>
 			{
 				return new VisibilityManager();
 			});
 
-			Locator.Provide<TurnManager>(() => 
+			Provide(() => 
 			{
 				return new TurnManager();
 			});
 
-			Locator.Provide<ParticleSystemManager>(() =>
+			Provide(() =>
 			{
 				return new ParticleSystemManager();
 			});
 
-			Locator.Provide<CameraManager>(() =>
+			Provide(() =>
 			{
 				return new CameraManager();
 			});
 
-			Locator.Provide<MapGenerationManager>(() => 
+			Provide(() => 
 			{
 				return new MapGenerationManager();
 			});
 
-			Locator.Provide<GameManager>(() => 
+			Provide(() => 
 			{
 				return new GameManager();
 			});
 
-			Locator.Provide<SideManager>(() => 
+			Provide(() => 
 			{
 				return new SideManager();
 			});
+
+			Provide(() => 
+			{
+				return new GameFeederManager();
+			});
+		}
+
+		private void Provide<T>(Func<T> provider)
+		{
+			if (!Locator.Contains<T>() || overrideServices)
+			{
+				Locator.Provide(provider);
+			}
 		}
 	}
 }

@@ -2,6 +2,7 @@
 using InstaDungeon.BehaviorTreeNodes;
 using InstaDungeon.Components;
 using InstaDungeon.Events;
+using InstaDungeon.MapGeneration;
 using UnityEngine;
 
 namespace InstaDungeon
@@ -45,7 +46,16 @@ namespace InstaDungeon
 			floorNumber = 0;
 		}
 
-		public void Initialize()
+		public void Initialize(ILayoutGenerator layoutGenerator, IZoneGenerator zoneGenerator, int seed, ControlMode mode)
+		{
+			Random.InitState(seed);
+			mapGenerationManager = Locator.Get<MapGenerationManager>();
+			mapGenerationManager.SetLayoutGenerator(layoutGenerator);
+			mapGenerationManager.SetZoneGenerator(zoneGenerator);
+			Initialize(mode);
+		}
+
+		public void Initialize(ControlMode mode)
 		{
 			gameState = GameState.Loading;
 			mapManager = Locator.Get<MapManager>();
@@ -55,7 +65,7 @@ namespace InstaDungeon
 			cameraManager = Locator.Get<CameraManager>();
 			Locator.Get<VisibilityManager>();
 			InitializeMapRenderer();
-			InitializePlayerCharacter();
+			InitializePlayerCharacter(mode);
 
 			LoadNewMap();
 			StartUpTurnSystem();
@@ -135,7 +145,7 @@ namespace InstaDungeon
 
 		private void GenerateNewMap(int level)
 		{
-			mapGenerationManager.GenerateNewMap(floorNumber);
+			mapGenerationManager.GenerateNewMap(floorNumber, Random.Range(int.MinValue, int.MaxValue));
 			mapRenderer.RenderMap(mapManager.Map);
 		}
 
@@ -210,19 +220,22 @@ namespace InstaDungeon
 			}
 		}
 
-		private void InitializePlayerCharacter()
+		private void InitializePlayerCharacter(ControlMode mode)
 		{
 			if (player == null)
 			{
 				player = entityManager.Spawn("Player");
 				player.Events.AddListener(OnPlayerDead, EntityDieEvent.EVENT_TYPE);
 			}
+
+			player.GetComponent<AIActorController>().enabled = mode == ControlMode.Auto;
+			player.GetComponent<InputActorController>().enabled = mode == ControlMode.Manual;
 		}
 
 		private void ResetPlayerCharacter()
 		{
 			player.GetComponent<Health>().ResetComponent();
-			// TODO reset inventory and other stuff
+			player.GetComponent<Inventory>().Clear();
 		}
 
 		#endregion
