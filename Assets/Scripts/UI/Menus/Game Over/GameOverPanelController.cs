@@ -1,17 +1,26 @@
 ﻿using DG.Tweening;
 using InstaDungeon.Events;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace InstaDungeon.UI
 {
 	public class GameOverPanelController : MonoBehaviour
 	{
+		[Header("References")]
 		[SerializeField] private RectTransform content;
 		[SerializeField] private RectTransform optionSelector;
 		[SerializeField] private MenuOption retryOption;
 		[SerializeField] private MenuOption mainMenuOption;
+		[Header("Settings")]
+		[SerializeField] private string mainMenu;
 
 		private MenuOption currentSelectedOption;
+
+		private void Reset()
+		{
+			mainMenu = "Main Menu";
+		}
 
 		private void Awake()
 		{
@@ -34,7 +43,7 @@ namespace InstaDungeon.UI
 
 			mainMenuOption.OnOptionPressed.AddListener(() => 
 			{
-				// TODO
+				SceneManager.LoadScene(mainMenu);
 			});
 		}
 

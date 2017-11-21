@@ -18,13 +18,15 @@ namespace InstaDungeon.UI
 		[SerializeField] private InputField customSeedField;
 		[SerializeField] private Dropdown modeDropdown;
 		[SerializeField] private Button startButton;
+		[SerializeField] private Button quitButton;
 
 		#region [MonoBehaviour Methods]
 
 		private void Awake()
 		{
-			enableCustomSeed.onValueChanged.AddListener(OnEnableCustomSeedChange);
-			startButton.onClick.AddListener(OnStartRequest);
+			enableCustomSeed.onValueChanged.AddListener(ChangeEnableCustomSeed);
+			startButton.onClick.AddListener(RequestStart);
+			quitButton.onClick.AddListener(RequestQuit);
 		}
 
 		private void Start()
@@ -38,12 +40,12 @@ namespace InstaDungeon.UI
 
 		#region [Events]
 
-		private void OnEnableCustomSeedChange(bool value)
+		private void ChangeEnableCustomSeed(bool value)
 		{
 			customSeedField.interactable = value;
 		}
 
-		private void OnStartRequest()
+		private void RequestStart()
 		{
 			ILayoutGenerator layoutGenerator = GetLayoutGenerator();
 			IZoneGenerator zoneGenerator = GetZoneGenerator();
@@ -53,6 +55,11 @@ namespace InstaDungeon.UI
 			GameSettings settings = new GameSettings(layoutGenerator, zoneGenerator, seed, controlMode);
 			Locator.Get<GameFeederManager>().Settings = settings;
 			SceneManager.LoadScene("Game");
+		}
+
+		private void RequestQuit()
+		{
+			Application.Quit();
 		}
 
 		#endregion

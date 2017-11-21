@@ -1,6 +1,7 @@
 ﻿using DG.Tweening;
 using InstaDungeon.Events;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace InstaDungeon.UI
 {
@@ -14,6 +15,7 @@ namespace InstaDungeon.UI
 		[SerializeField] private MenuOption mainMenuOption;
 		[Header("Settings")]
 		[SerializeField] private KeyCode pauseKey;
+		[SerializeField] private string mainMenu;
 
 		private GameManager gameManager;
 		private MenuOption currentSelectedOption;
@@ -21,6 +23,7 @@ namespace InstaDungeon.UI
 		private void Reset()
 		{
 			pauseKey = KeyCode.Escape;
+			mainMenu = "Main Menu";
 		}
 
 		private void Awake()
@@ -55,7 +58,7 @@ namespace InstaDungeon.UI
 
 			mainMenuOption.OnOptionPressed.AddListener(() =>
 			{
-				// TODO
+				SceneManager.LoadScene(mainMenu);
 			});
 		}
 
