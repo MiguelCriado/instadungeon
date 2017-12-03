@@ -1,4 +1,6 @@
-﻿public class Graph<T>
+﻿using System;
+
+public class Graph<T>
 {
 	public NodeList<T> Nodes
 	{
@@ -78,6 +80,11 @@
         return result;
 
     }
+
+	public T Find(Predicate<T> match)
+	{
+		return nodeSet.FindValue(match);
+	}
 
     public bool Contains(T value)
     {

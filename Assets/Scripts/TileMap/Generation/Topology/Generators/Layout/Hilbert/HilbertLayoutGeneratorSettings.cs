@@ -5,7 +5,7 @@ namespace InstaDungeon.MapGeneration
 	[System.Serializable]
 	public class HilbertLayoutGeneratorSettings : BaseLayoutGeneratorSettings<HilbertLayoutLevelSettings>
 	{
-		public HilbertLayoutGeneratorSettings(List<HilbertLayoutLevelSettings> settings) : base(settings)
+		public HilbertLayoutGeneratorSettings(HilbertLayoutLevelSettings fallbackSettings, List<HilbertLayoutLevelSettings> settings) : base(fallbackSettings, settings)
 		{
 
 		}

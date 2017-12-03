@@ -12,16 +12,25 @@ public class Zone : IEnumerable
     public HashSet<int2> tiles;
     public Dictionary<int2, Zone> connections;
 
-    public Zone()
+	public Zone(int id, int x, int y, int width, int height)
+	{
+		this.id = id;
+		Init(x, y, width, height);
+	}
+
+	public Zone() : this(id_counter++, 0, 0, 0, 0)
     {
-        id = id_counter++;
-        Init(0, 0, 0, 0);
+
     }
 
-    public Zone(int x, int y, int width, int height)
-    {
-        id = id_counter++;
-        Init(x, y, width, height);
+	public Zone(int id) : this(id, 0, 0, 0, 0)
+	{
+
+	}
+
+    public Zone(int x, int y, int width, int height) : this(id_counter++, x, y, width, height)
+	{
+
     }
 
     private void Init(int x, int y, int width, int height)

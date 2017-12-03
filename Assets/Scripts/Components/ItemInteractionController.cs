@@ -24,7 +24,7 @@ namespace InstaDungeon
 		private SpriteRenderer[] renderersList;
 		private Color[] originalRenderersColor;
 		private Vector3 replaceItemOriginalPosition;
-		private CanvasGroup canvasGroup;
+		//private CanvasGroup canvasGroup;
 		private bool visible;
 		private Guid sequenceId;
 
@@ -33,7 +33,7 @@ namespace InstaDungeon
 		private void Awake()
 		{
 			replaceItemOriginalPosition = replaceItemAvatar.transform.localPosition;
-			canvasGroup = GetComponent<CanvasGroup>();
+			//canvasGroup = GetComponent<CanvasGroup>();
 			sequenceId = Guid.NewGuid();
 
 			renderersList = gameObject.GetComponentsInChildren<SpriteRenderer>(true);
