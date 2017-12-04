@@ -34,13 +34,15 @@ public class NodeList<T> : Collection<Node<T>>
 	public T FindValue(Predicate<T> match)
 	{
 		T result = default(T);
+		bool found = false;
 		int i = 0;
 
-		while (result.Equals(default(T)) && i < Items.Count)
+		while (found == false && i < Items.Count)
 		{
 			if (match(Items[i].Value) == true)
 			{
 				result = Items[i].Value;
+				found = true;
 			}
 
 			i++;

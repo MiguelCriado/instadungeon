@@ -169,13 +169,13 @@ namespace InstaDungeon
 		{
 			Table result = new Table(script);
 
-			result[DynValue.NewString("initial_zone")] = DynValue.NewNumber(layout.InitialZone.id);
-			result[DynValue.NewString("final_zone")] = DynValue.NewNumber(layout.FinalZone.id);
+			result[DynValue.NewString("initial_zone")] = DynValue.NewNumber(GetZoneId(layout.InitialZone));
+			result[DynValue.NewString("final_zone")] = DynValue.NewNumber(GetZoneId(layout.FinalZone));
 
 			Table zonesTable = new Table(script);
 			result[DynValue.NewString("zones")] = DynValue.NewTable(zonesTable);
 			Table connectionsTable = new Table(script);
-			result[DynValue.NewString("zone_connections")] = DynValue.NewTable(connectionsTable);
+			result[DynValue.NewString("connections")] = DynValue.NewTable(connectionsTable);
 			var enumerator = layout.Zones.Nodes.GetEnumerator();
 
 			while (enumerator.MoveNext())
@@ -250,8 +250,8 @@ namespace InstaDungeon
 			TileMap<TileType> result = new TileMap<TileType>();
 			Table table = mapValue.Table;
 			result.Layout = GetLayout(table.Get(DynValue.NewString("layout")));
-			result.SpawnPoint = GetInt2(table.Get(DynValue.NewString("min_bound")));
-			result.ExitPoint = GetInt2(table.Get(DynValue.NewString("max_bound")));
+			result.SpawnPoint = GetInt2(table.Get(DynValue.NewString("spawn_point")));
+			result.ExitPoint = GetInt2(table.Get(DynValue.NewString("exit_point")));
 			AddMapTiles(table, result);
 			return result;
 		}
@@ -266,7 +266,7 @@ namespace InstaDungeon
 				var connection = enumerator.Current;
 				DynValue zoneId = DynValue.NewNumber(connection.Value.id);
 
-				if (table[zoneId] == DynValue.Nil)
+				if (table.Get(zoneId) == DynValue.Nil)
 				{
 					table[zoneId] = DynValue.NewTable(script);
 				}
@@ -284,6 +284,7 @@ namespace InstaDungeon
 			for (int x = minBounds.x; x < maxBounds.x; x++)
 			{
 				DynValue xIndex = DynValue.NewNumber(x);
+				result[xIndex] = DynValue.NewTable(script);
 
 				for (int y = minBounds.y; y < maxBounds.y; y++)
 				{
@@ -342,6 +343,18 @@ namespace InstaDungeon
 			}
 		}
 
+		private static int GetZoneId(Zone zone)
+		{
+			int result = -1;
+
+			if (zone != null)
+			{
+				result = zone.id;
+			}
+
+			return result;
+		}
+
 		private static DynValue GetMapTiles(Script script, TileMap<TileType> map)
 		{
 			Table table = new Table(script);
@@ -349,6 +362,7 @@ namespace InstaDungeon
 			for (int x = map.Bounds.Min.x; x < map.Bounds.Max.x; x++)
 			{
 				DynValue xIndex = DynValue.NewNumber(x);
+				table[xIndex] = DynValue.NewTable(script);
 
 				for (int y = map.Bounds.Min.y; y < map.Bounds.Max.y; y++)
 				{
