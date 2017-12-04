@@ -1,3 +1,5 @@
+require 'utils'
+
 function pre_connect_zones(map, level)
 
 end

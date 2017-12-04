@@ -1,5 +1,5 @@
 ﻿using MoonSharp.Interpreter;
-using MoonSharp.Interpreter.REPL;
+using MoonSharp.Interpreter.Loaders;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -20,7 +20,8 @@ namespace InstaDungeon
 			layoutGenerators = new Dictionary<string, Script>();
 			zoneGenerators = new Dictionary<string, Script>();
 
-			Script.DefaultOptions.ScriptLoader = new ReplInterpreterScriptLoader();
+			// Script.DefaultOptions.ScriptLoader = new ReplInterpreterScriptLoader();
+
 			LoadLayoutGenerationScripts();
 			LoadZoneGenerationScripts();
 			RegisterCustomConverters();
@@ -68,7 +69,9 @@ namespace InstaDungeon
 			for (int i = 0; i < files.Length; i++)
 			{
 				Script script = new Script();
-				script.DoFile(files[i].FullName);
+				((ScriptLoaderBase)script.Options.ScriptLoader).ModulePaths = new string[] { "?_module" };
+				string scriptString = File.ReadAllText(files[i].FullName);
+				script.DoString(scriptString);
 				dictionary.Add(files[i].Name, script);
 			}
 		}
