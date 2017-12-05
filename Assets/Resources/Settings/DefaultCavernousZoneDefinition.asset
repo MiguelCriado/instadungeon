@@ -12,6 +12,11 @@ MonoBehaviour:
   m_Name: DefaultCavernousZoneDefinition
   m_EditorClassIdentifier: 
   settings:
+    fallbackSettings:
+      minLevel: 0
+      initialWallProbability: 0.4
+      iterations: 4
+      refiningIterations: 3
     settings:
     - minLevel: 0
       initialWallProbability: 0.4

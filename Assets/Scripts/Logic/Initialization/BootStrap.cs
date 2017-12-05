@@ -89,6 +89,11 @@ namespace InstaDungeon
 			{
 				return new GameFeederManager();
 			});
+
+			Provide(() => 
+			{
+				return new ScriptingManager();
+			});
 		}
 
 		private void Provide<T>(Func<T> provider)

@@ -6,12 +6,14 @@ namespace InstaDungeon.MapGeneration
 	[System.Serializable]
 	public abstract class BaseZoneGeneratorSettings<T> : IZoneGeneratorSettings<T> where T : IZoneLevelSettings
 	{
+		[SerializeField] protected T fallbackSettings;
 		[SerializeField] protected List<T> settings;
 
 		private bool sorted;
 
-		public BaseZoneGeneratorSettings(List<T> settings)
+		public BaseZoneGeneratorSettings(T fallbackSettings, List<T> settings)
 		{
+			this.fallbackSettings = fallbackSettings;
 			this.settings = settings;
 			sorted = false;
 			SortSettingsIfNeeded();
@@ -19,12 +21,13 @@ namespace InstaDungeon.MapGeneration
 
 		public T GetSettings(int level)
 		{
-			T result = default(T);
+			T result = fallbackSettings;
 			int i = 0;
+			bool found = false;
 
 			SortSettingsIfNeeded();
 
-			while (result == null && i < settings.Count)
+			while (found == false && i < settings.Count)
 			{
 				int nextMinLevel = int.MaxValue;
 
@@ -36,6 +39,7 @@ namespace InstaDungeon.MapGeneration
 				if (level >= settings[i].MinLevel && level < nextMinLevel)
 				{
 					result = settings[i];
+					found = true;
 				}
 
 				i++;

@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 
 public class NodeList<T> : Collection<Node<T>>
 {
@@ -29,4 +30,24 @@ public class NodeList<T> : Collection<Node<T>>
         // if we reached here, we didn't find a matching node
         return null;
     }
+
+	public T FindValue(Predicate<T> match)
+	{
+		T result = default(T);
+		bool found = false;
+		int i = 0;
+
+		while (found == false && i < Items.Count)
+		{
+			if (match(Items[i].Value) == true)
+			{
+				result = Items[i].Value;
+				found = true;
+			}
+
+			i++;
+		}
+
+		return result;
+	}
 }

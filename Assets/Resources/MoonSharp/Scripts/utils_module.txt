@@ -1,0 +1,39 @@
+zone_index = 0
+
+function new_int2(x, y)
+	result = {x = x, y = y}
+	return result
+end
+
+function new_zone()
+	result = { }
+	result.id = zone_index
+	result.min_bound = new_int2(0, 0)
+	result.max_bound = new_int2(0, 0)
+	result.tiles = { }
+	result.connections = { }
+
+	zone_index = zone_index + 1
+
+	return result
+end
+
+function new_layout()
+	result = { }
+	result.initial_zone = -1
+	result.final_zone = -1
+	result.zones = { }
+	result.connections = { }
+	return result
+end
+
+function new_tilemap()
+	result = { }
+	result.layout = new_layout()
+	result.min_bound = new_int2(0, 0)
+	result.max_bound = new_int2(0, 0)
+	result.spawn_point = new_int2(0, 0)
+	result.exit_point = new_int2(0, 0)
+	result.tiles = { }
+	return result
+end

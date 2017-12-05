@@ -5,7 +5,7 @@ namespace InstaDungeon.MapGeneration
 	[System.Serializable]
 	public class CavernousZoneGeneratorSettings : BaseZoneGeneratorSettings<CavernousZoneLevelSettings>
 	{
-		public CavernousZoneGeneratorSettings(List<CavernousZoneLevelSettings> settings) : base(settings)
+		public CavernousZoneGeneratorSettings(CavernousZoneLevelSettings fallbackSettings, List<CavernousZoneLevelSettings> settings) : base(fallbackSettings, settings)
 		{
 
 		}

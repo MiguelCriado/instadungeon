@@ -20,10 +20,13 @@ namespace InstaDungeon.UI
 		[SerializeField] private Button startButton;
 		[SerializeField] private Button quitButton;
 
+		private ScriptingManager scriptingManager;
+
 		#region [MonoBehaviour Methods]
 
 		private void Awake()
 		{
+			scriptingManager = Locator.Get<ScriptingManager>();
 			enableCustomSeed.onValueChanged.AddListener(ChangeEnableCustomSeed);
 			startButton.onClick.AddListener(RequestStart);
 			quitButton.onClick.AddListener(RequestQuit);
@@ -73,6 +76,8 @@ namespace InstaDungeon.UI
 				"Hilbert"
 			};
 
+			options.AddRange(scriptingManager.GetLayoutGeneratorNames());
+
 			dropdown.AddOptions(options);
 		}
 
@@ -84,6 +89,8 @@ namespace InstaDungeon.UI
 			{
 				"Cavernous"
 			};
+
+			options.AddRange(scriptingManager.GetZoneGeneratorNames());
 
 			dropdown.AddOptions(options);
 		}

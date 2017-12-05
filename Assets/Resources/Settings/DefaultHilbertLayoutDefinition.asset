@@ -12,6 +12,14 @@ MonoBehaviour:
   m_Name: DefaultHilbertLayoutDefinition
   m_EditorClassIdentifier: 
   settings:
+    fallbackSettings:
+      minLevel: 0
+      dimensions:
+        x: 2
+        y: 2
+      zoneDimensions:
+        x: 15
+        y: 15
     settings:
     - minLevel: 0
       dimensions:
