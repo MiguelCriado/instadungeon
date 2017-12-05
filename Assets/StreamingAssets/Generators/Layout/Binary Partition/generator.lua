@@ -1,6 +1,6 @@
 require 'utils'
 
-function new_layout (settings)
+function initialize_layout (settings)
 
 end
 

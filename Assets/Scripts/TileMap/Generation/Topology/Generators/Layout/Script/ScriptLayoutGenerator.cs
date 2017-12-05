@@ -38,8 +38,7 @@ namespace InstaDungeon.MapGeneration
 
 		public override Layout NewLayout(int level)
 		{
-			Layout layout = new Layout();
-			DynValue result = script.Call(script.Globals["new_layout"], layout, GetLevelSettings(level));
+			DynValue result = script.Call(script.Globals["initialize_layout"], GetLevelSettings(level));
 			return result.ToObject<Layout>();
 		}
 
