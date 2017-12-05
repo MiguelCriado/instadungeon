@@ -1,6 +1,6 @@
 require 'utils'
 
-function new_layout (layout, settings)
+function new_layout (settings)
 
 end
 
@@ -8,6 +8,6 @@ function iterate (layout, settings)
 
 end
 
-function is_done ()
+function is_done (layout, settings)
 
 end

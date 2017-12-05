@@ -39,7 +39,6 @@ namespace InstaDungeon.MapGeneration
 		private int2 initialHilbertTile;
 		private int2 exit;
 		private Connections[,] layoutConnections;
-		private Layout layout;
 
 		public HilbertLayoutGenerator(HilbertLayoutGeneratorSettings settings) : base(settings)
 		{
@@ -49,7 +48,6 @@ namespace InstaDungeon.MapGeneration
 		public override Layout NewLayout(int level)
 		{
 			Layout result = new Layout();
-			layout = result;
 
 			return result;
 		}
@@ -59,7 +57,6 @@ namespace InstaDungeon.MapGeneration
 			SetLevelSettings(level);
 
 			Layout result = layout;
-			this.layout = layout;
 			Connections[,] layoutArray = GenerateLayoutArray();
 			AddZones(result, layoutArray);
 			ConnectZones(result, layoutArray);
@@ -68,7 +65,7 @@ namespace InstaDungeon.MapGeneration
 			return result;
 		}
 
-		public override bool IsDone()
+		public override bool IsDone(Layout layout, int level)
 		{
 			return layout.Zones.Count > 0;
 		}

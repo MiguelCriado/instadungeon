@@ -4,7 +4,7 @@
 	{
 		Layout NewLayout(int level);
 		Layout Iterate(Layout layout, int level);
-		bool IsDone();
+		bool IsDone(Layout layout, int level);
 	}
 
 	public interface ILayoutGenerator<T1, T2> : ILayoutGenerator

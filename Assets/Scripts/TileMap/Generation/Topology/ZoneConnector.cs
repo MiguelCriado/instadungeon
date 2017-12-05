@@ -12,7 +12,7 @@ namespace InstaDungeon.MapGeneration
 			Layout layout = layoutGenerator.NewLayout(level);
 			result.Layout = layout;
 
-			while (!layoutGenerator.IsDone())
+			while (!layoutGenerator.IsDone(layout, level))
 			{
 				result.Layout = layoutGenerator.Iterate(layout, level);
 
