@@ -1,4 +1,5 @@
-﻿using MoonSharp.Interpreter;
+﻿using InstaDungeon.MapGeneration;
+using MoonSharp.Interpreter;
 using MoonSharp.Interpreter.Loaders;
 using System.Collections.Generic;
 using System.IO;
@@ -12,16 +13,13 @@ namespace InstaDungeon
 		private static readonly string LayoutGeneratorsPath = Path.Combine(ScriptsPath, "Layout");
 		private static readonly string ZoneGeneratorsPath = Path.Combine(ScriptsPath, "Zone");
 
-		private Dictionary<string, Script> layoutGenerators;
-		private Dictionary<string, Script> zoneGenerators;
+		private Dictionary<string, ScriptLayoutGenerator> layoutGenerators;
+		private Dictionary<string, ScriptZoneGenerator> zoneGenerators;
 
 		public ScriptingManager() : base(true, false)
 		{
-			layoutGenerators = new Dictionary<string, Script>();
-			zoneGenerators = new Dictionary<string, Script>();
-
-			// Script.DefaultOptions.ScriptLoader = new ReplInterpreterScriptLoader();
-
+			layoutGenerators = new Dictionary<string, ScriptLayoutGenerator>();
+			zoneGenerators = new Dictionary<string, ScriptZoneGenerator>();
 			LoadLayoutGenerationScripts();
 			LoadZoneGenerationScripts();
 			RegisterCustomConverters();
@@ -37,43 +35,67 @@ namespace InstaDungeon
 			return new List<string>(zoneGenerators.Keys);
 		}
 
-		public Script GetLayoutGenerator(string name)
+		public ScriptLayoutGenerator GetLayoutGenerator(string name)
 		{
-			Script result = null;
+			ScriptLayoutGenerator result = null;
 			layoutGenerators.TryGetValue(name, out result);
 			return result;
 		}
 
-		public Script GetZoneGenerator(string name)
+		public ScriptZoneGenerator GetZoneGenerator(string name)
 		{
-			Script result = null;
+			ScriptZoneGenerator result = null;
 			zoneGenerators.TryGetValue(name, out result);
 			return result;
 		}
 
 		private void LoadLayoutGenerationScripts()
 		{
-			LoadScriptsIntoDictionary(LayoutGeneratorsPath, layoutGenerators);
+			DirectoryInfo dirInfo = new DirectoryInfo(LayoutGeneratorsPath);
+			DirectoryInfo[] generatorDirectories = dirInfo.GetDirectories();
+
+			for (int i = 0; i < generatorDirectories.Length; i++)
+			{
+				FileInfo generatorFile = new FileInfo(Path.Combine(generatorDirectories[i].FullName, "generator.lua"));
+				FileInfo settingsFile = new FileInfo(Path.Combine(generatorDirectories[i].FullName, "settings.json"));
+
+				if (generatorFile.Exists && settingsFile.Exists)
+				{
+					Script script = LoadScript(generatorFile.FullName);
+					string settingsString = File.ReadAllText(settingsFile.FullName);
+					ScriptLayoutGenerator generator = new ScriptLayoutGenerator(script, settingsString);
+					layoutGenerators.Add(generatorDirectories[i].Name, generator);
+				}
+			}
 		}
 
 		private void LoadZoneGenerationScripts()
 		{
-			LoadScriptsIntoDictionary(ZoneGeneratorsPath, zoneGenerators);
+			DirectoryInfo dirInfo = new DirectoryInfo(ZoneGeneratorsPath);
+			DirectoryInfo[] generatorDirectories = dirInfo.GetDirectories();
+
+			for (int i = 0; i < generatorDirectories.Length; i++)
+			{
+				FileInfo generatorFile = new FileInfo(Path.Combine(generatorDirectories[i].FullName, "generator.lua"));
+				FileInfo settingsFile = new FileInfo(Path.Combine(generatorDirectories[i].FullName, "settings.json"));
+
+				if (generatorFile.Exists && settingsFile.Exists)
+				{
+					Script script = LoadScript(generatorFile.FullName);
+					string settingsString = File.ReadAllText(settingsFile.FullName);
+					ScriptZoneGenerator generator = new ScriptZoneGenerator(script, settingsString);
+					zoneGenerators.Add(generatorDirectories[i].Name, generator);
+				}
+			}
 		}
 
-		private void LoadScriptsIntoDictionary(string path, Dictionary<string, Script> dictionary)
+		private static Script LoadScript(string filePath)
 		{
-			DirectoryInfo dirInfo = new DirectoryInfo(path);
-			FileInfo[] files = dirInfo.GetFiles("*.lua");
-
-			for (int i = 0; i < files.Length; i++)
-			{
-				Script script = new Script();
-				((ScriptLoaderBase)script.Options.ScriptLoader).ModulePaths = new string[] { "?_module" };
-				string scriptString = File.ReadAllText(files[i].FullName);
-				script.DoString(scriptString);
-				dictionary.Add(files[i].Name, script);
-			}
+			Script script = new Script();
+			((ScriptLoaderBase)script.Options.ScriptLoader).ModulePaths = new string[] { "?_module" };
+			string scriptString = File.ReadAllText(filePath);
+			script.DoString(scriptString);
+			return script;
 		}
 
 		private void RegisterCustomConverters()

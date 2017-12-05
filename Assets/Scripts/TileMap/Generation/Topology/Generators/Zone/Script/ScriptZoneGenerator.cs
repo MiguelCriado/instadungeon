@@ -1,4 +1,6 @@
 ﻿using MoonSharp.Interpreter;
+using MoonSharp.Interpreter.Serialization.Json;
+using System.Collections.Generic;
 
 namespace InstaDungeon.MapGeneration
 {
@@ -9,6 +11,29 @@ namespace InstaDungeon.MapGeneration
 		public ScriptZoneGenerator(Script script, ScriptZoneGeneratorSettings settings) : base(settings)
 		{
 			this.script = script;
+		}
+
+		public ScriptZoneGenerator(Script script, string settings) : base(GenerateSettings(script, settings))
+		{
+			this.script = script;
+		}
+
+		private static ScriptZoneGeneratorSettings GenerateSettings(Script script, string settings)
+		{
+			Table settingsTable = JsonTableConverter.JsonToTable(settings, script);
+
+			Table fallbackTable = settingsTable.Get(DynValue.NewString("fallback")).Table;
+			ScriptZoneLevelSettings fallback = new ScriptZoneLevelSettings(fallbackTable);
+
+			Table entriesTable = settingsTable.Get(DynValue.NewString("entries")).Table;
+			List<ScriptZoneLevelSettings> entryList = new List<ScriptZoneLevelSettings>();
+
+			foreach (var entry in entriesTable.Values)
+			{
+				entryList.Add(new ScriptZoneLevelSettings(entry.Table));
+			}
+
+			return new ScriptZoneGeneratorSettings(fallback, entryList);
 		}
 
 		public override TileMap<TileType> PreConnectZones(TileMap<TileType> map, int level)
