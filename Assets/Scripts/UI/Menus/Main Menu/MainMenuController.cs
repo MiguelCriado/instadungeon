@@ -99,13 +99,15 @@ namespace InstaDungeon.UI
 		{
 			ILayoutGenerator result;
 
-			switch (layoutDropdown.value)
+			if (layoutDropdown.value == 0)
 			{
-				default:
-				case 0:
-					HilbertLayoutGeneratorDefinition layoutGeneratorDefinition = Resources.Load<HilbertLayoutGeneratorDefinition>(DefaultLayoutGeneratorPath);
-					result = new HilbertLayoutGenerator(layoutGeneratorDefinition.Settings);
-					break;
+				HilbertLayoutGeneratorDefinition layoutGeneratorDefinition = Resources.Load<HilbertLayoutGeneratorDefinition>(DefaultLayoutGeneratorPath);
+				result = new HilbertLayoutGenerator(layoutGeneratorDefinition.Settings);
+			}
+			else
+			{
+				List<string> scriptGenerators = scriptingManager.GetLayoutGeneratorNames();
+				result = scriptingManager.GetLayoutGenerator(scriptGenerators[layoutDropdown.value - 1]);
 			}
 
 			return result;

@@ -4,6 +4,7 @@ using MoonSharp.Interpreter.Loaders;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using MoonSharp.VsCodeDebugger;
 
 namespace InstaDungeon
 {
@@ -15,11 +16,14 @@ namespace InstaDungeon
 
 		private Dictionary<string, ScriptLayoutGenerator> layoutGenerators;
 		private Dictionary<string, ScriptZoneGenerator> zoneGenerators;
+		private bool debug;
+		private MoonSharpVsCodeDebugServer server;
 
 		public ScriptingManager() : base(true, false)
 		{
 			layoutGenerators = new Dictionary<string, ScriptLayoutGenerator>();
 			zoneGenerators = new Dictionary<string, ScriptZoneGenerator>();
+			SetupDebugEnvironment();
 			LoadLayoutGenerationScripts();
 			LoadZoneGenerationScripts();
 			RegisterCustomConverters();
@@ -49,6 +53,17 @@ namespace InstaDungeon
 			return result;
 		}
 
+		private void SetupDebugEnvironment() 
+		{
+			debug = true;
+
+			if (debug) 
+			{
+				server = new MoonSharpVsCodeDebugServer();
+				server.Start();
+			}
+		}
+
 		private void LoadLayoutGenerationScripts()
 		{
 			DirectoryInfo dirInfo = new DirectoryInfo(LayoutGeneratorsPath);
@@ -65,6 +80,11 @@ namespace InstaDungeon
 					string settingsString = File.ReadAllText(settingsFile.FullName);
 					ScriptLayoutGenerator generator = new ScriptLayoutGenerator(script, settingsString);
 					layoutGenerators.Add(generatorDirectories[i].Name, generator);
+
+					if (debug) 
+					{
+						server.AttachToScript(script, generatorDirectories[i].Name);
+					}
 				}
 			}
 		}
@@ -85,6 +105,11 @@ namespace InstaDungeon
 					string settingsString = File.ReadAllText(settingsFile.FullName);
 					ScriptZoneGenerator generator = new ScriptZoneGenerator(script, settingsString);
 					zoneGenerators.Add(generatorDirectories[i].Name, generator);
+
+					if (debug) 
+					{
+						server.AttachToScript(script, generatorDirectories[i].Name);
+					}
 				}
 			}
 		}
@@ -337,16 +362,19 @@ namespace InstaDungeon
 			{
 				DynValue xIndex = DynValue.NewNumber(x);
 
-				for (int y = minBound.y; y < maxBound.y; y++)
+				if (tilesTable.Get(xIndex) != DynValue.Nil)
 				{
-					DynValue yIndex = DynValue.NewNumber(y);
-					bool value = tilesTable.Get(xIndex, yIndex).Boolean;
-
-					if (value == true)
+					for (int y = minBound.y; y < maxBound.y; y++)
 					{
-						zone.tiles.Add(new int2(x, y));
+						DynValue yIndex = DynValue.NewNumber(y);
+						DynValue value = tilesTable.Get(xIndex, yIndex);
+
+						if (value != DynValue.Nil && value.Boolean == true)
+						{
+							zone.tiles.Add(new int2(x, y));
+						}
 					}
-				}
+				}	
 			}
 		}
 

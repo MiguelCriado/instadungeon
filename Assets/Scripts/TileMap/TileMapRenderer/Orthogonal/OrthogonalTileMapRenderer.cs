@@ -16,6 +16,9 @@ namespace InstaDungeon.TileMap
 		[SerializeField] private float tileScale = 1f;
 		[SerializeField] private int2 chunkSize;
 		[SerializeField] private List<Material> materials;
+		[Header("Debug")]
+		[SerializeField] private bool drawTileNumbers;
+
 
 		private Dictionary<int2, OrthogonalChunkRenderer> chunks;
 		private Transform chunksContainer;
@@ -49,7 +52,7 @@ namespace InstaDungeon.TileMap
 
 		private void OnDrawGizmos()
 		{
-			if (mapManager != null)
+			if (mapManager != null && drawTileNumbers)
 			{
 				int2[] tiles = mapManager.Map.GetPresentTiles();
 
