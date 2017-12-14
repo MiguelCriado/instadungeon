@@ -1,15 +1,79 @@
 zone_index = 0
 
-function new_int2(x, y)
-	result = {x = x, y = y}
+function table_length(t)
+	local count = 0
+
+	for _ in pairs(t) do 
+		count = count + 1 
+	end
+
+	return count
+end
+
+function are_adjacent(a, b)
+	return 
+		((a.max_bound.y == b.min_bound.y or a.min_bound.y == b.max_bound.y)
+			and a.min_bound.x <= b.max_bound.x and a.max_bound.x >= b.min_bound.x)
+		or 
+		((a.max_bound.x == b.min_bound.x or a.min_bound.x == b.max_bound.x)
+			and a.max_bound.y >= b.min_bound.y and a.min_bound.y <= b.max_bound.y)
+end
+
+function get_contact_tiles(zone_a, zone_b)
+	local result = { }
+
+	if are_adjacent(zone_a, zone_b) then
+		local fixed_value = 0
+		local min = 0
+		local max = 0
+		local axis
+
+		if zone_a.max_bound.y == zone_b.min_bound.y then
+			fixed_value = zone_a.max_bound.y - 1
+			min = math.max(zone_a.min_bound.x + 1, zone_b.min_bound.x + 1)
+			max = math.min(zone_a.max_bound.x - 2, zone_b.max_bound.x - 1)
+			axis = "x"
+		elseif zone_a.max_bound.x == zone_b.min_bound.x then
+			fixed_value = zone_a.max_bound.x - 1
+			min = math.max(zone_a.min_bound.y + 1, zone_b.min_bound.y + 1)
+			max = math.min(zone_a.max_bound.y - 2, zone_b.max_bound.y - 1)
+			axis = "y"
+		elseif zone_a.min_bound.y == zone_b.max_bound.y then
+			fixed_value = zone_a.min_bound.y
+			min = math.max(zone_a.min_bound.x + 1, zone_b.min_bound.x + 1)
+			max = math.min(zone_a.max_bound.x - 2, zone_b.max_bound.x - 1)
+			axis = "x"
+		else 
+			fixed_value = zone_a.min_bound.x
+			min = math.max(zone_a.min_bound.y + 1, zone_b.min_bound.y + 1)
+			max = math.min(zone_a.max_bound.y - 2, zone_b.max_bound.y - 1)
+			axis = "y"
+		end
+
+		for i = min, max do
+			if axis == "x" then
+				table.insert(result, new_int2(i, fixed_value))
+			else
+				table.insert(result, new_int2(fixed_value, i))
+			end
+		end
+	end
+
 	return result
 end
 
-function new_zone()
-	result = { }
+function new_int2(x, y)
+	local result = { }
+	result.x = x
+	result.y = y
+	return result
+end
+
+function new_zone(min_bound, max_bound)
+	local result = { }
 	result.id = zone_index
-	result.min_bound = new_int2(0, 0)
-	result.max_bound = new_int2(0, 0)
+	result.min_bound = min_bound
+	result.max_bound = max_bound
 	result.tiles = { }
 	result.connections = { }
 
@@ -19,7 +83,7 @@ function new_zone()
 end
 
 function new_layout()
-	result = { }
+	local result = { }
 	result.initial_zone = -1
 	result.final_zone = -1
 	result.zones = { }
@@ -28,7 +92,7 @@ function new_layout()
 end
 
 function new_tilemap()
-	result = { }
+	local result = { }
 	result.layout = new_layout()
 	result.min_bound = new_int2(0, 0)
 	result.max_bound = new_int2(0, 0)
@@ -36,4 +100,17 @@ function new_tilemap()
 	result.exit_point = new_int2(0, 0)
 	result.tiles = { }
 	return result
+end
+
+function add_layout_connection(layout, zone_a, zone_b)
+	if layout.connections[zone_a.id] == nil then
+		layout.connections[zone_a.id] = { }
+	end
+
+	if layout.connections[zone_b.id] == nil then
+		layout.connections[zone_b.id] = { }
+	end
+
+	table.insert(layout.connections[zone_a.id], zone_b.id)
+	table.insert(layout.connections[zone_b.id], zone_a.id)
 end

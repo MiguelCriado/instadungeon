@@ -1,4 +1,6 @@
-﻿using Random = UnityEngine.Random;
+﻿using MoonSharp.Interpreter;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace InstaDungeon.MapGeneration
 {
@@ -9,20 +11,26 @@ namespace InstaDungeon.MapGeneration
 			Random.InitState(levelSeed);
 			TileMap<TileType> result = new TileMap<TileType>();
 
-			Layout layout = layoutGenerator.NewLayout(level);
-			result.Layout = layout;
-
-			while (!layoutGenerator.IsDone())
+			try
 			{
-				result.Layout = layoutGenerator.Iterate(layout, level);
+				result.Layout = layoutGenerator.NewLayout(level);
 
-				result = zoneGenerator.PreConnectZones(result, level);
-				result = zoneGenerator.Generate(result, level);
-				result = zoneGenerator.PostConnectZones(result, level);
+				while (!layoutGenerator.IsDone(result.Layout, level))
+				{
+					result.Layout = layoutGenerator.Iterate(result.Layout, level);
+
+					result = zoneGenerator.PreConnectZones(result, level);
+					result = zoneGenerator.Generate(result, level);
+					result = zoneGenerator.PostConnectZones(result, level);
+				}
+
+				result.SpawnPoint = zoneGenerator.GetSpawnPoint(result, level);
+				result.ExitPoint = zoneGenerator.GetExitPoint(result, level);
 			}
-
-			result.SpawnPoint = zoneGenerator.GetSpawnPoint(result, level);
-			result.ExitPoint = zoneGenerator.GetExitPoint(result, level);
+			catch (ScriptRuntimeException e)
+			{
+				Debug.Log(e.DecoratedMessage);
+			}
 
 			return result;
 		}

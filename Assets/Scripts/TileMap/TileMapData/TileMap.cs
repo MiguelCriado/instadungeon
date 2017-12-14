@@ -24,19 +24,19 @@ public class TileMap<T>
         layout = new Layout();
     }
 
-	public T this[int2 position]
+	public T this[int x, int y]
 	{
-		get { return this[position.x, position.y]; }
-		set { this[position.x, position.y] = value; }
+		get { return this[accessor.Set(x, y)]; }
+		set { this[accessor.Set(x, y)] = value; }
 	}
 
-	public T this[int x, int y]
+	public T this[int2 position]
 	{
 		get
 		{
-			if (tiles.ContainsKey(accessor.Set(x, y)))
+			if (tiles.ContainsKey(position))
 			{
-				return tiles[accessor];
+				return tiles[position];
 			}
 			else
 			{
@@ -46,35 +46,35 @@ public class TileMap<T>
 
 		set
 		{
-			if (tiles.ContainsKey(accessor.Set(x, y)))
+			if (tiles.ContainsKey(position))
 			{
-				tiles[accessor] = value;
+				tiles[position] = value;
 			}
 			else
 			{
-				tiles.Add(new int2(accessor.x, accessor.y), value);
-				UpdateBounds(accessor);
-				dirty = true;
+				Add(position, value);
 			}
 		}
 	}
 
 	public bool Add(int x, int y, T tile)
 	{
-		bool result = false;
-
-		if (!tiles.ContainsKey(accessor.Set(x, y)))
-		{
-			this[x, y] = tile;
-			result = true;
-		}
-
-		return result;
+		return Add(accessor.Set(x, y), tile);
 	}
 
     public bool Add(int2 position, T tile)
     {
-		return Add(position.x, position.y, tile);
+		bool result = false;
+
+		if (!tiles.ContainsKey(position))
+		{
+			tiles[position] = tile;
+			UpdateBounds(position);
+			result = true;
+			dirty = true;
+		}
+
+		return result;
     }
 
 	public void AddSet(Dictionary<int2, T> tileGroup)

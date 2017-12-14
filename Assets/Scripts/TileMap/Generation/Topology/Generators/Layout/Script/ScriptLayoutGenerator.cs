@@ -38,21 +38,26 @@ namespace InstaDungeon.MapGeneration
 
 		public override Layout NewLayout(int level)
 		{
-			Layout layout = new Layout();
-			DynValue result = script.Call(script.Globals["new_layout"], layout, level);
+			DynValue result = script.Call(script.Globals["initialize_layout"], GetLevelSettings(level));
 			return result.ToObject<Layout>();
 		}
 
-		public override bool IsDone()
+		public override bool IsDone(Layout layout, int level)
 		{
-			DynValue result = script.Call(script.Globals["is_done"]);
+			DynValue result = script.Call(script.Globals["is_done"], layout, GetLevelSettings(level));
 			return result.Boolean;
 		}
 
 		public override Layout Iterate(Layout layout, int level)
 		{
-			DynValue result = script.Call(script.Globals["iterate"], layout, level);
+			DynValue result = script.Call(script.Globals["iterate"], layout, GetLevelSettings(level));
 			return result.ToObject<Layout>();
+		}
+
+		private DynValue GetLevelSettings(int level)
+		{
+			ScriptLayoutLevelSettings levelSettings = settings.GetSettings(level);
+			return DynValue.NewTable(levelSettings.Settings);
 		}
 	}
 }

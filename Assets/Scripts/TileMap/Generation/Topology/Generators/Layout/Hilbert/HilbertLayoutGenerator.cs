@@ -39,7 +39,6 @@ namespace InstaDungeon.MapGeneration
 		private int2 initialHilbertTile;
 		private int2 exit;
 		private Connections[,] layoutConnections;
-		private Layout layout;
 
 		public HilbertLayoutGenerator(HilbertLayoutGeneratorSettings settings) : base(settings)
 		{
@@ -49,7 +48,6 @@ namespace InstaDungeon.MapGeneration
 		public override Layout NewLayout(int level)
 		{
 			Layout result = new Layout();
-			layout = result;
 
 			return result;
 		}
@@ -59,7 +57,6 @@ namespace InstaDungeon.MapGeneration
 			SetLevelSettings(level);
 
 			Layout result = layout;
-			this.layout = layout;
 			Connections[,] layoutArray = GenerateLayoutArray();
 			AddZones(result, layoutArray);
 			ConnectZones(result, layoutArray);
@@ -68,7 +65,7 @@ namespace InstaDungeon.MapGeneration
 			return result;
 		}
 
-		public override bool IsDone()
+		public override bool IsDone(Layout layout, int level)
 		{
 			return layout.Zones.Count > 0;
 		}
@@ -104,28 +101,44 @@ namespace InstaDungeon.MapGeneration
 				{
 					Zone currentZone = result.FindZoneByPosition(new int2(i * zoneWidth, j * zoneHeight));
 
-					if (i >= 0
-						&& (layoutArray[i, j] & Connections.East) == Connections.East)
+					if (i >= 0 && (layoutArray[i, j] & Connections.East) == Connections.East)
 					{
-						result.ConnectZones(currentZone, result.FindZoneByPosition(new int2((i + 1) * zoneWidth, j * zoneHeight)));
+						Zone otherZone = result.FindZoneByPosition(new int2((i + 1) * zoneWidth, j * zoneHeight));
+
+						if (result.GetAdjacentZones(currentZone).FindByValue(otherZone) == null)
+						{
+							result.ConnectZones(currentZone, otherZone);
+						}
 					}
 
-					if (i <= width - 1
-						&& (layoutArray[i, j] & Connections.West) == Connections.West)
+					if (i <= width - 1 && (layoutArray[i, j] & Connections.West) == Connections.West)
 					{
-						result.ConnectZones(currentZone, result.FindZoneByPosition(new int2((i - 1) * zoneWidth, j * zoneHeight)));
+						Zone otherZone = result.FindZoneByPosition(new int2((i - 1) * zoneWidth, j * zoneHeight));
+
+						if (result.GetAdjacentZones(currentZone).FindByValue(otherZone) == null)
+						{
+							result.ConnectZones(currentZone, otherZone);
+						}
 					}
 
-					if (j >= 0
-						&& (layoutArray[i, j] & Connections.North) == Connections.North)
+					if (j >= 0 && (layoutArray[i, j] & Connections.North) == Connections.North)
 					{
-						result.ConnectZones(currentZone, result.FindZoneByPosition(new int2(i * zoneWidth, (j + 1) * zoneHeight)));
+						Zone otherZone = result.FindZoneByPosition(new int2(i * zoneWidth, (j + 1) * zoneHeight));
+
+						if (result.GetAdjacentZones(currentZone).FindByValue(otherZone) == null)
+						{
+							result.ConnectZones(currentZone, otherZone);
+						}
 					}
 
-					if (j <= height - 1
-						&& (layoutArray[i, j] & Connections.South) == Connections.South)
+					if (j <= height - 1 && (layoutArray[i, j] & Connections.South) == Connections.South)
 					{
-						result.ConnectZones(currentZone, result.FindZoneByPosition(new int2(i * zoneWidth, (j - 1) * zoneHeight)));
+						Zone otherZone = result.FindZoneByPosition(new int2(i * zoneWidth, (j - 1) * zoneHeight));
+
+						if (result.GetAdjacentZones(currentZone).FindByValue(otherZone) == null)
+						{
+							result.ConnectZones(currentZone, otherZone);
+						}
 					}
 				}
 			}
