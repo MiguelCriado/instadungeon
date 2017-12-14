@@ -210,7 +210,7 @@ public class RectangleInt
 			}
         } 
 
-        if (point.x >= this.x &&point.x < this.x + this.width)
+        if (point.x >= this.x && point.x < this.x + this.width)
         {
             if (point.y == this.y - 1)
             {

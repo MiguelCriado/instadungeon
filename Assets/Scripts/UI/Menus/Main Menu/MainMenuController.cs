@@ -117,13 +117,15 @@ namespace InstaDungeon.UI
 		{
 			IZoneGenerator result;
 
-			switch (zoneDropdown.value)
+			if (zoneDropdown.value == 0)
 			{
-				default:
-				case 0:
-					CavernousZoneGeneratorDefinition zoneGeneratorDefinition = Resources.Load<CavernousZoneGeneratorDefinition>(DefaultZoneGeneratorPath);
-					result = new CavernousZoneGenerator(zoneGeneratorDefinition.Settings);
-					break;
+				CavernousZoneGeneratorDefinition zoneGeneratorDefinition = Resources.Load<CavernousZoneGeneratorDefinition>(DefaultZoneGeneratorPath);
+				result = new CavernousZoneGenerator(zoneGeneratorDefinition.Settings);
+			}
+			else
+			{
+				List<string> scriptGenerators = scriptingManager.GetZoneGeneratorNames();
+				result = scriptingManager.GetZoneGenerator(scriptGenerators[zoneDropdown.value - 1]);
 			}
 
 			return result;

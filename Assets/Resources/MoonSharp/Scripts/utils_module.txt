@@ -19,6 +19,49 @@ function are_adjacent(a, b)
 			and a.max_bound.y >= b.min_bound.y and a.min_bound.y <= b.max_bound.y)
 end
 
+function get_contact_tiles(zone_a, zone_b)
+	local result = { }
+
+	if are_adjacent(zone_a, zone_b) then
+		local fixed_value = 0
+		local min = 0
+		local max = 0
+		local axis
+
+		if zone_a.max_bound.y == zone_b.min_bound.y then
+			fixed_value = zone_a.max_bound.y - 1
+			min = math.max(zone_a.min_bound.x + 1, zone_b.min_bound.x + 1)
+			max = math.min(zone_a.max_bound.x - 2, zone_b.max_bound.x - 1)
+			axis = "x"
+		elseif zone_a.max_bound.x == zone_b.min_bound.x then
+			fixed_value = zone_a.max_bound.x - 1
+			min = math.max(zone_a.min_bound.y + 1, zone_b.min_bound.y + 1)
+			max = math.min(zone_a.max_bound.y - 2, zone_b.max_bound.y - 1)
+			axis = "y"
+		elseif zone_a.min_bound.y == zone_b.max_bound.y then
+			fixed_value = zone_a.min_bound.y
+			min = math.max(zone_a.min_bound.x + 1, zone_b.min_bound.x + 1)
+			max = math.min(zone_a.max_bound.x - 2, zone_b.max_bound.x - 1)
+			axis = "x"
+		else 
+			fixed_value = zone_a.min_bound.x
+			min = math.max(zone_a.min_bound.y + 1, zone_b.min_bound.y + 1)
+			max = math.min(zone_a.max_bound.y - 2, zone_b.max_bound.y - 1)
+			axis = "y"
+		end
+
+		for i = min, max do
+			if axis == "x" then
+				table.insert(result, new_int2(i, fixed_value))
+			else
+				table.insert(result, new_int2(fixed_value, i))
+			end
+		end
+	end
+
+	return result
+end
+
 function new_int2(x, y)
 	local result = { }
 	result.x = x

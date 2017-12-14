@@ -101,28 +101,44 @@ namespace InstaDungeon.MapGeneration
 				{
 					Zone currentZone = result.FindZoneByPosition(new int2(i * zoneWidth, j * zoneHeight));
 
-					if (i >= 0
-						&& (layoutArray[i, j] & Connections.East) == Connections.East)
+					if (i >= 0 && (layoutArray[i, j] & Connections.East) == Connections.East)
 					{
-						result.ConnectZones(currentZone, result.FindZoneByPosition(new int2((i + 1) * zoneWidth, j * zoneHeight)));
+						Zone otherZone = result.FindZoneByPosition(new int2((i + 1) * zoneWidth, j * zoneHeight));
+
+						if (result.GetAdjacentZones(currentZone).FindByValue(otherZone) == null)
+						{
+							result.ConnectZones(currentZone, otherZone);
+						}
 					}
 
-					if (i <= width - 1
-						&& (layoutArray[i, j] & Connections.West) == Connections.West)
+					if (i <= width - 1 && (layoutArray[i, j] & Connections.West) == Connections.West)
 					{
-						result.ConnectZones(currentZone, result.FindZoneByPosition(new int2((i - 1) * zoneWidth, j * zoneHeight)));
+						Zone otherZone = result.FindZoneByPosition(new int2((i - 1) * zoneWidth, j * zoneHeight));
+
+						if (result.GetAdjacentZones(currentZone).FindByValue(otherZone) == null)
+						{
+							result.ConnectZones(currentZone, otherZone);
+						}
 					}
 
-					if (j >= 0
-						&& (layoutArray[i, j] & Connections.North) == Connections.North)
+					if (j >= 0 && (layoutArray[i, j] & Connections.North) == Connections.North)
 					{
-						result.ConnectZones(currentZone, result.FindZoneByPosition(new int2(i * zoneWidth, (j + 1) * zoneHeight)));
+						Zone otherZone = result.FindZoneByPosition(new int2(i * zoneWidth, (j + 1) * zoneHeight));
+
+						if (result.GetAdjacentZones(currentZone).FindByValue(otherZone) == null)
+						{
+							result.ConnectZones(currentZone, otherZone);
+						}
 					}
 
-					if (j <= height - 1
-						&& (layoutArray[i, j] & Connections.South) == Connections.South)
+					if (j <= height - 1 && (layoutArray[i, j] & Connections.South) == Connections.South)
 					{
-						result.ConnectZones(currentZone, result.FindZoneByPosition(new int2(i * zoneWidth, (j - 1) * zoneHeight)));
+						Zone otherZone = result.FindZoneByPosition(new int2(i * zoneWidth, (j - 1) * zoneHeight));
+
+						if (result.GetAdjacentZones(currentZone).FindByValue(otherZone) == null)
+						{
+							result.ConnectZones(currentZone, otherZone);
+						}
 					}
 				}
 			}

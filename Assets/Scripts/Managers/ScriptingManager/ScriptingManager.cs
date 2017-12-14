@@ -76,14 +76,22 @@ namespace InstaDungeon
 
 				if (generatorFile.Exists && settingsFile.Exists)
 				{
-					Script script = LoadScript(generatorFile.FullName);
-					string settingsString = File.ReadAllText(settingsFile.FullName);
-					ScriptLayoutGenerator generator = new ScriptLayoutGenerator(script, settingsString);
-					layoutGenerators.Add(generatorDirectories[i].Name, generator);
-
-					if (debug) 
+					try
 					{
-						server.AttachToScript(script, generatorDirectories[i].Name);
+						Script script = LoadScript(generatorFile.FullName);
+						string settingsString = File.ReadAllText(settingsFile.FullName);
+						ScriptLayoutGenerator generator = new ScriptLayoutGenerator(script, settingsString);
+						layoutGenerators.Add(generatorDirectories[i].Name, generator);
+
+						if (debug)
+						{
+							server.AttachToScript(script, generatorDirectories[i].Name);
+						}
+					}
+					catch (SyntaxErrorException e)
+					{
+						Debug.Log(e.DecoratedMessage);
+						e.Rethrow();
 					}
 				}
 			}
@@ -101,14 +109,22 @@ namespace InstaDungeon
 
 				if (generatorFile.Exists && settingsFile.Exists)
 				{
-					Script script = LoadScript(generatorFile.FullName);
-					string settingsString = File.ReadAllText(settingsFile.FullName);
-					ScriptZoneGenerator generator = new ScriptZoneGenerator(script, settingsString);
-					zoneGenerators.Add(generatorDirectories[i].Name, generator);
-
-					if (debug) 
+					try
 					{
-						server.AttachToScript(script, generatorDirectories[i].Name);
+						Script script = LoadScript(generatorFile.FullName);
+						string settingsString = File.ReadAllText(settingsFile.FullName);
+						ScriptZoneGenerator generator = new ScriptZoneGenerator(script, settingsString);
+						zoneGenerators.Add(generatorDirectories[i].Name, generator);
+
+						if (debug)
+						{
+							server.AttachToScript(script, generatorDirectories[i].Name);
+						}
+					}
+					catch (SyntaxErrorException e)
+					{
+						Debug.Log(e.DecoratedMessage);
+						e.Rethrow();
 					}
 				}
 			}
@@ -122,6 +138,8 @@ namespace InstaDungeon
 			script.DoString(scriptString);
 			return script;
 		}
+
+		#region [Custom Converters]
 
 		private void RegisterCustomConverters()
 		{
@@ -141,7 +159,7 @@ namespace InstaDungeon
 
 			Script.GlobalOptions.CustomConverters.SetClrToScriptCustomConversion<Zone>((script, value) => 
 			{
-				return GetZone(script, value);
+				return GetZone(script, value, null);
 			});
 
 			Script.GlobalOptions.CustomConverters.SetScriptToClrCustomConversion(DataType.Table, typeof(Zone), (value) => 
@@ -153,7 +171,7 @@ namespace InstaDungeon
 
 			Script.GlobalOptions.CustomConverters.SetClrToScriptCustomConversion<Layout>((script, value) =>
 			{
-				return GetLayout(script, value);
+				return GetLayout(script, value, null);
 			});
 
 			Script.GlobalOptions.CustomConverters.SetScriptToClrCustomConversion(DataType.Table, typeof(Layout), (value) =>
@@ -189,14 +207,14 @@ namespace InstaDungeon
 			return new int2(x, y);
 		}
 
-		private static DynValue GetZone(Script script, Zone zone)
+		private static DynValue GetZone(Script script, Zone zone, TileMap<TileType> map)
 		{
 			Table table = new Table(script);
 			table[DynValue.NewString("id")] = DynValue.NewNumber(zone.id);
 			table[DynValue.NewString("min_bound")] = GetInt2(script, zone.bounds.Min.x, zone.bounds.Min.y);
 			table[DynValue.NewString("max_bound")] = GetInt2(script, zone.bounds.Max.x, zone.bounds.Max.y);
 			table[DynValue.NewString("connections")] = GetZoneConnections(script, zone.connections);
-			table[DynValue.NewString("tiles")] = GetZoneTiles(script, zone.tiles, zone.bounds.Min, zone.bounds.Max);
+			table[DynValue.NewString("tiles")] = GetZoneTiles(script, zone.tiles, map, zone.bounds.Min, zone.bounds.Max);
 			return DynValue.NewTable(table);
 		}
 
@@ -215,7 +233,7 @@ namespace InstaDungeon
 			return result;
 		}
 
-		private static DynValue GetLayout(Script script, Layout layout)
+		private static DynValue GetLayout(Script script, Layout layout, TileMap<TileType> map)
 		{
 			Table result = new Table(script);
 
@@ -231,7 +249,7 @@ namespace InstaDungeon
 			while (enumerator.MoveNext())
 			{
 				Zone currentZone = enumerator.Current.Value;
-				zonesTable[DynValue.NewNumber(currentZone.id)] = GetZone(script, currentZone);
+				zonesTable[DynValue.NewNumber(currentZone.id)] = GetZone(script, currentZone, map);
 
 				Table currentZoneConectionsTable = new Table(script);
 				connectionsTable[DynValue.NewNumber(currentZone.id)] = DynValue.NewTable(currentZoneConectionsTable);
@@ -239,7 +257,7 @@ namespace InstaDungeon
 
 				while (connectionsEnumerator.MoveNext())
 				{
-					Zone currentConnectionZone = enumerator.Current.Value;
+					Zone currentConnectionZone = connectionsEnumerator.Current.Value;
 					currentZoneConectionsTable.Append(DynValue.NewNumber(currentConnectionZone.id));
 				}
 			}
@@ -271,7 +289,11 @@ namespace InstaDungeon
 				foreach (var connectedZone in zoneConnectionsTable.Values)
 				{
 					Zone newConnectedZone = result.Zones.Find(x => x.id == (int)connectedZone.Number);
-					result.ConnectZones(currentZone, newConnectedZone);
+
+					if (result.GetAdjacentZones(currentZone).FindByValue(newConnectedZone) == null)
+					{
+						result.ConnectZones(currentZone, newConnectedZone);
+					}
 				}
 			}
 
@@ -286,12 +308,11 @@ namespace InstaDungeon
 		private static DynValue GetTileMap(Script script, TileMap<TileType> map)
 		{
 			Table table = new Table(script);
-			table[DynValue.NewString("layout")] = GetLayout(script, map.Layout);
+			table[DynValue.NewString("layout")] = GetLayout(script, map.Layout, map);
 			table[DynValue.NewString("min_bound")] = GetInt2(script, map.Bounds.Min.x, map.Bounds.Min.y);
 			table[DynValue.NewString("max_bound")] = GetInt2(script, map.Bounds.Max.x, map.Bounds.Max.y);
 			table[DynValue.NewString("spawn_point")] = GetInt2(script, map.SpawnPoint.x, map.SpawnPoint.y);
 			table[DynValue.NewString("exit_point")] = GetInt2(script, map.ExitPoint.x, map.ExitPoint.y);
-			table[DynValue.NewString("tiles")] = GetMapTiles(script, map);
 			return DynValue.NewTable(table);
 		}
 
@@ -302,9 +323,68 @@ namespace InstaDungeon
 			result.Layout = GetLayout(table.Get(DynValue.NewString("layout")));
 			result.SpawnPoint = GetInt2(table.Get(DynValue.NewString("spawn_point")));
 			result.ExitPoint = GetInt2(table.Get(DynValue.NewString("exit_point")));
-			AddMapTiles(table, result);
+			AddFloorTiles(result);
+			WrapFloorWithWallTiles(result);
+
 			return result;
 		}
+
+		// #### TileMap Helpers
+
+		private static void AddFloorTiles(TileMap<TileType> result)
+		{
+			var zoneEnumerator = result.Layout.Zones.Nodes.GetEnumerator();
+
+			while (zoneEnumerator.MoveNext())
+			{
+				Zone zone = zoneEnumerator.Current.Value;
+
+				var tileEnumerator = zone.GetEnumerator();
+
+				while (tileEnumerator.MoveNext())
+				{
+					result.Add(tileEnumerator.Current, TileType.Floor);
+				}
+			}
+		}
+
+		private static void WrapFloorWithWallTiles(TileMap<TileType> result)
+		{
+			int2[] directions = new int2[]
+			{
+				new int2(0, 1),
+				new int2(1, 1),
+				new int2(1, 0),
+				new int2(1, -1),
+				new int2(0, -1),
+				new int2(-1, -1),
+				new int2(-1, 0),
+				new int2(-1, 1)
+			};
+
+			int2[] floorTiles = result.GetPresentTiles();
+
+			for (int i = 0; i < floorTiles.Length; i++)
+			{
+				for (int j = 0; j < directions.Length; j++)
+				{
+					int2 targetTile = floorTiles[i] + directions[j];
+
+					if (result[targetTile] != TileType.Floor)
+					{
+						Zone zone = result.Layout.FindZoneByPosition(targetTile);
+
+						if (zone != null)
+						{
+							zone.tiles.Add(targetTile);
+							result.Add(targetTile, TileType.Wall);
+						}
+					}
+				}
+			}
+		}
+
+		// #### Zone Helpers
 
 		private static DynValue GetZoneConnections(Script script, Dictionary<int2, Zone> connections)
 		{
@@ -327,7 +407,7 @@ namespace InstaDungeon
 			return DynValue.NewTable(table);
 		}
 
-		private static DynValue GetZoneTiles(Script script, HashSet<int2> tiles, int2 minBounds, int2 maxBounds)
+		private static DynValue GetZoneTiles(Script script, HashSet<int2> tiles, TileMap<TileType> map, int2 minBounds, int2 maxBounds)
 		{
 			Table result = new Table(script);
 
@@ -339,8 +419,9 @@ namespace InstaDungeon
 				for (int y = minBounds.y; y < maxBounds.y; y++)
 				{
 					DynValue yIndex = DynValue.NewNumber(y);
+					int2 position = new int2(x, y);
 
-					if (tiles.Contains(new int2(x, y)))
+					if (tiles.Contains(position) && (map == null || map[position] == TileType.Floor))
 					{
 						result[xIndex, yIndex] = DynValue.NewBoolean(true);
 					}
@@ -407,48 +488,7 @@ namespace InstaDungeon
 
 			return result;
 		}
-
-		private static DynValue GetMapTiles(Script script, TileMap<TileType> map)
-		{
-			Table table = new Table(script);
-
-			for (int x = map.Bounds.Min.x; x < map.Bounds.Max.x; x++)
-			{
-				DynValue xIndex = DynValue.NewNumber(x);
-				table[xIndex] = DynValue.NewTable(script);
-
-				for (int y = map.Bounds.Min.y; y < map.Bounds.Max.y; y++)
-				{
-					DynValue yIndex = DynValue.NewNumber(y);
-					TileType tile = map.GetTile(x, y);
-					table[xIndex, yIndex] = DynValue.NewNumber((int)tile);
-				}
-			}
-
-			return DynValue.NewTable(table);
-		}
-
-		private static void AddMapTiles(Table mapTable, TileMap<TileType> map)
-		{
-			int2 minBound = GetInt2(mapTable.Get(DynValue.NewString("min_bound")));
-			int2 maxBound = GetInt2(mapTable.Get(DynValue.NewString("max_bound")));
-			Table tilesTable = mapTable.Get(DynValue.NewString("tiles")).Table;
-
-			for (int x = minBound.x; x < maxBound.x; x++)
-			{
-				DynValue xIndex = DynValue.NewNumber(x);
-
-				for (int y = minBound.y; y < maxBound.y; y++)
-				{
-					DynValue yIndex = DynValue.NewNumber(y);
-					TileType tileType = (TileType)(int)tilesTable.Get(xIndex, yIndex).Number;
-
-					if (tileType != TileType.Space)
-					{
-						map.Add(x, y, tileType);
-					}
-				}
-			}
-		}
 	}
+
+	#endregion
 }
