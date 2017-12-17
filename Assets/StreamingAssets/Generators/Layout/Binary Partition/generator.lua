@@ -115,7 +115,7 @@ function get_adjacent_pairs(list_a, list_b)
 
 	for i, value_a in ipairs(list_a) do
 		for j, value_b in ipairs(list_b) do
-			if are_adjacent(value_a, value_b) then
+			if are_adjacent(value_a, value_b) and table_length(get_contact_tiles(value_a, value_b)) > 1 then
 				local pair = { }
 				pair.a = value_a
 				pair.b = value_b
