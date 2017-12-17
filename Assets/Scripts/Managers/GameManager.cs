@@ -37,6 +37,7 @@ namespace InstaDungeon
 		private EventSystem events;
 		private GameState gameState;
 		private int floorNumber;
+		private Random.State randomState;
 		
 		private Entity player;
 
@@ -44,11 +45,14 @@ namespace InstaDungeon
 		{
 			events = new EventSystem();
 			floorNumber = 0;
+			Random.InitState(System.Guid.NewGuid().GetHashCode() ^ System.DateTime.UtcNow.Millisecond);
+			randomState = Random.state;
 		}
 
 		public void Initialize(ILayoutGenerator layoutGenerator, IZoneGenerator zoneGenerator, int seed, ControlMode mode)
 		{
 			Random.InitState(seed);
+			randomState = Random.state;
 			mapGenerationManager = Locator.Get<MapGenerationManager>();
 			mapGenerationManager.SetLayoutGenerator(layoutGenerator);
 			mapGenerationManager.SetZoneGenerator(zoneGenerator);
@@ -144,7 +148,11 @@ namespace InstaDungeon
 
 		private void GenerateNewMap(int level)
 		{
-			mapGenerationManager.GenerateNewMap(floorNumber, Random.Range(int.MinValue, int.MaxValue));
+			Random.state = randomState;
+			int seed = Random.Range(int.MinValue, int.MaxValue);
+			randomState = Random.state;
+			Locator.Get<ScriptingManager>().SetRandomSeed(seed);
+			mapGenerationManager.GenerateNewMap(floorNumber, seed);
 			mapRenderer.RenderMap(mapManager.Map);
 		}
 
@@ -211,7 +219,7 @@ namespace InstaDungeon
 
 				if (mapRenderer == null)
 				{
-					Locator.Log.Error("The GameObject with tag \"TileMapRenderer\" must contains an ITileMapRenderer component.");
+					Locator.Log.Error("The GameObject with tag \"TileMapRenderer\" must contain an ITileMapRenderer component.");
 				}
 			}
 			else

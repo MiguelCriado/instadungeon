@@ -2,6 +2,7 @@
 using InstaDungeon.Events;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace InstaDungeon.UI
 {
@@ -13,11 +14,13 @@ namespace InstaDungeon.UI
 		[SerializeField] private MenuOption continueOption;
 		[SerializeField] private MenuOption retryOption;
 		[SerializeField] private MenuOption mainMenuOption;
+		[SerializeField] private Text levelSeed;
 		[Header("Settings")]
 		[SerializeField] private KeyCode pauseKey;
 		[SerializeField] private string mainMenu;
 
 		private GameManager gameManager;
+		private MapGenerationManager generationManager;
 		private MenuOption currentSelectedOption;
 
 		private void Reset()
@@ -28,6 +31,12 @@ namespace InstaDungeon.UI
 
 		private void Awake()
 		{
+			gameManager = Locator.Get<GameManager>();
+			gameManager.Events.AddListener(OnGameStateChange, GameStateChangeEvent.EVENT_TYPE);
+
+			generationManager = Locator.Get<MapGenerationManager>();
+			generationManager.Events.AddListener(OnMapGenerated, MapGenerationNewMapEvent.EVENT_TYPE);
+
 			continueOption.OnOptionSelected.AddListener(() => 
 			{
 				MoveSelector(continueOption.GetComponent<RectTransform>());
@@ -64,8 +73,6 @@ namespace InstaDungeon.UI
 
 		private void Start()
 		{
-			gameManager = Locator.Get<GameManager>();
-			gameManager.Events.AddListener(OnGameStateChange, GameStateChangeEvent.EVENT_TYPE);
 			content.gameObject.SetActive(false);
 		}
 
@@ -97,6 +104,12 @@ namespace InstaDungeon.UI
 			{
 				HideMenu();
 			}
+		}
+
+		private void OnMapGenerated(IEventData eventData)
+		{
+			MapGenerationNewMapEvent mapEvent = eventData as MapGenerationNewMapEvent;
+			levelSeed.text = mapEvent.LevelSeed.ToString();
 		}
 
 		private void OnPause()

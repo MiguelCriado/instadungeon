@@ -66,6 +66,11 @@ namespace InstaDungeon.MapGeneration
 			return result.ToObject<int2>();
 		}
 
+		public void SetRandomSeed(int seed)
+		{
+			script.Call(script.Globals["set_random_seed"], DynValue.NewNumber(seed));
+		}
+
 		private DynValue GetLevelSettings(int level)
 		{
 			ScriptZoneLevelSettings levelSettings = settings.GetSettings(level);

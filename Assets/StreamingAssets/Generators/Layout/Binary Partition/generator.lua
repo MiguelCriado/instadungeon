@@ -7,7 +7,7 @@ end
 function iterate (layout, settings)
 	local width = math.random(settings.min_map_width, settings.max_map_width)
 	local height = math.random(settings.min_map_height, settings.max_map_height)
-	local tree = new_node(new_int2(0, 0), new_int2(width - 1, height - 1))
+	local tree = new_node(new_int2(0, 0), new_int2(width, height))
 	split_tree(tree, settings)
 	build_layout(tree, layout)
 	return layout
@@ -48,14 +48,14 @@ function split_tree(node, settings)
 		local random_result = math.random() * (max_random - min_random) + min_random
 
 		if random_result >= 0.5 then
-			local min_split_point = node.min_bound.y + settings.min_zone_height - 1
+			local min_split_point = node.min_bound.y + settings.min_zone_height
 			local max_split_point = node.max_bound.y - settings.min_zone_height
 			local split_point = math.random(min_split_point, max_split_point)
 
 			node.child_a = new_node(node.min_bound, new_int2(node.max_bound.x, split_point))
 			node.child_b = new_node(new_int2(node.min_bound.x, split_point), node.max_bound)
 		else 
-			local min_split_point = node.min_bound.x + settings.min_zone_width - 1
+			local min_split_point = node.min_bound.x + settings.min_zone_width
 			local max_split_point = node.max_bound.x - settings.min_zone_width
 			local split_point = math.random(min_split_point, max_split_point)
 
