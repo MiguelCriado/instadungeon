@@ -1,4 +1,5 @@
-﻿using InstaDungeon.MapGeneration;
+﻿using InstaDungeon.Events;
+using InstaDungeon.MapGeneration;
 using InstaDungeon.Settings;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,12 +11,14 @@ namespace InstaDungeon
 		private static readonly string DefaultLayoutGeneratorPath = "Settings/DefaultHilbertLayoutDefinition";
 		private static readonly string DefaultZoneGeneratorPath = "Settings/DefaultCavernousZoneDefinition";
 
+		public EventSystem Events { get; private set; }
 		public MapGenerator Generator { get; private set; }
 
 		private MapGenerationManagerInspector settings;
 
 		public MapGenerationManager()
 		{
+			Events = new EventSystem();
 			Generator = GetDefaultGenerator();
 			settings = gameObject.AddComponent<MapGenerationManagerInspector>();
 		}
@@ -32,7 +35,9 @@ namespace InstaDungeon
 
 		public TileMap<Cell> GenerateNewMap(int level, int levelSeed)
 		{
-			return Generator.GenerateNewMap(level, levelSeed);
+			TileMap<Cell> result = Generator.GenerateNewMap(level, levelSeed);
+			Events.TriggerEvent(new MapGenerationNewMapEvent(result, Generator, level, levelSeed));
+			return result;
 		}
 
 		public TileMap<Cell> GenerateNewMap(int level)

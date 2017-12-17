@@ -120,7 +120,6 @@ namespace InstaDungeon
 		{
 			GameState lastState = gameState;
 			gameState = state;
-
 			Events.TriggerEvent(new GameStateChangeEvent(lastState, state));
 		}
 
@@ -190,6 +189,7 @@ namespace InstaDungeon
 						new Inverter(new IsLevelCompletedCondition()),
 						new ManageTurnAction()
 					),
+					new CallbackAction(() => Events.TriggerEvent(new LevelFinishedEvent(mapManager.Map, CurrentFloor))),
 					new LoadNewLevelAction()
 				)
 			);
