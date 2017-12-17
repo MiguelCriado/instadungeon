@@ -53,6 +53,23 @@ namespace InstaDungeon
 			return result;
 		}
 
+		public void SetRandomSeed(int seed)
+		{
+			var layoutEnumerator = layoutGenerators.Values.GetEnumerator();
+
+			while (layoutEnumerator.MoveNext())
+			{
+				layoutEnumerator.Current.SetRandomSeed(seed);
+			}
+
+			var zoneEnumerator = zoneGenerators.Values.GetEnumerator();
+
+			while (zoneEnumerator.MoveNext())
+			{
+				zoneEnumerator.Current.SetRandomSeed(seed);
+			}
+		}
+
 		private void SetupDebugEnvironment() 
 		{
 			debug = true;
@@ -135,6 +152,11 @@ namespace InstaDungeon
 			Script script = new Script();
 			((ScriptLoaderBase)script.Options.ScriptLoader).ModulePaths = new string[] { "?_module" };
 			string scriptString = File.ReadAllText(filePath);
+			string randomSeedFunction = @"
+				function set_random_seed(seed)
+					math.randomseed(seed)
+				end";
+			scriptString += randomSeedFunction;
 			script.DoString(scriptString);
 			return script;
 		}

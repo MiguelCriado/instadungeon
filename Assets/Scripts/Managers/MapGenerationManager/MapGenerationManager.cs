@@ -15,6 +15,7 @@ namespace InstaDungeon
 		public MapGenerator Generator { get; private set; }
 
 		private MapGenerationManagerInspector settings;
+		private Random.State savedState;
 
 		public MapGenerationManager()
 		{
