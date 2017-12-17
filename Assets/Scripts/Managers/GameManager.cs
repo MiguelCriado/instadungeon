@@ -197,8 +197,11 @@ namespace InstaDungeon
 						new Inverter(new IsLevelCompletedCondition()),
 						new ManageTurnAction()
 					),
-					new CallbackAction(() => Events.TriggerEvent(new LevelFinishedEvent(mapManager.Map, CurrentFloor))),
-					new LoadNewLevelAction()
+					new Sequence
+					(
+						new CallbackAction(() => Events.TriggerEvent(new LevelFinishedEvent(mapManager.Map, CurrentFloor))),
+						new LoadNewLevelAction()
+					)
 				)
 			);
 

@@ -41,29 +41,7 @@ namespace InstaDungeon
 
 		protected override void OnUpdate()
 		{
-			var enumerator = movingLightCasters.GetEnumerator();
-
-			List<Entity> entitiesToUpdate = new List<Entity>();
-
-			while (enumerator.MoveNext())
-			{
-				Entity entity = enumerator.Current.Key;
-				int2 lastPosition = enumerator.Current.Value;
-				int2 currentPosition = gameManager.Renderer.WorldToTileMapPosition(entity.transform.position);
-
-				if (lastPosition != currentPosition)
-				{
-					RefreshVisibility(entity, currentPosition);
-					gameManager.Renderer.RefreshVisibility();
-					entitiesToUpdate.Add(entity);
-				}
-			}
-
-			for (int i = 0; i < entitiesToUpdate.Count; i++)
-			{
-				int2 currentPosition = gameManager.Renderer.WorldToTileMapPosition(entitiesToUpdate[i].transform.position);
-				movingLightCasters[entitiesToUpdate[i]] = currentPosition;
-			}
+			UpdateMovingLightCasters();
 		}
 
 		protected Shadow ProjectTile(int row, int col)
@@ -193,6 +171,7 @@ namespace InstaDungeon
 		private void OnLightSourceFinishMoving(IEventData eventData)
 		{
 			EntityFinishMovementEvent movementEvent = eventData as EntityFinishMovementEvent;
+			UpdateMovingLightCasters();
 			Entity entity = lightCasters.Find(x => x.Guid == movementEvent.EntityId); ;
 
 			if (entity != null && movingLightCasters.ContainsKey(entity))
@@ -274,6 +253,33 @@ namespace InstaDungeon
 				cell.RefreshVisibility(true);
 				RefreshVisibility(entity, entity.CellTransform.Position);
 				gameManager.Renderer.RefreshVisibility();
+			}
+		}
+
+		private void UpdateMovingLightCasters()
+		{
+			var enumerator = movingLightCasters.GetEnumerator();
+
+			List<Entity> entitiesToUpdate = new List<Entity>();
+
+			while (enumerator.MoveNext())
+			{
+				Entity entity = enumerator.Current.Key;
+				int2 lastPosition = enumerator.Current.Value;
+				int2 currentPosition = gameManager.Renderer.WorldToTileMapPosition(entity.transform.position);
+
+				if (lastPosition != currentPosition)
+				{
+					RefreshVisibility(entity, currentPosition);
+					gameManager.Renderer.RefreshVisibility();
+					entitiesToUpdate.Add(entity);
+				}
+			}
+
+			for (int i = 0; i < entitiesToUpdate.Count; i++)
+			{
+				int2 currentPosition = gameManager.Renderer.WorldToTileMapPosition(entitiesToUpdate[i].transform.position);
+				movingLightCasters[entitiesToUpdate[i]] = currentPosition;
 			}
 		}
 
