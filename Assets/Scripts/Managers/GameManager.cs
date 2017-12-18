@@ -38,6 +38,7 @@ namespace InstaDungeon
 		private GameState gameState;
 		private int floorNumber;
 		private Random.State randomState;
+		private int currentSeed;
 		
 		private Entity player;
 
@@ -45,14 +46,12 @@ namespace InstaDungeon
 		{
 			events = new EventSystem();
 			floorNumber = 0;
-			Random.InitState(System.Guid.NewGuid().GetHashCode() ^ System.DateTime.UtcNow.Millisecond);
-			randomState = Random.state;
+			currentSeed = System.Guid.NewGuid().GetHashCode() ^ System.DateTime.UtcNow.Millisecond;
 		}
 
 		public void Initialize(ILayoutGenerator layoutGenerator, IZoneGenerator zoneGenerator, int seed, ControlMode mode)
 		{
-			Random.InitState(seed);
-			randomState = Random.state;
+			currentSeed = seed;
 			mapGenerationManager = Locator.Get<MapGenerationManager>();
 			mapGenerationManager.SetLayoutGenerator(layoutGenerator);
 			mapGenerationManager.SetZoneGenerator(zoneGenerator);
@@ -148,9 +147,9 @@ namespace InstaDungeon
 
 		private void GenerateNewMap(int level)
 		{
-			Random.state = randomState;
-			int seed = Random.Range(int.MinValue, int.MaxValue);
-			randomState = Random.state;
+			int seed = currentSeed;
+			Random.InitState(seed);
+			currentSeed = Random.Range(int.MinValue, int.MaxValue);
 			Locator.Get<ScriptingManager>().SetRandomSeed(seed);
 			mapGenerationManager.GenerateNewMap(floorNumber, seed);
 			mapRenderer.RenderMap(mapManager.Map);
