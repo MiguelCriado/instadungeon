@@ -72,6 +72,8 @@ namespace InstaDungeon
 
 			LoadNewMap();
 			StartUpTurnSystem();
+
+			events.TriggerEvent(new NewGameStartsEvent());
 		}
 
 		public void LoadNewMap(int floorNumber)
