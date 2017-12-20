@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using InstaDungeon.Serialization;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 using UnityEngine;
 
+[JsonConverter(typeof(RectangleIntCustomConverter))]
 public class RectangleInt
 {
     public int2 Position { get { return new int2(x, y); } }

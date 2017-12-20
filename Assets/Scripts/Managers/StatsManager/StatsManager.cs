@@ -1,4 +1,5 @@
 ﻿using InstaDungeon.Events;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using UnityEngine;
@@ -33,12 +34,25 @@ namespace InstaDungeon
 		private void EndSession()
 		{
 			sessionInfo.EndSession();
+			SaveToFile();
+		}
 
+		private void SaveToFile()
+		{
 			string layoutGenerator = sessionInfo.StatList[0].LayoutGenerator;
 			string zoneGenerator = sessionInfo.StatList[0].ZoneGenerator;
 			int initialSeed = sessionInfo.StatList[0].Seed;
 			string fileName = string.Format("{0} - {1}, {2} ({3}).json", DateTime.UtcNow, layoutGenerator, zoneGenerator, initialSeed);
-			sessionInfo.SaveToFile(Path.Combine(DefaultSavePath, fileName));
+			string filePath = Path.Combine(DefaultSavePath, fileName);
+
+			using (FileStream fs = File.Open(filePath, FileMode.CreateNew))
+			using (StreamWriter sw = new StreamWriter(fs))
+			using (JsonWriter jw = new JsonTextWriter(sw))
+			{
+				jw.Formatting = Formatting.Indented;
+				JsonSerializer serializer = new JsonSerializer();
+				serializer.Serialize(jw, sessionInfo);
+			}
 		}
 
 		#region [Event Reactions]

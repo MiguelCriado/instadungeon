@@ -53,9 +53,10 @@ namespace InstaDungeon.UI
 			ILayoutGenerator layoutGenerator = GetLayoutGenerator();
 			IZoneGenerator zoneGenerator = GetZoneGenerator();
 			int seed = GetSeed();
+			int numLevels = GetNumLevels();
 			ControlMode controlMode = GetControlMode();
 
-			GameSettings settings = new GameSettings(layoutGenerator, zoneGenerator, seed, controlMode);
+			GameSettings settings = new GameSettings(layoutGenerator, zoneGenerator, seed, numLevels, controlMode);
 			Locator.Get<GameFeederManager>().Settings = settings;
 			SceneManager.LoadScene("Game");
 		}
@@ -139,6 +140,15 @@ namespace InstaDungeon.UI
 			{
 				result = System.Guid.NewGuid().GetHashCode() ^ System.DateTime.UtcNow.Millisecond;
 			}
+
+			return result;
+		}
+
+		private int GetNumLevels()
+		{
+			int result = 10;
+
+			// TODO
 
 			return result;
 		}

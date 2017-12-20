@@ -29,10 +29,5 @@ namespace InstaDungeon
 		{
 			StatList.Add(stats);
 		}
-
-		public void SaveToFile(string path)
-		{
-			// TODO
-		}
 	}
 }
