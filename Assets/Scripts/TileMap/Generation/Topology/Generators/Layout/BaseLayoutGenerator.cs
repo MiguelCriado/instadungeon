@@ -21,5 +21,7 @@
 		public abstract Layout Iterate(Layout layout, int level);
 
 		public abstract bool IsDone(Layout layout, int level);
+
+		public abstract override string ToString();
 	}
 }

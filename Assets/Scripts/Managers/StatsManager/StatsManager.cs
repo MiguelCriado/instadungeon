@@ -17,6 +17,7 @@ namespace InstaDungeon
 		public StatsManager() : base(true, false)
 		{
 			sessionInfo = new StatsSessionInfo();
+			SubscribeListeners();
 		}
 
 		private void StartSession()
@@ -42,7 +43,8 @@ namespace InstaDungeon
 			string layoutGenerator = sessionInfo.StatList[0].LayoutGenerator;
 			string zoneGenerator = sessionInfo.StatList[0].ZoneGenerator;
 			int initialSeed = sessionInfo.StatList[0].Seed;
-			string fileName = string.Format("{0} - {1}, {2} ({3}).json", DateTime.UtcNow, layoutGenerator, zoneGenerator, initialSeed);
+			string dateTime = DateTime.UtcNow.ToString("s").Replace(":", ".");
+			string fileName = string.Format("{0} - {1}, {2} ({3}).json", dateTime, layoutGenerator, zoneGenerator, initialSeed);
 			string filePath = Path.Combine(DefaultSavePath, fileName);
 
 			using (FileStream fs = File.Open(filePath, FileMode.CreateNew))
@@ -116,7 +118,7 @@ namespace InstaDungeon
 			gameManager.Events.AddListener(OnGameOver, GameStateChangeEvent.EVENT_TYPE);
 
 			Locator.Get<MapGenerationManager>().Events.AddListener(OnMapGenerated, MapGenerationNewMapEvent.EVENT_TYPE);
-			Locator.Get<MapManager>().Events.AddListener(OnPlayerStep, EntityFinishMovementEvent.EVENT_TYPE);
+			Locator.Get<EntityManager>().Events.AddListener(OnPlayerStep, EntityFinishMovementEvent.EVENT_TYPE);
 		}
 
 		private MapTopologyStats AnalyzeMapTopology(TileMap<Cell> map)
@@ -132,7 +134,7 @@ namespace InstaDungeon
 			result.MeanZoneConnectionsNumber = GetMeanZoneConnections(map);
 			result.DeadEndedZones = GetDeadEndedZones(map);
 
-			return null;
+			return result;
 		}
 
 		private static float CalculateFillRate(TileMap<Cell> map)
@@ -230,7 +232,7 @@ namespace InstaDungeon
 			result.ExploredMap = GetExploredMapPercentage(map);
 			result.StepsPerformed = stepsPerformed;
 			result.VisitedZonesPercentage = GetVisitedZonesPercentage(map);
-			return null;
+			return result;
 		}
 
 		private static int GetStepsInDirectPath(TileMap<Cell> map)
@@ -267,7 +269,7 @@ namespace InstaDungeon
 				}
 			}
 
-			return (float)exploredFloorTiles / totalFloorTiles;
+			return ((float)exploredFloorTiles / totalFloorTiles) * 100;
 		}
 
 		private static float GetVisitedZonesPercentage(TileMap<Cell> map)

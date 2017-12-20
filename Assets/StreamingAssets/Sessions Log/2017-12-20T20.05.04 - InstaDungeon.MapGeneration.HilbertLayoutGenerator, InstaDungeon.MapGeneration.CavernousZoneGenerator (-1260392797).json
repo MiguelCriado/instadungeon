@@ -1,0 +1,14 @@
+{
+  "StartTime": "2017-12-20T20:04:28.9894485Z",
+  "EndTime": "2017-12-20T20:05:04.302485Z",
+  "StatList": [
+    {
+      "Level": 0,
+      "Seed": -1260392797,
+      "LayoutGenerator": "InstaDungeon.MapGeneration.HilbertLayoutGenerator",
+      "ZoneGenerator": "InstaDungeon.MapGeneration.CavernousZoneGenerator",
+      "Topology": null,
+      "Navigation": null
+    }
+  ]
+}

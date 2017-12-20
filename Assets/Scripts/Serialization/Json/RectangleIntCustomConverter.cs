@@ -20,13 +20,13 @@ namespace InstaDungeon.Serialization
 			RectangleInt rect = value as RectangleInt;
 
 			writer.WriteStartObject();
+
 			writer.WritePropertyName("width");
 			serializer.Serialize(writer, rect.width);
-			writer.WriteEndObject();
 
-			writer.WriteStartObject();
 			writer.WritePropertyName("height");
 			serializer.Serialize(writer, rect.height);
+
 			writer.WriteEndObject();
 		}
 	}

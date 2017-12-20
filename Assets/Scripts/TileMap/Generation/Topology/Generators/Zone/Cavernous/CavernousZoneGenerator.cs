@@ -138,6 +138,11 @@ namespace InstaDungeon.MapGeneration
 			return FindPlaceForStairs(map, map.Layout.FinalZone);
 		}
 
+		public override string ToString()
+		{
+			return "Cavernous";
+		}
+
 		#endregion
 
 		#region [Helpers]
