@@ -5,6 +5,10 @@ directions[0] = new_int2(0, 1)
 directions[1] = new_int2(1, 0)
 directions[2] = new_int2(0, -1)
 directions[3] = new_int2(-1, 0)
+directions[4] = new_int2(1, 1)
+directions[5] = new_int2(1, -1)
+directions[6] = new_int2(-1, -1)
+directions[7] = new_int2(-1, 1)
 
 zones_contact_tiles = { }
 
@@ -91,6 +95,10 @@ function flood_find_stairs_tile(zone, tile, contact_tiles, visited_tiles)
 		local right = get_next_tile(tile, directions[1])
 		local down = get_next_tile(tile, directions[2])
 		local left = get_next_tile(tile, directions[3])
+		local up_right = get_next_tile(tile, directions[4])
+		local right_down = get_next_tile(tile, directions[5])
+		local down_left = get_next_tile(tile, directions[6])
+		local left_up = get_next_tile(tile, directions[7])
 
 		if is_valid_tile(zone, contact_tiles, up) == true
 			and zone.tiles[up.x][up.y] == true
@@ -99,7 +107,15 @@ function flood_find_stairs_tile(zone, tile, contact_tiles, visited_tiles)
 			and is_valid_tile(zone, contact_tiles, down) == true
 			and zone.tiles[down.x][down.y] == true
 			and is_valid_tile(zone, contact_tiles, left) == true
-			and zone.tiles[left.x][left.y] == true then
+			and zone.tiles[left.x][left.y] == true
+			and is_valid_tile(zone, contact_tiles, up_right) == true
+			and zone.tiles[up_right.x][up_right.y] == true
+			and is_valid_tile(zone, contact_tiles, right_down) == true
+			and zone.tiles[right_down.x][right_down.y] == true
+			and is_valid_tile(zone, contact_tiles, down_left) == true
+			and zone.tiles[down_left.x][down_left.y] == true
+			and is_valid_tile(zone, contact_tiles, left_up) == true
+			and zone.tiles[left_up.x][left_up.y] == true then
 
 			result = tile
 		else
@@ -109,9 +125,13 @@ function flood_find_stairs_tile(zone, tile, contact_tiles, visited_tiles)
 			adjacent_tiles[2] = right
 			adjacent_tiles[3] = down
 			adjacent_tiles[4] = left
+			adjacent_tiles[5] = up_right
+			adjacent_tiles[6] = right_down
+			adjacent_tiles[7] = down_left
+			adjacent_tiles[8] = left_up
 			local i = 1
 
-			while (result == nil and i < 5) do
+			while (result == nil and i < 9) do
 				result = flood_find_stairs_tile(zone, adjacent_tiles[i], contact_tiles, visited_tiles)
 				i = i + 1
 			end
@@ -129,8 +149,8 @@ function generate_zone(zone, contact_tiles, settings)
 	local total_tiles = (zone.max_bound.x - zone.min_bound.x) * (zone.max_bound.y - zone.min_bound.y)
 	local floor_tiles = 0
 
-	local x_initial = math.random(zone.min_bound.x + 1, zone.max_bound.x - 1)
-	local y_initial = math.random(zone.min_bound.y + 1, zone.max_bound.y - 1)
+	local x_initial = math.random(zone.min_bound.x + 1, zone.max_bound.x - 2)
+	local y_initial = math.random(zone.min_bound.y + 1, zone.max_bound.y - 2)
 	local current_tile = new_int2(x_initial, y_initial)
 
 	while floor_tiles / total_tiles < settings.stop_threshold do

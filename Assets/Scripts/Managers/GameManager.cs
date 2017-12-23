@@ -39,6 +39,7 @@ namespace InstaDungeon
 		private int floorNumber;
 		private Random.State randomState;
 		private int currentSeed;
+		private int numberOfLevels;
 		
 		private Entity player;
 
@@ -46,12 +47,14 @@ namespace InstaDungeon
 		{
 			events = new EventSystem();
 			floorNumber = 0;
+			numberOfLevels = -1;
 			currentSeed = System.Guid.NewGuid().GetHashCode() ^ System.DateTime.UtcNow.Millisecond;
 		}
 
-		public void Initialize(ILayoutGenerator layoutGenerator, IZoneGenerator zoneGenerator, int seed, ControlMode mode)
+		public void Initialize(ILayoutGenerator layoutGenerator, IZoneGenerator zoneGenerator, int seed, int numberOfLevels, ControlMode mode)
 		{
 			currentSeed = seed;
+			this.numberOfLevels = numberOfLevels;
 			mapGenerationManager = Locator.Get<MapGenerationManager>();
 			mapGenerationManager.SetLayoutGenerator(layoutGenerator);
 			mapGenerationManager.SetZoneGenerator(zoneGenerator);
@@ -60,6 +63,7 @@ namespace InstaDungeon
 
 		public void Initialize(ControlMode mode)
 		{
+			floorNumber = 0;
 			gameState = GameState.Loading;
 			mapManager = Locator.Get<MapManager>();
 			turnManager = Locator.Get<TurnManager>();
@@ -72,6 +76,8 @@ namespace InstaDungeon
 
 			LoadNewMap();
 			StartUpTurnSystem();
+
+			events.TriggerEvent(new NewGameStartsEvent());
 		}
 
 		public void LoadNewMap(int floorNumber)
@@ -199,7 +205,15 @@ namespace InstaDungeon
 					new Sequence
 					(
 						new CallbackAction(() => Events.TriggerEvent(new LevelFinishedEvent(mapManager.Map, CurrentFloor))),
-						new LoadNewLevelAction()
+						new Priority
+						(
+							new Sequence
+							(
+								new FuncCondition(() => numberOfLevels > 0 && CurrentFloor >= numberOfLevels),
+								new CallbackAction(() => SetState(GameState.GameOver))
+							),
+							new LoadNewLevelAction()
+						)
 					)
 				)
 			);

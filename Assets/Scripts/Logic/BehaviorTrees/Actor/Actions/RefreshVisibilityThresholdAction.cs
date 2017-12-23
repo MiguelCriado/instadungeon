@@ -125,90 +125,10 @@ namespace InstaDungeon.BehaviorTreeNodes
 		{
 			HashSet<int2> threshold = new HashSet<int2>();
 			HashSet<int2> checkedTiles = new HashSet<int2>();
-			SearchForThreshold(threshold, checkedTiles, origin.x, origin.y);
+			threshold.Add(origin);
+			ExpandThreshold(threshold, checkedTiles);
 			tick.Blackboard.Set(thresholdId, threshold);
 			tick.Blackboard.Set(checkedTilesId, checkedTiles);
-		}
-
-		private static void SearchForThreshold(HashSet<int2> threshold, HashSet<int2> checkedTiles, int x, int y)
-		{
-			MapManager mapManager = Locator.Get<MapManager>();
-
-			if (!Test(threshold, checkedTiles, mapManager, x, y))
-			{
-				return;
-			}
-
-			Stack<Segment> stack = new Stack<Segment>();
-			stack.Push(new Segment(x, x + 1, y, 0, true, true));
-
-			while (stack.Count > 0)
-			{
-				Segment segment = stack.Pop();
-				int startX = segment.StartX, endX = segment.EndX;
-
-				if (segment.ScanLeft) // if we should extend the segment towards the left...
-				{
-					while (Test(threshold, checkedTiles, mapManager, startX - 1, segment.Y))
-					{
-						startX--;
-					}
-					
-				}
-				if (segment.ScanRight)
-				{
-					while (Test(threshold, checkedTiles, mapManager, endX, segment.Y))
-					{
-						endX++;
-					}
-				}
-
-				// at this point, the segment from startX (inclusive) to endX (exclusive) is filled. compute the region to ignore
-				segment.StartX--; // since the segment is bounded on either side by filled cells or array edges, we can extend the size of
-				segment.EndX++;   // the region that we're going to ignore in the adjacent lines by one
-				// scan above and below the segment and add any new segments we find
-
-				if (mapManager[x, segment.Y + 1] != null)
-				{
-					AddLine(threshold, checkedTiles, mapManager, stack, startX, endX, segment.Y + 1, segment.StartX, segment.EndX, -1, segment.Dir <= 0);
-				}
-
-				if (mapManager[x, segment.Y - 1] != null)
-				{
-					AddLine(threshold, checkedTiles, mapManager, stack, startX, endX, segment.Y - 1, segment.StartX, segment.EndX, 1, segment.Dir >= 0);
-				}
-			}
-		}
-
-		private static void AddLine(HashSet<int2> threshold, HashSet<int2> checkedTiles, MapManager mapManager, Stack<Segment> stack, int startX, int endX, int y, int ignoreStart, int ignoreEnd, sbyte dir, bool isNextInDir)
-		{
-			int regionStart = int.MinValue, x;
-
-			for (x = startX; x < endX; x++) // scan the width of the parent segment
-			{
-				if ((isNextInDir || x < ignoreStart || x >= ignoreEnd) && Test(threshold, checkedTiles, mapManager, x, y))	// if we're outside the region we
-				{																								// should ignore and the cell is clear
-					if (regionStart == int.MinValue)
-					{
-						regionStart = x; // and start a new segment if we haven't already
-					}
-				}
-				else if (regionStart > int.MinValue) // otherwise, if we shouldn't fill this cell and we have a current segment...
-				{
-					stack.Push(new Segment(regionStart, x, y, dir, regionStart == startX, false)); // push the segment
-					regionStart = int.MinValue; // and end it
-				}
-
-				if (!isNextInDir && x < ignoreEnd && x >= ignoreStart)
-				{
-					x = ignoreEnd - 1; // skip over the ignored region
-				}
-			}
-
-			if (regionStart > int.MinValue)
-			{
-				stack.Push(new Segment(regionStart, x, y, dir, regionStart == startX, true));
-			}
 		}
 
 		private static bool Test(HashSet<int2> threshold, HashSet<int2> checkedTiles, MapManager mapManager, int x, int y)
@@ -234,20 +154,6 @@ namespace InstaDungeon.BehaviorTreeNodes
 						result = true;
 					}
 				}
-
-				//if (cell.TileInfo.TileType == TileType.Floor)
-				//{
-				//	checkedTiles.Add(new int2(x, y));
-
-				//	if (cell.Visibility == VisibilityType.Obscured)
-				//	{
-				//		threshold.Add(new int2(x, y));
-				//	}
-				//	else
-				//	{
-				//		result = true;
-				//	}
-				//}
 			}
 
 			return result;

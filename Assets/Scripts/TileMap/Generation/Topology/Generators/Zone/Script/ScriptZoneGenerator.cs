@@ -7,15 +7,18 @@ namespace InstaDungeon.MapGeneration
 	public class ScriptZoneGenerator : BaseZoneGenerator<ScriptZoneGeneratorSettings, ScriptZoneLevelSettings>
 	{
 		private Script script;
+		private string name;
 
-		public ScriptZoneGenerator(Script script, ScriptZoneGeneratorSettings settings) : base(settings)
+		public ScriptZoneGenerator(string name, Script script, ScriptZoneGeneratorSettings settings) : base(settings)
 		{
 			this.script = script;
+			this.name = name;
 		}
 
-		public ScriptZoneGenerator(Script script, string settings) : base(GenerateSettings(script, settings))
+		public ScriptZoneGenerator(string name, Script script, string settings) : base(GenerateSettings(script, settings))
 		{
 			this.script = script;
+			this.name = name;
 		}
 
 		private static ScriptZoneGeneratorSettings GenerateSettings(Script script, string settings)
@@ -69,6 +72,11 @@ namespace InstaDungeon.MapGeneration
 		public void SetRandomSeed(int seed)
 		{
 			script.Call(script.Globals["set_random_seed"], DynValue.NewNumber(seed));
+		}
+
+		public override string ToString()
+		{
+			return name;
 		}
 
 		private DynValue GetLevelSettings(int level)

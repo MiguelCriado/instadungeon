@@ -16,7 +16,9 @@ namespace InstaDungeon.UI
 		[SerializeField] private Dropdown zoneDropdown;
 		[SerializeField] private Toggle enableCustomSeed;
 		[SerializeField] private InputField customSeedField;
+		[SerializeField] private InputField numLevelsField;
 		[SerializeField] private Dropdown modeDropdown;
+		[SerializeField] private Toggle generateStatsToggle;
 		[SerializeField] private Button startButton;
 		[SerializeField] private Button quitButton;
 
@@ -53,9 +55,11 @@ namespace InstaDungeon.UI
 			ILayoutGenerator layoutGenerator = GetLayoutGenerator();
 			IZoneGenerator zoneGenerator = GetZoneGenerator();
 			int seed = GetSeed();
+			int numLevels = GetNumLevels();
+			bool generateStatsLog = generateStatsToggle.isOn;
 			ControlMode controlMode = GetControlMode();
 
-			GameSettings settings = new GameSettings(layoutGenerator, zoneGenerator, seed, controlMode);
+			GameSettings settings = new GameSettings(layoutGenerator, zoneGenerator, seed, numLevels, generateStatsLog, controlMode);
 			Locator.Get<GameFeederManager>().Settings = settings;
 			SceneManager.LoadScene("Game");
 		}
@@ -141,6 +145,11 @@ namespace InstaDungeon.UI
 			}
 
 			return result;
+		}
+
+		private int GetNumLevels()
+		{
+			return int.Parse(numLevelsField.text);
 		}
 
 		private ControlMode GetControlMode()

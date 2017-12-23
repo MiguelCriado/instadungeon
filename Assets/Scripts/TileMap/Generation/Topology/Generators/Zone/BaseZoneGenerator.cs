@@ -21,5 +21,6 @@
 		public abstract TileMap<TileType> PostConnectZones(TileMap<TileType> map, int level);
 		public abstract int2 GetSpawnPoint(TileMap<TileType> map, int level);
 		public abstract int2 GetExitPoint(TileMap<TileType> map, int level);
+		public abstract override string ToString();
 	}
 }

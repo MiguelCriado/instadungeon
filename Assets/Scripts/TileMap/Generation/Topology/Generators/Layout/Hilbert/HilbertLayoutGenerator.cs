@@ -52,6 +52,12 @@ namespace InstaDungeon.MapGeneration
 			return result;
 		}
 
+
+		public override string ToString()
+		{
+			return "Hilbert";
+		}
+
 		public override Layout Iterate(Layout layout, int level)
 		{
 			SetLevelSettings(level);

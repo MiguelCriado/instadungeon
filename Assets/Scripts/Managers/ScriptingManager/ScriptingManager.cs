@@ -95,14 +95,15 @@ namespace InstaDungeon
 				{
 					try
 					{
+						string generatorName = generatorDirectories[i].Name;
 						Script script = LoadScript(generatorFile.FullName);
 						string settingsString = File.ReadAllText(settingsFile.FullName);
-						ScriptLayoutGenerator generator = new ScriptLayoutGenerator(script, settingsString);
-						layoutGenerators.Add(generatorDirectories[i].Name, generator);
+						ScriptLayoutGenerator generator = new ScriptLayoutGenerator(generatorName, script, settingsString);
+						layoutGenerators.Add(generatorName, generator);
 
 						if (debug)
 						{
-							server.AttachToScript(script, generatorDirectories[i].Name);
+							server.AttachToScript(script, generatorName);
 						}
 					}
 					catch (SyntaxErrorException e)
@@ -128,14 +129,15 @@ namespace InstaDungeon
 				{
 					try
 					{
+						string generatorName = generatorDirectories[i].Name;
 						Script script = LoadScript(generatorFile.FullName);
 						string settingsString = File.ReadAllText(settingsFile.FullName);
-						ScriptZoneGenerator generator = new ScriptZoneGenerator(script, settingsString);
-						zoneGenerators.Add(generatorDirectories[i].Name, generator);
+						ScriptZoneGenerator generator = new ScriptZoneGenerator(generatorName, script, settingsString);
+						zoneGenerators.Add(generatorName, generator);
 
 						if (debug)
 						{
-							server.AttachToScript(script, generatorDirectories[i].Name);
+							server.AttachToScript(script, generatorName);
 						}
 					}
 					catch (SyntaxErrorException e)
