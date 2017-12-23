@@ -40,6 +40,7 @@ namespace InstaDungeon
 
 		private void SaveToFile()
 		{
+			Debug.Log("Saving session to file");
 			string layoutGenerator = sessionInfo.StatList[0].LayoutGenerator;
 			string zoneGenerator = sessionInfo.StatList[0].ZoneGenerator;
 			int initialSeed = sessionInfo.StatList[0].Seed;
@@ -81,6 +82,8 @@ namespace InstaDungeon
 		private void OnLevelFinished(IEventData eventData)
 		{
 			LevelFinishedEvent levelEvent = eventData as LevelFinishedEvent;
+
+			Debug.Log(string.Format("Adding mapStats for level {0}. seed = {1}", levelEvent.Level, currentMapStats.Seed));
 
 			currentMapStats.Navigation = AnalyzeMapNavigation(levelEvent.Map);
 			sessionInfo.AddStats(currentMapStats);
@@ -166,6 +169,7 @@ namespace InstaDungeon
 
 				if (bounds.width * bounds.height > biggestArea)
 				{
+					biggestArea = bounds.width * bounds.height;
 					result = bounds;
 				}
 			}
@@ -185,6 +189,7 @@ namespace InstaDungeon
 
 				if (bounds.width * bounds.height < smallestArea)
 				{
+					smallestArea = bounds.width * bounds.height;
 					result = bounds;
 				}
 			}

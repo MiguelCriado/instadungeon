@@ -9,11 +9,13 @@ namespace InstaDungeon.BehaviorTreeNodes
 	{
 		private string tileId;
 		private string thresholdId;
+		private ManhattanDistanceHeuristic heuristic;
 
 		public PickClosestRandomTileInThresholdAction(string tileIdInBlackboard, string thresholdIdInBlackboard)
 		{
 			tileId = tileIdInBlackboard;
 			thresholdId = thresholdIdInBlackboard;
+			heuristic = new ManhattanDistanceHeuristic();
 		}
 
 		protected override NodeStates Tick(Tick tick)
@@ -33,15 +35,15 @@ namespace InstaDungeon.BehaviorTreeNodes
 				
 				while (enumerator.MoveNext())
 				{
-					int2[] path = mapManager.GetPathIgnoringActors(targetPosition, enumerator.Current);
+					int distance = heuristic.Evaluate(targetPosition, enumerator.Current);
 
-					if (path.Length > 0 && path.Length < closestDistance)
+					if (distance < closestDistance)
 					{
-						closestDistance = path.Length;
+						closestDistance = distance;
 						candidates.Clear();
 						candidates.Add(enumerator.Current);
 					}
-					else if (path.Length == closestDistance)
+					else if (distance == closestDistance)
 					{
 						candidates.Add(enumerator.Current);
 					}

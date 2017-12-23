@@ -8,6 +8,7 @@ namespace InstaDungeon.MapGeneration
 	{
 		public static TileMap<TileType> BuildMap(ILayoutGenerator layoutGenerator, IZoneGenerator zoneGenerator, int level, int levelSeed)
 		{
+			Debug.Log(string.Format("Generating level {0}. {1}, {2} ({3})", level, layoutGenerator, zoneGenerator, levelSeed));
 			Random.InitState(levelSeed);
 			TileMap<TileType> result = new TileMap<TileType>();
 
