@@ -81,6 +81,8 @@ namespace InstaDungeon
 			token.Turn = 0;
 			running = true;
 			turnDone = true;
+
+			CleaupActorsLists();
 		}
 
 		public void GrantControl()
@@ -203,7 +205,26 @@ namespace InstaDungeon
 
 		private void UnsubscribeEvents(TurnComponent actor)
 		{
-			actor.Entity.Events.AddListener(OnActorDisposed, EntityDisposeEvent.EVENT_TYPE);
+			actor.Entity.Events.RemoveListener(OnActorDisposed, EntityDisposeEvent.EVENT_TYPE);
+		}
+
+		private void CleaupActorsLists()
+		{
+			for (int i = actors.Count - 1; i >= 0; i--)
+			{
+				if (actors[i] == null)
+				{
+					actors.RemoveAt(i);
+				}
+			}
+
+			for (int i = pendingActors.Count - 1; i >= 0; i--)
+			{
+				if (pendingActors[i] == null)
+				{
+					pendingActors.RemoveAt(i);
+				}
+			}
 		}
 	}
 }

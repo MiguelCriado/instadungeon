@@ -15,6 +15,7 @@ namespace InstaDungeon
 			[SerializeField] protected Manager manager;
 
 			public UnityEvent OnUpdate = new UnityEvent();
+			public UnityEvent OnQuit = new UnityEvent();
 
 			protected void Update()
 			{
@@ -23,29 +24,44 @@ namespace InstaDungeon
 					OnUpdate.Invoke();
 				}
 			}
+
+			protected void OnApplicationQuit()
+			{
+				if (OnQuit != null)
+				{
+					OnQuit.Invoke();
+				}
+			}
 		}
 
 		protected GameObject gameObject;
 		protected DummyMonoBehaviour monoBehaviourHelper;
+
+		private bool registerForUpdateTicks;
+		private bool registerForApplicationQuit;
 
 		public Manager() : this(true, false)
 		{
 			
 		}
 
-		public Manager(bool persistentBetweenScenes, bool registerForUpdateTicks)
+		public Manager(bool persistentBetweenScenes, bool registerForUpdateTicks) : this(persistentBetweenScenes, registerForUpdateTicks, false)
 		{
+			
+		}
+
+		public Manager(bool persistentBetweenScenes, bool registerForUpdateTicks, bool registerForApplicationQuit)
+		{
+			this.registerForUpdateTicks = registerForUpdateTicks;
+			this.registerForApplicationQuit = registerForApplicationQuit;
 			gameObject = CreateGameObject();
 
 			if (persistentBetweenScenes)
 			{
-				SceneManager.sceneUnloaded += OnSceneUnLoaded;
+				SceneManager.sceneLoaded += OnSceneLoaded;
 			}
 
-			if (registerForUpdateTicks)
-			{
-				monoBehaviourHelper.OnUpdate.AddListener(OnUpdate);
-			}
+			RegisterListeners();
 		}
 
 		protected GameObject CreateGameObject()
@@ -57,12 +73,18 @@ namespace InstaDungeon
 			return result;
 		}
 
-		protected virtual void OnSceneUnLoaded(Scene scene)
+		protected virtual void OnSceneLoaded(Scene scene, LoadSceneMode mode)
 		{
 			gameObject = CreateGameObject();
+			RegisterListeners();
 		}
 
 		protected virtual void OnUpdate()
+		{
+
+		}
+
+		protected virtual void OnQuit()
 		{
 
 		}
@@ -99,6 +121,19 @@ namespace InstaDungeon
 			}
 
 			return pathGO.transform;
+		}
+
+		private void RegisterListeners()
+		{
+			if (registerForUpdateTicks)
+			{
+				monoBehaviourHelper.OnUpdate.AddListener(OnUpdate);
+			}
+
+			if (registerForApplicationQuit)
+			{
+				monoBehaviourHelper.OnQuit.AddListener(OnQuit);
+			}
 		}
 	}
 }

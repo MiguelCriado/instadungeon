@@ -8,43 +8,52 @@ namespace InstaDungeon
 	{
 		private CameraController camera;
 
-		public CameraManager() : base()
-		{
-			camera = GameObject.FindObjectOfType<CameraController>();
-
-			if (camera == null)
-			{
-				Camera mainCamera = Camera.main;
-
-				if (mainCamera == null)
-				{
-					mainCamera = GameObject.FindObjectOfType<Camera>();
-				}
-
-				camera = mainCamera.gameObject.AddComponent<CameraController>();
-			}
-		}
-
 		#region [Public API]
 
 		public void SetTarget(Transform target)
 		{
-			camera.Target = target;
+			GetCamera().Target = target;
 		}
 
 		public void MoveTo(Vector2 position)
 		{
-			camera.MoveTo(position);
+			GetCamera().MoveTo(position);
 		}
 
 		public IPromise FadeIn(float duration)
 		{
-			return camera.FadeIn(duration);
+			return GetCamera().FadeIn(duration);
 		}
 
 		public IPromise FadeOut(float duration)
 		{
-			return camera.FadeOut(duration);
+			return GetCamera().FadeOut(duration);
+		}
+
+		#endregion
+
+		#region [Public API]
+
+		private CameraController GetCamera()
+		{
+			if (camera == null)
+			{
+				camera = Object.FindObjectOfType<CameraController>();
+
+				if (camera == null)
+				{
+					Camera mainCamera = Camera.main;
+
+					if (mainCamera == null)
+					{
+						mainCamera = Object.FindObjectOfType<Camera>();
+					}
+
+					camera = mainCamera.gameObject.AddComponent<CameraController>();
+				}
+			}
+
+			return camera;
 		}
 
 		#endregion

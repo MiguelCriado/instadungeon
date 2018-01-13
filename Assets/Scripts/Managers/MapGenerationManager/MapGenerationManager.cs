@@ -51,9 +51,9 @@ namespace InstaDungeon
 			return GenerateNewMap(level, settings.LevelSeed);
 		}
 
-		protected override void OnSceneUnLoaded(Scene scene)
+		protected override void OnSceneLoaded(Scene scene, LoadSceneMode mode)
 		{
-			base.OnSceneUnLoaded(scene);
+			base.OnSceneLoaded(scene, mode);
 			settings = gameObject.AddComponent<MapGenerationManagerInspector>();
 		}
 

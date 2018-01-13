@@ -673,6 +673,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: f2312a6764a9ab446b723822ccac3e5c, type: 2}
   - {fileID: 2100000, guid: 763922249767c8f43ae52ba3ab72a7b0, type: 2}
   drawTileNumbers: 0
+  ignoreVisibility: 0
 --- !u!114 &271026169
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4024,8 +4025,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1620585981}
-  - component: {fileID: 1620585983}
-  - component: {fileID: 1620585982}
   m_Layer: 0
   m_Name: Entities
   m_TagString: Entities
@@ -4046,34 +4045,6 @@ Transform:
   m_Father: {fileID: 1436137098}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1620585982
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1620585980}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 862d775d495fc49418ea80590fc30bd1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  info: {fileID: 0}
-  blocksLineOfSight: 0
-  blocksMovement: 1
---- !u!114 &1620585983
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1620585980}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f672e0b57f6b3c2468a0067695c08414, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  position:
-    x: 0
-    y: 0
 --- !u!1 &1650887892
 GameObject:
   m_ObjectHideFlags: 0

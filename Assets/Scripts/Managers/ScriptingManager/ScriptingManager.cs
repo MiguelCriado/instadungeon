@@ -19,7 +19,7 @@ namespace InstaDungeon
 		private bool debug;
 		private MoonSharpVsCodeDebugServer server;
 
-		public ScriptingManager() : base(true, false)
+		public ScriptingManager() : base(true, false, true)
 		{
 			layoutGenerators = new Dictionary<string, ScriptLayoutGenerator>();
 			zoneGenerators = new Dictionary<string, ScriptZoneGenerator>();
@@ -79,6 +79,12 @@ namespace InstaDungeon
 				server = new MoonSharpVsCodeDebugServer();
 				server.Start();
 			}
+		}
+
+		protected override void OnQuit()
+		{
+			base.OnQuit();
+			server.Dispose();
 		}
 
 		private void LoadLayoutGenerationScripts()

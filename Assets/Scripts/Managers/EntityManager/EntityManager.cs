@@ -2,7 +2,6 @@
 using InstaDungeon.Events;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace InstaDungeon
 {
@@ -16,6 +15,18 @@ namespace InstaDungeon
 		private EntityLoader loader;
 		private EventSystem events;
 		private uint nextGuid;
+		private Transform EntitiesContainer
+		{
+			get
+			{
+				if (entitiesContainer == null)
+				{
+					entitiesContainer = GetSceneContainer("World", "Entities");
+				}
+
+				return entitiesContainer;
+			}
+		}
 		private Transform entitiesContainer;
 		private bool dirty;
 		private List<Entity> cachedEntities;
@@ -26,14 +37,13 @@ namespace InstaDungeon
 			events = new EventSystem();
 			dynamicEntities = new Dictionary<uint, Entity>();
 			loader = new EntityLoader();
-			entitiesContainer = GetSceneContainer("World", "Entities");
 			cachedEntities = new List<Entity>();
 			dirty = true;
 		}
 
 		public Entity Spawn(string entityType)
 		{
-			Entity result = loader.Spawn(entityType, entitiesContainer);
+			Entity result = loader.Spawn(entityType, EntitiesContainer);
 
 			if (result != null)
 			{
@@ -74,12 +84,6 @@ namespace InstaDungeon
 			dynamicEntities.TryGetValue(entityGuid, out result);
 
 			return result;
-		}
-
-		protected override void OnSceneUnLoaded(Scene scene)
-		{
-			base.OnSceneUnLoaded(scene);
-			entitiesContainer = GetSceneContainer("World", "Entities");
 		}
 
 		#region [Events]
@@ -162,6 +166,8 @@ namespace InstaDungeon
 				{
 					cachedEntities.Add(enumerator.Current);
 				}
+
+				dirty = false;
 			}
 
 			return cachedEntities;

@@ -32,43 +32,19 @@ namespace InstaDungeon.UI
 		private void Awake()
 		{
 			gameManager = Locator.Get<GameManager>();
-			gameManager.Events.AddListener(OnGameStateChange, GameStateChangeEvent.EVENT_TYPE);
-
 			generationManager = Locator.Get<MapGenerationManager>();
-			generationManager.Events.AddListener(OnMapGenerated, MapGenerationNewMapEvent.EVENT_TYPE);
 
-			continueOption.OnOptionSelected.AddListener(() => 
-			{
-				MoveSelector(continueOption.GetComponent<RectTransform>());
-				SetSelectedOption(continueOption);
-			});
+			SubscribeUIListeners();
+		}
 
-			continueOption.OnOptionPressed.AddListener(() => 
-			{
-				gameManager.SetState(GameState.Running);
-			});
+		private void OnEnable()
+		{
+			SubscribeManagersListeners();
+		}
 
-			retryOption.OnOptionSelected.AddListener(() =>
-			{
-				MoveSelector(retryOption.GetComponent<RectTransform>());
-				SetSelectedOption(retryOption);
-			});
-
-			retryOption.OnOptionPressed.AddListener(() =>
-			{
-				gameManager.ResetGame();
-			});
-
-			mainMenuOption.OnOptionSelected.AddListener(() =>
-			{
-				MoveSelector(mainMenuOption.GetComponent<RectTransform>());
-				SetSelectedOption(mainMenuOption);
-			});
-
-			mainMenuOption.OnOptionPressed.AddListener(() =>
-			{
-				SceneManager.LoadScene(mainMenu);
-			});
+		private void OnDisable()
+		{
+			UnsubscribeManagersListeners();
 		}
 
 		private void Start()
@@ -84,6 +60,8 @@ namespace InstaDungeon.UI
 			}
 		}
 
+		#region [Public API]
+
 		public void BackgroundSelected()
 		{
 			if (currentSelectedOption != null)
@@ -91,6 +69,10 @@ namespace InstaDungeon.UI
 				currentSelectedOption.Select();
 			}
 		}
+
+		#endregion
+
+		#region [Event Handling]
 
 		private void OnGameStateChange(IEventData eventData)
 		{
@@ -119,6 +101,10 @@ namespace InstaDungeon.UI
 			continueOption.Select();
 		}
 
+		#endregion
+
+		#region [Helpers]
+
 		private void HideMenu()
 		{
 			if (content.gameObject.activeInHierarchy)
@@ -137,5 +123,58 @@ namespace InstaDungeon.UI
 		{
 			currentSelectedOption = menuOption;
 		}
+
+		private void SubscribeManagersListeners()
+		{
+			gameManager.Events.AddListener(OnGameStateChange, GameStateChangeEvent.EVENT_TYPE);
+
+			generationManager.Events.AddListener(OnMapGenerated, MapGenerationNewMapEvent.EVENT_TYPE);
+		}
+
+		private void UnsubscribeManagersListeners()
+		{
+			gameManager.Events.RemoveListener(OnGameStateChange, GameStateChangeEvent.EVENT_TYPE);
+
+			generationManager.Events.RemoveListener(OnMapGenerated, MapGenerationNewMapEvent.EVENT_TYPE);
+		}
+
+		private void SubscribeUIListeners()
+		{
+			continueOption.OnOptionSelected.AddListener(() =>
+			{
+				MoveSelector(continueOption.GetComponent<RectTransform>());
+				SetSelectedOption(continueOption);
+			});
+
+			continueOption.OnOptionPressed.AddListener(() =>
+			{
+				gameManager.SetState(GameState.Running);
+			});
+
+			retryOption.OnOptionSelected.AddListener(() =>
+			{
+				MoveSelector(retryOption.GetComponent<RectTransform>());
+				SetSelectedOption(retryOption);
+			});
+
+			retryOption.OnOptionPressed.AddListener(() =>
+			{
+				gameManager.ResetGame();
+			});
+
+			mainMenuOption.OnOptionSelected.AddListener(() =>
+			{
+				MoveSelector(mainMenuOption.GetComponent<RectTransform>());
+				SetSelectedOption(mainMenuOption);
+			});
+
+			mainMenuOption.OnOptionPressed.AddListener(() =>
+			{
+				gameManager.TidyGame();
+				SceneManager.LoadScene(mainMenu);
+			});
+		}
+
+		#endregion
 	}
 }

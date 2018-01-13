@@ -18,6 +18,7 @@ namespace InstaDungeon.TileMap
 		[SerializeField] private List<Material> materials;
 		[Header("Debug")]
 		[SerializeField] private bool drawTileNumbers;
+		[SerializeField] private bool ignoreVisibility;
 
 
 		private Dictionary<int2, OrthogonalChunkRenderer> chunks;
@@ -48,6 +49,11 @@ namespace InstaDungeon.TileMap
 		private void Start()
 		{
 			mapManager = Locator.Get<MapManager>();
+		}
+
+		private void OnValidate()
+		{
+			RefreshVisibility();
 		}
 
 		private void OnDrawGizmos()
@@ -105,7 +111,7 @@ namespace InstaDungeon.TileMap
 
 			while (enumerator.MoveNext())
 			{
-				enumerator.Current.Value.RefreshVisibility();
+				enumerator.Current.Value.RefreshVisibility(ignoreVisibility);
 			}
 		}
 

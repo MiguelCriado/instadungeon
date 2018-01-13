@@ -24,32 +24,21 @@ namespace InstaDungeon.UI
 
 		private void Awake()
 		{
-			retryOption.OnOptionSelected.AddListener(() => 
-			{
-				MoveSelector(retryOption.GetComponent<RectTransform>());
-				SetSelectedOption(retryOption);
-			});
+			SubscribeUIEvents();
+		}
 
-			retryOption.OnOptionPressed.AddListener(() => 
-			{
-				Locator.Get<GameManager>().ResetGame();
-			});
+		private void OnEnable()
+		{
+			SubscribeManagerEvents();
+		}
 
-			mainMenuOption.OnOptionSelected.AddListener(() => 
-			{
-				MoveSelector(mainMenuOption.GetComponent<RectTransform>());
-				SetSelectedOption(mainMenuOption);
-			});
-
-			mainMenuOption.OnOptionPressed.AddListener(() => 
-			{
-				SceneManager.LoadScene(mainMenu);
-			});
+		private void OnDisable()
+		{
+			UnsubscribeManagerEvents();
 		}
 
 		public void Start()
 		{
-			Locator.Get<GameManager>().Events.AddListener(OnGameStateChange, GameStateChangeEvent.EVENT_TYPE);
 			content.gameObject.SetActive(false);
 		}
 
@@ -99,6 +88,42 @@ namespace InstaDungeon.UI
 		private void SetSelectedOption(MenuOption menuOption)
 		{
 			currentSelectedOption = menuOption;
+		}
+
+		private void SubscribeManagerEvents()
+		{
+			Locator.Get<GameManager>().Events.AddListener(OnGameStateChange, GameStateChangeEvent.EVENT_TYPE);
+		}
+
+		private void UnsubscribeManagerEvents()
+		{
+			Locator.Get<GameManager>().Events.RemoveListener(OnGameStateChange, GameStateChangeEvent.EVENT_TYPE);
+		}
+
+		private void SubscribeUIEvents()
+		{
+			retryOption.OnOptionSelected.AddListener(() =>
+			{
+				MoveSelector(retryOption.GetComponent<RectTransform>());
+				SetSelectedOption(retryOption);
+			});
+
+			retryOption.OnOptionPressed.AddListener(() =>
+			{
+				Locator.Get<GameManager>().ResetGame();
+			});
+
+			mainMenuOption.OnOptionSelected.AddListener(() =>
+			{
+				MoveSelector(mainMenuOption.GetComponent<RectTransform>());
+				SetSelectedOption(mainMenuOption);
+			});
+
+			mainMenuOption.OnOptionPressed.AddListener(() =>
+			{
+				Locator.Get<GameManager>().TidyGame();
+				SceneManager.LoadScene(mainMenu);
+			});
 		}
 	}
 }

@@ -4,10 +4,10 @@
 		"min_level":0,
 		"data":
 		{
-			"min_map_width":35,
-			"max_map_width":45,
-			"min_map_height":35,
-			"max_map_height":45,
+			"min_map_width":25,
+			"max_map_width":35,
+			"min_map_height":25,
+			"max_map_height":35,
 			"min_zone_width":12,
 			"min_zone_height":12,
 		}

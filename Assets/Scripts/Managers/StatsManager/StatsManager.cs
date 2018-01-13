@@ -300,7 +300,7 @@ namespace InstaDungeon
 				}
 			}
 
-			return (float)zonesVisited / map.Layout.Zones.Count;
+			return ((float)zonesVisited / map.Layout.Zones.Count) * 100;
 		}
 
 		#endregion

@@ -13,16 +13,32 @@ namespace InstaDungeon.UI
 		private GameManager gameManager;
 		private EntityManager entityManager;
 		private Dictionary<Entity, EntityHealthController> healthBars;
+		private bool isInitialized;
+		private bool isSubscribed;
 
 		private void Awake()
 		{
 			healthBars = new Dictionary<Entity, EntityHealthController>();
 		}
 
+		private void OnEnable()
+		{
+			if (isInitialized)
+			{
+				SubscribeEvents();
+			}
+		}
+
+		private void OnDisable()
+		{
+			UnsubscribeEvents();
+		}
+
 		private void Start()
 		{
 			gameManager = Locator.Get<GameManager>();
 			entityManager = Locator.Get<EntityManager>();
+
 			SubscribeEvents();
 			LoadInitialData();
 		}
@@ -54,6 +70,8 @@ namespace InstaDungeon.UI
 			{
 				ProcessNewEntity(actors[i]);
 			}
+
+			isInitialized = true;
 		}
 
 		private void ProcessNewEntity(Entity entity)
@@ -72,8 +90,26 @@ namespace InstaDungeon.UI
 
 		private void SubscribeEvents()
 		{
-			entityManager.Events.AddListener(OnEntityEntersMap, EntityAddToMapEvent.EVENT_TYPE);
-			entityManager.Events.AddListener(OnEntityDisposed, EntityDisposeEvent.EVENT_TYPE);
+			if (isSubscribed == false)
+			{
+				entityManager = Locator.Get<EntityManager>();
+				entityManager.Events.AddListener(OnEntityEntersMap, EntityAddToMapEvent.EVENT_TYPE);
+				entityManager.Events.AddListener(OnEntityDisposed, EntityDisposeEvent.EVENT_TYPE);
+
+				isSubscribed = true;
+			}
+		}
+
+		private void UnsubscribeEvents()
+		{
+			if (isSubscribed == true)
+			{
+				entityManager = Locator.Get<EntityManager>();
+				entityManager.Events.RemoveListener(OnEntityEntersMap, EntityAddToMapEvent.EVENT_TYPE);
+				entityManager.Events.RemoveListener(OnEntityDisposed, EntityDisposeEvent.EVENT_TYPE);
+
+				isSubscribed = false;
+			}
 		}
 	}
 }

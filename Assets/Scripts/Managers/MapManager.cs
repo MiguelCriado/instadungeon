@@ -63,6 +63,17 @@ namespace InstaDungeon
 
 		public void Initialize(TileMap<Cell> map)
 		{
+			Clear();
+
+			this.map = map;
+
+			defaultGraph = new TileMapWeightedGraph(map);
+			pathfinder = new AStarSearch<int2, int>(defaultGraph, new ManhattanDistanceHeuristic());
+			ignoreActorsGraph = new TileMapIgnoreActorsWeightedGraph(map);
+		}
+
+		public void Clear()
+		{
 			DisposeEntities(actors, (Entity entity, int2 position) => RemoveActor(entity, position));
 			DisposeEntities(props, (Entity entity, int2 position) => RemoveProp(entity, position));
 			DisposeEntities(items, (Entity entity, int2 position) => RemoveItem(entity, position));
@@ -70,12 +81,6 @@ namespace InstaDungeon
 			actors.Clear();
 			props.Clear();
 			items.Clear();
-
-			this.map = map;
-
-			defaultGraph = new TileMapWeightedGraph(map);
-			pathfinder = new AStarSearch<int2, int>(defaultGraph, new ManhattanDistanceHeuristic());
-			ignoreActorsGraph = new TileMapIgnoreActorsWeightedGraph(map);
 		}
 
 		#region [Common]

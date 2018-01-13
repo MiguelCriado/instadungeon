@@ -9,6 +9,7 @@ namespace InstaDungeon
 {
 	public enum GameState
 	{
+		Idle,
 		Loading,
 		Running,
 		Paused,
@@ -43,7 +44,7 @@ namespace InstaDungeon
 		
 		private Entity player;
 
-		public GameManager() : base (false, true)
+		public GameManager() : base (true, true)
 		{
 			events = new EventSystem();
 			floorNumber = 0;
@@ -78,6 +79,12 @@ namespace InstaDungeon
 			StartUpTurnSystem();
 
 			events.TriggerEvent(new NewGameStartsEvent());
+		}
+
+		public void TidyGame()
+		{
+			mapManager.Clear();
+			SetState(GameState.Idle);
 		}
 
 		public void LoadNewMap(int floorNumber)

@@ -1,0 +1,316 @@
+{
+  "StartTime": "2017-12-23T20:28:21.9416466Z",
+  "EndTime": "2017-12-23T20:38:11.0409014Z",
+  "StatList": [
+    {
+      "Level": 0,
+      "Seed": -1839178893,
+      "LayoutGenerator": "Binary Partition",
+      "ZoneGenerator": "Agent Based",
+      "Topology": {
+        "MapBounds": {
+          "width": 35,
+          "height": 41
+        },
+        "FillRate": 0.548432052,
+        "NumZones": 6,
+        "BiggestZone": {
+          "width": 18,
+          "height": 17
+        },
+        "SmallestZone": {
+          "width": 16,
+          "height": 12
+        },
+        "BiggestZoneRatio": 0.627451,
+        "MeanZoneConnectionsNumber": 1.66666663,
+        "DeadEndedZones": 1
+      },
+      "Navigation": {
+        "StepsInDirectPath": 32,
+        "ExploredMap": 60.6099129,
+        "StepsPerformed": 228,
+        "VisitedZonesPercentage": 0.6666667
+      }
+    },
+    {
+      "Level": 1,
+      "Seed": -1233359428,
+      "LayoutGenerator": "Binary Partition",
+      "ZoneGenerator": "Agent Based",
+      "Topology": {
+        "MapBounds": {
+          "width": 45,
+          "height": 39
+        },
+        "FillRate": 0.545868933,
+        "NumZones": 9,
+        "BiggestZone": {
+          "width": 20,
+          "height": 14
+        },
+        "SmallestZone": {
+          "width": 12,
+          "height": 12
+        },
+        "BiggestZoneRatio": 0.514285743,
+        "MeanZoneConnectionsNumber": 1.77777779,
+        "DeadEndedZones": 2
+      },
+      "Navigation": {
+        "StepsInDirectPath": 42,
+        "ExploredMap": 70.25052,
+        "StepsPerformed": 264,
+        "VisitedZonesPercentage": 0.7777778
+      }
+    },
+    {
+      "Level": 2,
+      "Seed": 1012689561,
+      "LayoutGenerator": "Binary Partition",
+      "ZoneGenerator": "Agent Based",
+      "Topology": {
+        "MapBounds": {
+          "width": 38,
+          "height": 45
+        },
+        "FillRate": 0.545614064,
+        "NumZones": 7,
+        "BiggestZone": {
+          "width": 20,
+          "height": 16
+        },
+        "SmallestZone": {
+          "width": 12,
+          "height": 15
+        },
+        "BiggestZoneRatio": 0.5625,
+        "MeanZoneConnectionsNumber": 1.71428573,
+        "DeadEndedZones": 2
+      },
+      "Navigation": {
+        "StepsInDirectPath": 67,
+        "ExploredMap": 62.7009659,
+        "StepsPerformed": 177,
+        "VisitedZonesPercentage": 0.857142866
+      }
+    },
+    {
+      "Level": 3,
+      "Seed": -1296762493,
+      "LayoutGenerator": "Binary Partition",
+      "ZoneGenerator": "Agent Based",
+      "Topology": {
+        "MapBounds": {
+          "width": 44,
+          "height": 36
+        },
+        "FillRate": 0.522727251,
+        "NumZones": 6,
+        "BiggestZone": {
+          "width": 16,
+          "height": 19
+        },
+        "SmallestZone": {
+          "width": 13,
+          "height": 17
+        },
+        "BiggestZoneRatio": 0.7269737,
+        "MeanZoneConnectionsNumber": 1.66666663,
+        "DeadEndedZones": 1
+      },
+      "Navigation": {
+        "StepsInDirectPath": 74,
+        "ExploredMap": 93.1159439,
+        "StepsPerformed": 266,
+        "VisitedZonesPercentage": 1.0
+      }
+    },
+    {
+      "Level": 4,
+      "Seed": 1566188018,
+      "LayoutGenerator": "Binary Partition",
+      "ZoneGenerator": "Agent Based",
+      "Topology": {
+        "MapBounds": {
+          "width": 40,
+          "height": 40
+        },
+        "FillRate": 0.531875,
+        "NumZones": 9,
+        "BiggestZone": {
+          "width": 15,
+          "height": 15
+        },
+        "SmallestZone": {
+          "width": 12,
+          "height": 12
+        },
+        "BiggestZoneRatio": 0.64,
+        "MeanZoneConnectionsNumber": 1.77777779,
+        "DeadEndedZones": 3
+      },
+      "Navigation": {
+        "StepsInDirectPath": 46,
+        "ExploredMap": 88.60165,
+        "StepsPerformed": 346,
+        "VisitedZonesPercentage": 1.0
+      }
+    },
+    {
+      "Level": 5,
+      "Seed": 1805240834,
+      "LayoutGenerator": "Binary Partition",
+      "ZoneGenerator": "Agent Based",
+      "Topology": {
+        "MapBounds": {
+          "width": 35,
+          "height": 37
+        },
+        "FillRate": 0.5034749,
+        "NumZones": 4,
+        "BiggestZone": {
+          "width": 20,
+          "height": 21
+        },
+        "SmallestZone": {
+          "width": 15,
+          "height": 16
+        },
+        "BiggestZoneRatio": 0.5714286,
+        "MeanZoneConnectionsNumber": 1.5,
+        "DeadEndedZones": 1
+      },
+      "Navigation": {
+        "StepsInDirectPath": 30,
+        "ExploredMap": 41.1042938,
+        "StepsPerformed": 58,
+        "VisitedZonesPercentage": 1.0
+      }
+    },
+    {
+      "Level": 6,
+      "Seed": 1799356011,
+      "LayoutGenerator": "Binary Partition",
+      "ZoneGenerator": "Agent Based",
+      "Topology": {
+        "MapBounds": {
+          "width": 45,
+          "height": 38
+        },
+        "FillRate": 0.560818732,
+        "NumZones": 7,
+        "BiggestZone": {
+          "width": 19,
+          "height": 21
+        },
+        "SmallestZone": {
+          "width": 12,
+          "height": 12
+        },
+        "BiggestZoneRatio": 0.36090225,
+        "MeanZoneConnectionsNumber": 1.71428573,
+        "DeadEndedZones": 2
+      },
+      "Navigation": {
+        "StepsInDirectPath": 48,
+        "ExploredMap": 56.3086548,
+        "StepsPerformed": 134,
+        "VisitedZonesPercentage": 0.857142866
+      }
+    },
+    {
+      "Level": 7,
+      "Seed": 861828595,
+      "LayoutGenerator": "Binary Partition",
+      "ZoneGenerator": "Agent Based",
+      "Topology": {
+        "MapBounds": {
+          "width": 35,
+          "height": 44
+        },
+        "FillRate": 0.5707792,
+        "NumZones": 6,
+        "BiggestZone": {
+          "width": 20,
+          "height": 17
+        },
+        "SmallestZone": {
+          "width": 15,
+          "height": 13
+        },
+        "BiggestZoneRatio": 0.5735294,
+        "MeanZoneConnectionsNumber": 1.66666663,
+        "DeadEndedZones": 1
+      },
+      "Navigation": {
+        "StepsInDirectPath": 63,
+        "ExploredMap": 93.62913,
+        "StepsPerformed": 237,
+        "VisitedZonesPercentage": 1.0
+      }
+    },
+    {
+      "Level": 8,
+      "Seed": -1421229257,
+      "LayoutGenerator": "Binary Partition",
+      "ZoneGenerator": "Agent Based",
+      "Topology": {
+        "MapBounds": {
+          "width": 40,
+          "height": 40
+        },
+        "FillRate": 0.51375,
+        "NumZones": 4,
+        "BiggestZone": {
+          "width": 21,
+          "height": 20
+        },
+        "SmallestZone": {
+          "width": 19,
+          "height": 18
+        },
+        "BiggestZoneRatio": 0.8142857,
+        "MeanZoneConnectionsNumber": 1.5,
+        "DeadEndedZones": 1
+      },
+      "Navigation": {
+        "StepsInDirectPath": 43,
+        "ExploredMap": 57.78589,
+        "StepsPerformed": 131,
+        "VisitedZonesPercentage": 1.0
+      }
+    },
+    {
+      "Level": 9,
+      "Seed": 1957984662,
+      "LayoutGenerator": "Binary Partition",
+      "ZoneGenerator": "Agent Based",
+      "Topology": {
+        "MapBounds": {
+          "width": 38,
+          "height": 44
+        },
+        "FillRate": 0.5263158,
+        "NumZones": 7,
+        "BiggestZone": {
+          "width": 19,
+          "height": 17
+        },
+        "SmallestZone": {
+          "width": 12,
+          "height": 12
+        },
+        "BiggestZoneRatio": 0.445820421,
+        "MeanZoneConnectionsNumber": 1.71428573,
+        "DeadEndedZones": 2
+      },
+      "Navigation": {
+        "StepsInDirectPath": 58,
+        "ExploredMap": 59.6590919,
+        "StepsPerformed": 126,
+        "VisitedZonesPercentage": 1.0
+      }
+    }
+  ]
+}

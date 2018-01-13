@@ -1,0 +1,37 @@
+{
+  "StartTime": "2018-01-05T18:38:57.9938317Z",
+  "EndTime": "2018-01-05T18:39:30.9132894Z",
+  "StatList": [
+    {
+      "Level": 0,
+      "Seed": -668585960,
+      "LayoutGenerator": "Hilbert",
+      "ZoneGenerator": "Cavernous",
+      "Topology": {
+        "MapBounds": {
+          "width": 28,
+          "height": 28
+        },
+        "FillRate": 0.28188777,
+        "NumZones": 4,
+        "BiggestZone": {
+          "width": 15,
+          "height": 15
+        },
+        "SmallestZone": {
+          "width": 15,
+          "height": 15
+        },
+        "BiggestZoneRatio": 1.0,
+        "MeanZoneConnectionsNumber": 1.5,
+        "DeadEndedZones": 0
+      },
+      "Navigation": {
+        "StepsInDirectPath": 64,
+        "ExploredMap": 95.02262,
+        "StepsPerformed": 68,
+        "VisitedZonesPercentage": 100.0
+      }
+    }
+  ]
+}

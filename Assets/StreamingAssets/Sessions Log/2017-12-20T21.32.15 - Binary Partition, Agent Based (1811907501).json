@@ -1,0 +1,68 @@
+{
+  "StartTime": "2017-12-20T21:29:43.6923826Z",
+  "EndTime": "2017-12-20T21:32:15.436191Z",
+  "StatList": [
+    {
+      "Level": 0,
+      "Seed": 1811907501,
+      "LayoutGenerator": "Binary Partition",
+      "ZoneGenerator": "Agent Based",
+      "Topology": {
+        "MapBounds": {
+          "width": 35,
+          "height": 45
+        },
+        "FillRate": 0.5384127,
+        "NumZones": 6,
+        "BiggestZone": {
+          "width": 22,
+          "height": 14
+        },
+        "SmallestZone": {
+          "width": 22,
+          "height": 14
+        },
+        "BiggestZoneRatio": 1.0,
+        "MeanZoneConnectionsNumber": 1.66666663,
+        "DeadEndedZones": 1
+      },
+      "Navigation": {
+        "StepsInDirectPath": 33,
+        "ExploredMap": 98.113205,
+        "StepsPerformed": 343,
+        "VisitedZonesPercentage": 1.0
+      }
+    },
+    {
+      "Level": 1,
+      "Seed": 1279773048,
+      "LayoutGenerator": "Binary Partition",
+      "ZoneGenerator": "Agent Based",
+      "Topology": {
+        "MapBounds": {
+          "width": 35,
+          "height": 40
+        },
+        "FillRate": 0.5492857,
+        "NumZones": 5,
+        "BiggestZone": {
+          "width": 22,
+          "height": 23
+        },
+        "SmallestZone": {
+          "width": 22,
+          "height": 23
+        },
+        "BiggestZoneRatio": 1.0,
+        "MeanZoneConnectionsNumber": 1.6,
+        "DeadEndedZones": 1
+      },
+      "Navigation": {
+        "StepsInDirectPath": 72,
+        "ExploredMap": 89.46684,
+        "StepsPerformed": 170,
+        "VisitedZonesPercentage": 1.0
+      }
+    }
+  ]
+}

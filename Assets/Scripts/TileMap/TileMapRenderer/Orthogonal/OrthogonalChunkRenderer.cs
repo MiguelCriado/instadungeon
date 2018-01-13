@@ -74,13 +74,13 @@ namespace InstaDungeon.TileMap
 			}
 		}
 
-		public void RefreshVisibility()
+		public void RefreshVisibility(bool ignoreVisibility = false)
 		{
 			var layerEnumerator = layers.Values.GetEnumerator();
 
 			while (layerEnumerator.MoveNext())
 			{
-				layerEnumerator.Current.RefreshVisibility();
+				layerEnumerator.Current.RefreshVisibility(ignoreVisibility);
 			}
 		}
 

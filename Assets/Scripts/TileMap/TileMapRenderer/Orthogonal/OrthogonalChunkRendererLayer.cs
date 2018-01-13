@@ -153,7 +153,7 @@ namespace InstaDungeon.TileMap
 			meshRenderer.materials = rendererMaterials;
 		}
 
-		public void RefreshVisibility()
+		public void RefreshVisibility(bool ignoreVisibility)
 		{
 			Cell currentCell;
 			Color32 cellColor;
@@ -162,14 +162,21 @@ namespace InstaDungeon.TileMap
 
 			for (int i = 0; i < tiles.Count; i++)
 			{
-				currentCell = map[tiles[i].tile];
-
-				switch (currentCell.Visibility)
+				if (ignoreVisibility)
 				{
-					default:
-					case VisibilityType.Obscured: cellColor = ObscuredColor; break;
-					case VisibilityType.PreviouslySeen: cellColor = PreviouslySeenColor; break;
-					case VisibilityType.Visible: cellColor = VisibleColor; break;
+					cellColor = VisibleColor;
+				}
+				else
+				{
+					currentCell = map[tiles[i].tile];
+
+					switch (currentCell.Visibility)
+					{
+						default:
+						case VisibilityType.Obscured: cellColor = ObscuredColor; break;
+						case VisibilityType.PreviouslySeen: cellColor = PreviouslySeenColor; break;
+						case VisibilityType.Visible: cellColor = VisibleColor; break;
+					}
 				}
 
 				for (int j = 0; j < tiles[i].numVertices; j++)
