@@ -53,7 +53,10 @@ namespace InstaDungeon.TileMap
 
 		private void OnValidate()
 		{
-			RefreshVisibility();
+			if (Application.isPlaying)
+			{
+				RefreshVisibility();
+			}
 		}
 
 		private void OnDrawGizmos()

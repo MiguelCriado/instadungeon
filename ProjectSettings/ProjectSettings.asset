@@ -10,7 +10,7 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: Macro
+  companyName: Miguel Criado
   productName: InstaDungeon
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
@@ -42,8 +42,8 @@ PlayerSettings:
   m_SplashScreenBackgroundPortrait: {fileID: 0}
   m_VirtualRealitySplashScreen: {fileID: 0}
   m_HolographicTrackingLossScreen: {fileID: 0}
-  defaultScreenWidth: 360
-  defaultScreenHeight: 270
+  defaultScreenWidth: 720
+  defaultScreenHeight: 540
   defaultScreenWidthWeb: 640
   defaultScreenHeightWeb: 480
   m_StereoRenderingPath: 0
@@ -55,7 +55,7 @@ PlayerSettings:
   androidShowActivityIndicatorOnLoading: -1
   tizenShowActivityIndicatorOnLoading: -1
   iosAppInBackgroundBehavior: 0
-  displayResolutionDialog: 1
+  displayResolutionDialog: 0
   iosAllowHTTPDownload: 1
   allowedAutorotateToPortrait: 1
   allowedAutorotateToPortraitUpsideDown: 1
@@ -64,7 +64,7 @@ PlayerSettings:
   useOSAutorotation: 1
   use32BitDisplayBuffer: 1
   disableDepthAndStencilBuffers: 0
-  defaultIsFullScreen: 1
+  defaultIsFullScreen: 0
   defaultIsNativeResolution: 0
   runInBackground: 1
   captureSingleScreen: 0
@@ -138,7 +138,7 @@ PlayerSettings:
   useHDRDisplay: 0
   applicationIdentifier:
     Android: com.Company.ProductName
-    Standalone: unity.Macro.PixelPerfect Test
+    Standalone: me.miguelcriado.instadungeon
     Tizen: com.Company.ProductName
     iOS: com.Company.ProductName
     tvOS: com.Company.ProductName
