@@ -21,7 +21,7 @@ namespace InstaDungeon.Models
 			if (health != null)
 			{
 				health.Heal(healthPotionInfo.HealthRestored);
-				// TODO show heal particles
+				Locator.Get<ParticleSystemManager>().Spawn("Heal FX", entity.transform.position + Vector3.up * 1 / 3f);
 				result.Resolve();
 			}
 			else

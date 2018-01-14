@@ -426,6 +426,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4835392e55206a45b14553534d8e3de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hideWhenPreviouslySeen: 0
 --- !u!114 &114716835442728442
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -477,6 +478,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4835392e55206a45b14553534d8e3de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hideWhenPreviouslySeen: 1
 --- !u!212 &212485141640346852
 SpriteRenderer:
   m_ObjectHideFlags: 1

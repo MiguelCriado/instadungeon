@@ -10,6 +10,8 @@ namespace InstaDungeon.Components
 		private static readonly float PreviouslySeenAmount = 0.5f;
 		private static readonly float VisibleAmount = 0f;
 
+		[SerializeField] private bool hideWhenPreviouslySeen;
+
 		private Entity entity;
 		private MapManager mapManager;
 		private SpriteRenderer[] renderers;
@@ -17,6 +19,11 @@ namespace InstaDungeon.Components
 
 		private Cell currentCell;
 		private VisibilityType lastVisibility;
+
+		private void Reset()
+		{
+			hideWhenPreviouslySeen = true;
+		}
 
 		private void Awake()
 		{
@@ -142,16 +149,27 @@ namespace InstaDungeon.Components
 		private void UpdateRenderer(SpriteRenderer renderer, VisibilityType visibility)
 		{
 			float lerpAmount;
+			bool shouldRender;
 
 			switch (visibility)
 			{
 				default:
-				case VisibilityType.Obscured: lerpAmount = ObscuredAmount; break;
-				case VisibilityType.PreviouslySeen: lerpAmount = PreviouslySeenAmount; break;
-				case VisibilityType.Visible: lerpAmount = VisibleAmount; break;
+				case VisibilityType.Obscured:
+					lerpAmount = ObscuredAmount;
+					shouldRender = false;
+					break;
+				case VisibilityType.PreviouslySeen:
+					lerpAmount = PreviouslySeenAmount;
+					shouldRender = !hideWhenPreviouslySeen;
+					break;
+				case VisibilityType.Visible:
+					lerpAmount = VisibleAmount;
+					shouldRender = true;
+					break;
 			}
 
 			renderer.material.SetFloat(lerpAmountId, lerpAmount);
+			renderer.enabled = shouldRender;
 		}
 	}
 }

@@ -39,8 +39,8 @@ namespace InstaDungeon.Actions
 				elapsedMovementTime = 0;
 				MapManager mapManager = Locator.Get<MapManager>();
 
-				if (mapManager.Map[origin.x, origin.y].Visibility == VisibilityType.Obscured
-					&& mapManager.Map[destiny.x, destiny.y].Visibility == VisibilityType.Obscured)
+				if (mapManager.Map[origin.x, origin.y].Visibility != VisibilityType.Visible
+					&& mapManager.Map[destiny.x, destiny.y].Visibility != VisibilityType.Visible)
 				{
 					targetMovementTime = 0;
 				}
