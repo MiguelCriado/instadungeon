@@ -1,0 +1,17 @@
+{
+  "StartTime": "2017-12-20T20:16:35.7795976Z",
+  "EndTime": "2017-12-20T20:17:20.4204906Z",
+  "StatList": [
+    {
+      "Level": 0,
+      "Seed": 1955326273,
+      "LayoutGenerator": "Hilbert",
+      "ZoneGenerator": "Cavernous",
+      "Topology": {
+        "MapBounds": {
+          "width": 30
+        }
+      }
+    }
+  ]
+}
